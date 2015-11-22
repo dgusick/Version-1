@@ -1,0 +1,787 @@
+<?php
+
+require_once 'noo_citilights.inc';
+require_once 'noo_citilights.location.inc';
+
+/**
+ * Implements hook_block_info().
+ */
+function noo_citilights_block_info() {
+  $blocks['properties_search_default'] = array(
+    'info' => t('Properties Search Default'),
+  );
+  $blocks['properties_search_vertical'] = array(
+    'info' => t('Properties Search Vertical'),
+  );
+  $blocks['properties_search_horizontal'] = array(
+    'info' => t('Properties Search Horizontal'),
+  );
+  $blocks['properties_search_sidebar'] = array(
+    'info' => t('Properties Search Sidebar'),
+  );
+  $blocks['change_password'] = array(
+    'info' => t('Change password'),
+  );
+  $blocks['user_sidebar_menu'] = array(
+    'info' => t('User sidebar menu'),
+  );
+  $blocks['contact_map'] = array(
+    'info' => t('Contact Map'),
+  );
+  $blocks['real_estate_sort'] = array(
+    'info' => t('Sort'),
+  );
+  $blocks['contact_info'] = array(
+    'info' => t('Contact Info'),
+  );
+  $blocks['citilights_banner'] = array(
+    'info' => t('Citilights Banner'),
+  );
+  $blocks['citilights_property_detail'] = array(
+    'info' => t('Citilights Property Details'),
+  );
+  $blocks['citilights_property_agent'] = array(
+    'info' => t('Citilights Property Agent'),
+  );
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_configure().
+ */
+function noo_citilights_block_configure($delta = '') {
+  $form = array();
+  $deltas = array(
+    'properties_search_default',
+    'properties_search_vertical',
+    'properties_search_horizontal',
+    'properties_search_sidebar',
+  );
+  
+  if (in_array($delta, $deltas)) {
+    $form['filter'] = array(
+      '#type' => 'fieldset',
+      '#title' => 'Filter settings',
+      '#collapsible' => FALSE,
+      '#tree' => TRUE,
+      '#weight' => 1
+    );
+    $form['filter']['gprice_min'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Minimum price'),
+      '#default_value' => variable_get('gprice_min', 0),
+    );
+    $form['filter']['gprice_max'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Maximum price'),
+      '#default_value' => variable_get('gprice_max', 10000),
+    );
+    $form['filter']['garea_min'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Minimum area'),
+      '#default_value' => variable_get('garea_min', 0),
+    );
+    $form['filter']['garea_max'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Maximum area'),
+      '#default_value' => variable_get('garea_max', 10000),
+    );
+    $form['filter']['gbed'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Beds'),
+      '#default_value' => variable_get('gbed', '1, 2, 3, 4, 5'),
+      '#description' => 'Please enter list of number follow 1, 2, 3, 4, 5'
+    );
+    $form['filter']['gbath'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Baths'),
+      '#default_value' => variable_get('gbath', '1, 2, 3, 4, 5'),
+      '#description' => 'Please enter list of number follow 1, 2, 3, 4, 5'
+    );
+  }
+
+  return $form;
+}
+
+function noo_citilights_form_block_admin_configure_alter(&$form, $form_state, &$form_id) {
+  $deltas = array(
+    'properties_search_default',
+    'properties_search_vertical',
+    'properties_search_horizontal',
+    'properties_search_sidebar',
+  );
+  if ($form['module']['#value'] == 'noo_citilights' && in_array($form['delta']['#value'], $deltas)) {
+    $form['#validate'][] = 'noo_citilights_block_config_validate';
+  }
+}
+
+function noo_citilights_block_config_validate(&$form, &$form_state) {
+  if (!noo_citilights_isvalid_list($form_state['values']['filter']['gbed'])) {
+    form_set_error('gbed', 'The Beds must be a list numeric');
+  }
+  if (!noo_citilights_isvalid_list($form_state['values']['filter']['gbath'])) {
+    form_set_error('gbath', 'The Beds must be a list numeric');
+  }
+  if (!is_numeric($form_state['values']['filter']['gprice_min'])) {
+    form_set_error('gprice_min', 'The minimun price must be type of numeric');
+  }
+  if (!is_numeric($form_state['values']['filter']['gprice_max'])) {
+    form_set_error('gprice_max', 'The maximun price must be type of numeric');
+  }
+  if (!is_numeric($form_state['values']['filter']['garea_min'])) {
+    form_set_error('garea_min', 'The minimun area must be type of numeric');
+  }
+  if (!is_numeric($form_state['values']['filter']['garea_max'])) {
+    form_set_error('garea_max', 'The garea price must be type of numeric');
+  }
+}
+
+function noo_citilights_isvalid_list($string) {
+  $values = explode(",", $string);
+  foreach ($values as $value) {
+    if (!is_numeric($value) || (int)$value < 0) {
+      return FALSE;
+    }
+  }
+  return TRUE;
+}
+
+/**
+ * Implements hook_block_save().
+ */
+function noo_citilights_block_save($delta = '', $edit = array()) {
+  $deltas = array(
+    'properties_search_default',
+    'properties_search_vertical',
+    'properties_search_horizontal',
+    'properties_search_sidebar',
+  );
+  if (in_array($delta, $deltas)) {
+    variable_set('gprice_min', $edit['filter']['gprice_min']);
+    variable_set('gprice_max', $edit['filter']['gprice_max']);
+    variable_set('garea_min', $edit['filter']['garea_min']);
+    variable_set('garea_max', $edit['filter']['garea_max']);
+    variable_set('gbed', $edit['filter']['gbed']);
+    variable_set('gbath', $edit['filter']['gbath']);
+  }
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function noo_citilights_block_view($delta = '') {
+  $block = array();
+
+  switch ($delta) {
+    case 'properties_search_default':
+      $block['subject'] = '<none>';
+      $block['content'] = drupal_get_form('citilights_map_filter_form', 'properties_search_default', 'home-map-vertical');
+      break;
+
+    case 'properties_search_vertical':
+      $block['subject'] = '<none>';
+      $block['content'] = drupal_get_form('citilights_map_filter_form', 'properties_search_vertical', 'home-map-vertical');
+      break;
+    case 'properties_search_horizontal':
+      $block['subject'] = '<none>';
+      $block['content'] = drupal_get_form('citilights_map_filter_form', 'properties_search_vertical', 'home-map-horizontal');
+      break;
+    case 'properties_search_sidebar':
+      $block['subject'] = '<none>';
+      $block['content'] = drupal_get_form('citilights_map_filter_form', 'properties_search_sidebar');
+      break;
+    case 'change_password':
+      $block['subject'] = '<none>';
+      $block['content'] = drupal_get_form('noo_citilights_change_password_form');
+      break;
+    case 'user_sidebar_menu':
+      $block['subject'] = '<none>';
+      $block['content'] = array(
+        '#theme' => 'user_sidebar_menu',
+        '#account' => $GLOBALS['user']
+      );
+      break;
+    case 'contact_map':
+      $block['subject'] = t('Google Map');
+      $block['content'] = array(
+        '#theme' => 'contact_map'
+      );
+    break;
+    case 'real_estate_sort':
+      $block['subject'] = t('Eeal estate sort');
+      $block['content'] = array(
+        '#theme' => 'real_estate_sort'
+      );
+    break;
+    case 'contact_info':
+      $block['subject'] = t('Contact Info');
+      $block['content'] = array(
+        '#theme' => 'contact_info'
+      );
+      break;
+    case 'citilights_banner':
+      $block['subject'] = t('Banner');
+      $block['content'] = array(
+        '#theme' => 'citilights_banner'
+      );
+      break;
+    case 'citilights_property_detail':
+      $block['subject'] = t('Property Details');
+      $block['content'] = array(
+        '#theme' => 'citilights_property_detail'
+      );
+      break;
+    case 'citilights_property_agent':
+      $block['subject'] = t('Property Agent Contact');
+      $block['content'] = array(
+        '#theme' => 'citilights_property_agent'
+      );
+      break;
+  }
+  return $block;
+}
+
+function noo_citilights_theme($existing, $type, $theme, $path) {
+  return array(
+    'properties_search_default' => array(
+      'render element' => 'form',
+      'template' => 'properties-search-default',
+      'path' => drupal_get_path('module', 'noo_citilights') . '/templates',
+    ),
+    'properties_search_vertical' => array(
+      'render element' => 'form',
+      'template' => 'properties-search-vertical',
+      'path' => drupal_get_path('module', 'noo_citilights') . '/templates',
+    ),
+    'properties_search_horizontal' => array(
+      'render element' => 'form',
+      'template' => 'properties-search-horizontal',
+      'path' => drupal_get_path('module', 'noo_citilights') . '/templates',
+    ),
+    'properties_search_sidebar' => array(
+      'render element' => 'form',
+      'template' => 'properties-search-sidebar',
+      'path' => drupal_get_path('module', 'noo_citilights') . '/templates',
+    ),
+    'profile2_edit_agent_form' => array(
+      'render element' => 'form',
+      'template' => 'profile2-edit-agent-form',
+      'path' => drupal_get_path('theme', 'citilights') . '/template/form', 
+    ),
+    'real_estate_node_form' => array(
+      'render element' => 'form',
+      'template' => 'real-estate-node-form',
+      'path' => drupal_get_path('theme', 'citilights') . '/template/form', 
+    ),
+    'noo_citilights_change_password_form' => array(
+      'render element' => 'form',
+      'template' => 'noo-citilights-change-password-form',
+      'path' => drupal_get_path('theme', 'citilights') . '/template/form', 
+    ),
+    'user_sidebar_menu' => array(
+      'variables' => array('account' => NULL),
+      'template' => 'user-sidebar-menu',
+      'path' => drupal_get_path('module', 'noo_citilights') . '/templates',
+    ),
+    'real_estate_sort' => array(
+      'variables' => array(),
+      'template' => 'real-estate-sort',
+      'path' => drupal_get_path('theme', 'citilights') . '/template/form', 
+    ),
+    'contact_info' => array(
+      'variables' => array(),
+      'template' => '/templates/contact-info',
+    ),
+    'citilights_banner' => array(
+      'variables' => array(),
+      'template' => '/templates/citilights-banner',
+    ),
+    'citilights_property_detail' => array(
+      'variables' => array(),
+      'template' => '/templates/citilights-property-detail',
+    ),
+    'citilights_property_agent' => array(
+      'variables' => array(),
+      'template' => '/templates/citilights-property-agent',
+    ),
+  );
+}
+
+function citilights_map_filter_form($form, $form_state, $theme, $path = NULL) {
+  $query_parameters = drupal_get_query_parameters();
+  if (!isset($form['#path'])) {
+    $form['#path'] = $path;
+  }
+  // Locations
+  $locations = noo_citilights_get_locations();
+  $form['glocation'] = array(
+    '#type' => 'select',
+    '#options' => $locations,
+    '#attributes' => array('class' => array('form-control')),
+    '#empty_option' => 'All Locations',
+    '#empty_value' => 'All',
+    '#ajax' => array(
+      'callback' => 'citilights_map_filter_form_sublocation_refresh',
+      'wrapper' => 'wrapper-map-filter-sub-location',
+      'progress' => array(
+        'progress_indicator' => 'none'
+      )
+    ),
+    '#default_value' => isset($query_parameters['glocation']) ? $query_parameters['glocation'] : NULL,
+  );
+  $form['gsub-location'] = array(
+    '#type' => 'select',
+    '#options' => array(),
+    '#attributes' => array('class' => array('form-control')),
+    '#empty_option' => 'All Sub-locations',
+    '#empty_value' => 'All',
+    '#default_value' => isset($query_parameters['gsub-location']) ? $query_parameters['gsub-location'] : NULL,
+    '#prefix' => '<div id="wrapper-map-filter-sub-location">',
+    '#suffix' => '</div>',
+  );
+  
+  // Looking for location id.
+  if (isset($form_state['triggering_element']['#name']) && 'glocation' == $form_state['triggering_element']['#name']) {
+    if (isset($form_state['values']['glocation'])) {
+      $location_tid = $form_state['values']['glocation'];
+      $form['gsub-location']['#options'] = noo_citilights_find_sublocation($location_tid);
+    }
+  }
+  elseif (isset($form['glocation']['#default_value']) && !empty($form['glocation']['#default_value'])) {
+    $location_tid = $form['glocation']['#default_value'];
+    $form['gsub-location']['#options'] = noo_citilights_find_sublocation($location_tid);
+  }
+  
+  $gbed = variable_get('gbed', '1, 2, 3, 4, 5');
+  $gbed = explode(",", $gbed);
+  $gbed = array_map('trim', $gbed);
+  $gbed = array_combine($gbed, $gbed);
+  $form['gbed'] = array(
+    '#type' => 'select',
+    '#options' => $gbed,
+    '#attributes' => array('class' => array('form-control')),
+    '#empty_option' => 'No. of Bedrooms',
+    '#empty_value' => 'All',
+    '#default_value' => isset($query_parameters['gbed']) ? $query_parameters['gbed'] : NULL,
+  );
+  $gpath = variable_get('gpath', '1, 2, 3, 4, 5');
+  $gpath = explode(",", $gpath);
+  $gpath = array_map('trim', $gpath);
+  $gpath = array_combine($gpath, $gpath);
+  $form['gbath'] = array(
+    '#type' => 'select',
+    '#options' => $gpath,
+    '#attributes' => array('class' => array('form-control')),
+    '#empty_option' => 'No. of Bathrooms',
+    '#empty_value' => 'All',
+    '#default_value' => isset($query_parameters['gbath']) ? $query_parameters['gbath'] : NULL,
+  );
+  // Locations
+  $status = citilights_get_taxonomy_terms('property_status');
+  $form['gstatus'] = array(
+    '#type' => 'select',
+    '#options' => $status,
+    '#attributes' => array('class' => array('form-control')),
+    '#empty_option' => 'All Status',
+    '#empty_value' => 'All',
+    '#default_value' => isset($query_parameters['gstatus']) ? $query_parameters['gstatus'] : NULL,
+  );
+  $types = citilights_get_taxonomy_terms('property_type');
+  $form['gtype'] = array(
+    '#type' => 'select',
+    '#options' => $types,
+    '#attributes' => array('class' => array('form-control')),
+    '#empty_option' => 'All Type',
+    '#empty_value' => 'All',
+    '#default_value' => isset($query_parameters['gtype']) ? $query_parameters['gtype'] : NULL,
+  );
+  // Price
+  $form['gprice-min'] = array(
+    '#type' => 'textfield',
+    '#default_value' => isset($query_parameters['gprice-min']) ? $query_parameters['gprice-min'] : '',
+  );
+  $form['gprice-max'] = array(
+    '#type' => 'textfield',
+    '#default_value' => isset($query_parameters['gprice-max']) ? $query_parameters['gprice-max'] : '',
+  );
+  // Area
+  $form['garea-min'] = array(
+    '#type' => 'textfield',
+    '#default_value' => isset($query_parameters['garea-min']) ? $query_parameters['garea-min'] : '',
+  );
+  $form['garea-max'] = array(
+    '#type' => 'textfield',
+    '#default_value' => isset($query_parameters['garea-max']) ? $query_parameters['garea-max'] : '',
+  );
+
+  $price_min = variable_get('gprice_min', 0);
+  $price_max = variable_get('gprice_max', 10000);
+  $settings['gprice_min'] = isset($query_parameters['gprice-min']) && !empty($query_parameters['gprice-min']) ? $query_parameters['gprice-min'] : $price_min;
+  $settings['gprice_max'] = isset($query_parameters['gprice-max']) && !empty($query_parameters['gprice-max']) ? $query_parameters['gprice-max'] : $price_max;
+  $settings['config_gprice_min'] = $price_min;
+  $settings['config_gprice_max'] = $price_max;
+  // Area
+  $area_min = variable_get('garea_min', 0);
+  $area_max = variable_get('garea_max', 10000);
+  $settings['garea_min'] = isset($query_parameters['garea-min']) && !empty($query_parameters['garea-min']) ? $query_parameters['garea-min'] : $area_min;
+  $settings['garea_max'] = isset($query_parameters['garea-max']) && !empty($query_parameters['garea-max']) ? $query_parameters['garea-max'] : $area_max;
+  $settings['config_garea_min'] = $area_min;
+  $settings['config_garea_max'] = $area_max;
+  drupal_add_js(array('citilights' => array('setting' => $settings)), 'setting');
+
+  $form['#theme'][] = $theme;
+  $form['#attributes'] = array('class' => array('gsearchform'));
+
+  $form['actions'] = array('#type' => 'actions');
+  $form['actions']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => t('Search Property'),
+    '#submit' => array('citilights_map_filter_form_submit')
+  );
+  $form['#attached']['js'] = array(
+    drupal_get_path('module', 'noo_citilights') . '/js/noo_citilights.js',
+  );
+  return $form;
+}
+
+function citilights_map_filter_form_sublocation_refresh(&$form, &$form_state) {
+  return $form['gsub-location'];
+}
+
+function citilights_map_filter_form_submit($form, $form_state) {
+  $exclude = array(
+    'q',
+    'submit',
+    'form_build_id',
+    'form_id',
+    'form_token',
+    'exposed_form_plugin',
+    '',
+    'op',
+    'reset',
+  );
+  $exclude_combine = array_combine($exclude, $exclude);
+  $query = array_diff_key($form_state['values'], $exclude_combine);
+
+  if ($query['gbed'] == 'All') {
+    unset($query['gbed']);
+  }
+  if ($query['gbath'] == 'All') {
+    unset($query['gbath']);
+  }
+  $path = 'grid-no-sidebar';
+  if (isset($form['#path']) && !empty($path)) {
+    $path = $form['#path'];
+  }
+  drupal_goto($path, array('query' => $query));
+}
+
+function citilights_get_taxonomy_terms($name) {
+  $options = array();
+  $vocab = taxonomy_vocabulary_machine_name_load($name);
+  $terms = taxonomy_get_tree($vocab->vid);
+  foreach ($terms as $term) {
+    $options[$term->tid] = $term->name;
+  }
+  return $options;
+}
+
+/**
+ * template_preprocess().
+ */
+function noo_citilights_preprocess_views_view(&$vars) {
+  $view = $vars['view'];
+  if ($view->name == 'real_estate') {
+    $vars['exposed'] = '';
+  }
+}
+
+function user_is_agent($account = NULL) {
+  $account = is_null($account) ? $GLOBALS['user'] : $account;
+  $role = user_role_load_by_name('Agent');
+  return in_array($role->rid, array_keys($account->roles));
+}
+
+function noo_citilights_preprocess_user_sidebar_menu(&$vars) {
+  $account = $vars['account'];
+  $agent = profile2_load_by_user($account, 'agent');
+  
+  $vars['avatar_url'] = '';
+  if ($agent && isset($agent->field_agent_thumbnail['und'][0]['uri'])) {
+    $vars['avatar_url'] = file_create_url($agent->field_agent_thumbnail['und'][0]['uri']);
+  }
+}
+
+/**
+ * Implements hook_init().
+ */
+function noo_citilights_init() {
+  drupal_add_js(drupal_get_path('module', 'noo_citilights') . '/js/noo_click_other_action.js');
+}
+
+/**
+ * Implement hook_admin_paths().
+ */
+function noo_citilights_admin_paths() {
+  return array(
+    'comment/*/edit' => 'true'
+  );
+}
+
+/**
+ * Implement hook_form_FORM_ID_alert().
+ */
+function noo_citilights_form_ctools_block_content_type_edit_form_alter(&$form, &$form_state, $form_id) {
+  global $base_url;
+  $pane = $form_state['pane'];
+  $display = $form_state['display'];
+
+  $form['subtitle'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Subtitle'),
+    '#default_value' => variable_get("subtitle__{$display->uuid}_{$pane->subtype}", ''),
+    '#maxlength' => 500,
+    '#format' => 'full_html',
+  );
+  $form['#submit'][] = 'noo_citilights_ctool_config_submit';
+
+  if($pane->subtype == 'webform-client-block-50') {
+    $form['contact_info_display'] = array(
+      '#type' =>'checkbox', 
+      '#title' => t('Display contact info'),
+      '#default_value' => variable_get("contact_info_display__{$display->uuid}_{$pane->subtype}", ''),
+    );
+    $form['#submit'][] = 'noo_citilights_ctool_contact_form_config_submit';
+  }
+
+  if($pane->subtype == 'noo_citilights-contact_map') {
+    $form['map_location'] = array(
+      '#type' => 'textarea',
+      '#rows' => 5,
+      '#title' => t('Map Location'),
+      '#description' => t('Enter google map iframe'),
+      '#default_value' => variable_get("map_location__{$display->uuid}_{$pane->subtype}", ''),
+      '#format' => 'full_html',
+    );
+    $form['map_contact_info_display'] = array(
+      '#type' =>'checkbox', 
+      '#title' => t('Display contact info'),
+      '#default_value' => variable_get("map_contact_info_display__{$display->uuid}_{$pane->subtype}", ''),
+    );
+    $form['#submit'][] = 'noo_citilights_ctool_map_config_submit';  
+  }
+
+  $limit = array(
+    'noo_citilights-properties_search_default',
+    'views-services-block',
+  );
+  if (in_array("{$pane->subtype}", $limit)) {
+    
+    $bg_image = variable_get("bg_image__{$display->uuid}_{$pane->subtype}", '');
+    /*$form['bg_effect'] = array(
+      '#type' => 'select',
+      '#title' => t('Background Effect Options'),
+      '#options'              => array(
+          'no-parallax'       => 'No Parallax',
+          'has-parallax'      => 'Has Parallax',
+      ),
+      '#default_value' => variable_get("bg_effect__{$display->uuid}_{$pane->subtype}", ''),
+    );*/
+    $form['bg_style'] = array(
+      '#type' => 'select',
+      '#title' => t('Background Image Options'),
+      '#options'              => array(
+          'no'                => 'No Background Image',
+          'yes'               => 'Has Background Image',
+      ),
+      '#default_value' => variable_get("bg_style__{$display->uuid}_{$pane->subtype}", ''),
+    );
+    $form['bg_image'] = array(
+      '#type' => 'file',
+      '#title' => t('Background Image'),
+      '#states'   => array(
+          // Hide the logo settings when using the default logo.
+          'visible' => array(
+              ':input[name="bg_style"]' => array(
+                  array('value' => 'yes'),
+              ),
+          ),
+      ),
+    );
+    $form['bg_image_path'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Path to background image'),
+      '#default_value' =>  ($bg_image) ? $bg_image['bg_image_path'] : '',
+      '#prefix' => '<div style="display: none;">',
+      '#suffix' => '</div>',
+      '#maxlength' => 1000,
+      '#states'   => array(
+          // Hide the logo settings when using the default logo.
+          'visible' => array(
+              ':input[name="bg_style"]' => array(
+                  array('value' => 'yes'),
+              ),
+          ),
+      ),
+    );
+    $form['bg_image_preview'] = array(
+      '#type' => 'item',
+      '#markup'       => '
+          <div class="form-wrapper mb-20">
+              <b>'.t('Background Image Preview').'</b>
+                  <div class="form-elements">
+                      <div class="preview">
+                          <img style="max-width: 100px;" class="img-preview" src="'.(!empty($bg_image['bg_image_path']) ? noo_citilights_theme_setting_check_path($bg_image['bg_image_path']) : $base_url.'/'.drupal_get_path('theme','citilights').'/images/theme-settings/no_image.png').'" alt="">
+                      </div>
+                  </div>
+                  <a href="#" class="media-select-button button element-hidden md-button">'.t('Select').'</a>
+          </div>',
+      '#states'   => array(
+          // Hide the logo settings when using the default logo.
+          'visible' => array(
+              ':input[name="bg_style"]' => array(
+                  array('value' => 'yes'),
+              ),
+          ),
+      ),
+    );
+    
+    $form['#submit'][] = 'noo_citilights_ctool_bg_style_config_submit';
+  }
+  
+}
+
+function noo_citilights_ctool_config_submit(&$form, &$form_state) {
+  $pane = $form_state['pane'];
+  $display = $form_state['display'];
+  variable_set("subtitle__{$display->uuid}_{$pane->subtype}", $form_state['values']['subtitle']);
+}
+
+function noo_citilights_ctool_contact_form_config_submit(&$form, &$form_state) {
+  $pane = $form_state['pane'];
+  $display = $form_state['display'];
+  variable_set("contact_info_display__{$display->uuid}_{$pane->subtype}", $form_state['values']['contact_info_display']);
+}
+
+function noo_citilights_ctool_map_config_submit(&$form, &$form_state) {
+  $pane = $form_state['pane'];
+  $display = $form_state['display'];
+  variable_set("map_location__{$display->uuid}_{$pane->subtype}", $form_state['values']['map_location']);
+  variable_set("map_contact_info_display__{$display->uuid}_{$pane->subtype}", $form_state['values']['map_contact_info_display']);
+}
+
+function noo_citilights_ctool_bg_style_config_submit(&$form, &$form_state) {
+  $pane = $form_state['pane'];
+  $display = $form_state['display'];
+  variable_set("bg_style__{$display->uuid}_{$pane->subtype}", $form_state['values']['bg_style']);
+  /*variable_set("bg_effect__{$display->uuid}_{$pane->subtype}", $form_state['values']['bg_effect']);*/
+  variable_set("bg_image__{$display->uuid}_{$pane->subtype}", storeImage('bg_image_path', 'bg_image', $form_state['values']));
+}
+
+function storeImage($path, $upload, $form_state_value) {
+    $validators = array('file_validate_extensions' => array('ico png gif jpg jpeg apng svg'));
+
+    if ($image_file = file_save_upload($upload,$validators)) {
+
+        $parts = pathinfo($image_file->filename);
+        $destination = 'public://' . $parts['basename'];
+        $image_file->status = FILE_STATUS_PERMANENT;
+        if (file_copy($image_file, $destination, FILE_EXISTS_REPLACE)) {
+            $_POST[$path] = $form_state_value[$path] = $parts['basename'];
+        }
+    }
+    if (isset($form_state_value[$path])) {
+        $file_path = $form_state_value[$path];
+
+        $file_scheme = file_uri_scheme($path);
+        if($file_scheme == 'http' || $file_scheme == 'https'){
+            $newimagename = basename(rawurldecode($file_path));
+            $external_file = file_get_contents(rawurldecode($file_path));
+            file_save_data($external_file, 'public://'.$newimagename.'',$replace = FILE_EXISTS_REPLACE);
+            $form_state_value[$path] = $newimagename;
+        }
+    }
+    return $form_state_value;
+}
+
+function noo_citilights_theme_setting_check_path($path) {
+    $path_scheme = file_uri_scheme($path);
+    if ($path_scheme == 'public') {
+        $return_path = file_create_url($path);
+    } else if (($path_scheme == 'http') || ($path_scheme == 'https')) {
+        $return_path = $path;
+    } else {
+        $return_path = file_create_url(file_build_uri($path));
+    }
+    return $return_path;
+}
+
+/**
+ * Implements hook_custom_theme().
+ */
+function noo_citilights_custom_theme() {
+  $node = menu_get_object();
+  if ($node && $node->type == 'real_estate') {
+    return 'citilights';
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function noo_citilights_form_menu_edit_item_alter(&$form, &$form_state, $form_id) {
+  if (isset($form_state['build_info']['args'][0]) && $form_state['build_info']['args'][0] == 'add') {
+    if (!isset($form_state['build_info']['args'][2]['menu_name']) || $form_state['build_info']['args'][2]['menu_name'] != 'menu-top-menu') {
+      return;
+    }
+  }
+  if (isset($form_state['build_info']['args'][0]) && $form_state['build_info']['args'][0] == 'edit') {
+    if (!isset($form_state['build_info']['args'][1]['menu_name']) || $form_state['build_info']['args'][1]['menu_name'] != 'menu-top-menu') {
+      return;
+    }
+  }
+  
+  $value = '';
+  if ($form['mlid']['#value'] != 0) {
+    $value = variable_get('noo_citilights_icon_' . $form['mlid']['#value'], '');
+  }
+
+  $form['icon'] = array(
+    '#title' => 'Icon',
+    '#type' => 'select',
+    '#options' => noo_citilights_icon_list(),
+    '#weight' => -1,
+    '#empty_value' => 'none',
+    '#default_value' => $value
+  );
+  $form['link_title']['#weight'] = -2;
+  $form['#submit'][] = 'noo_citilights_form_menu_edit_submit';
+}
+
+/**
+ * Store class to drupal variable.
+ */
+function noo_citilights_form_menu_edit_submit($form, $form_state) {
+  variable_set('noo_citilights_icon_' . $form_state['values']['mlid'], $form_state['values']['icon']);
+}
+
+/**
+ * Default class for menu item
+ */
+function noo_citilights_icon_list() {
+  $icons = array(
+    'fa-glass','fa-music','fa-search','fa-envelope-o','fa-heart','fa-star','fa-star-o','fa-user','fa-film','fa-th-large','fa-th','fa-th-list','fa-check','fa-times','fa-search-plus','fa-search-minus','fa-power-off','fa-signal','fa-gear','fa-cog','fa-trash-o','fa-home','fa-file-o','fa-clock-o','fa-road','fa-download','fa-arrow-circle-o-down','fa-arrow-circle-o-up','fa-inbox','fa-play-circle-o','fa-rotate-right','fa-repeat','fa-refresh','fa-list-alt','fa-lock','fa-flag','fa-headphones','fa-volume-off','fa-volume-down','fa-volume-up','fa-qrcode','fa-barcode','fa-tag','fa-tags','fa-book','fa-bookmark','fa-print','fa-camera','fa-font','fa-bold','fa-italic','fa-text-height','fa-text-width','fa-align-left','fa-align-center','fa-align-right','fa-align-justify','fa-list','fa-dedent','fa-outdent','fa-indent','fa-video-camera','fa-picture-o','fa-pencil','fa-map-marker','fa-adjust','fa-tint','fa-edit','fa-pencil-square-o','fa-share-square-o','fa-check-square-o','fa-arrows','fa-step-backward','fa-fast-backward','fa-backward','fa-play','fa-pause','fa-stop','fa-forward','fa-fast-forward','fa-step-forward','fa-eject','fa-chevron-left','fa-chevron-right','fa-plus-circle','fa-minus-circle','fa-times-circle','fa-check-circle','fa-question-circle','fa-info-circle','fa-crosshairs','fa-times-circle-o','fa-check-circle-o','fa-ban','fa-arrow-left','fa-arrow-right','fa-arrow-up','fa-arrow-down','fa-mail-forward','fa-share','fa-expand','fa-compress','fa-plus','fa-minus','fa-asterisk','fa-exclamation-circle','fa-gift','fa-leaf','fa-fire','fa-eye','fa-eye-slash','fa-warning','fa-exclamation-triangle','fa-plane','fa-calendar','fa-random','fa-comment','fa-magnet','fa-chevron-up','fa-chevron-down','fa-retweet','fa-shopping-cart','fa-folder','fa-folder-open','fa-arrows-v','fa-arrows-h','fa-bar-chart-o','fa-twitter-square','fa-facebook-square','fa-camera-retro','fa-key','fa-gears','fa-cogs','fa-comments','fa-thumbs-o-up','fa-thumbs-o-down','fa-star-half','fa-heart-o','fa-sign-out','fa-linkedin-square','fa-thumb-tack','fa-external-link','fa-sign-in','fa-trophy','fa-github-square','fa-upload','fa-lemon-o','fa-phone','fa-square-o','fa-bookmark-o','fa-phone-square','fa-twitter','fa-facebook','fa-github','fa-unlock','fa-credit-card','fa-rss','fa-hdd-o','fa-bullhorn','fa-bell','fa-certificate','fa-hand-o-right','fa-hand-o-left','fa-hand-o-up','fa-hand-o-down','fa-arrow-circle-left','fa-arrow-circle-right','fa-arrow-circle-up','fa-arrow-circle-down','fa-globe','fa-wrench','fa-tasks','fa-filter','fa-briefcase','fa-arrows-alt','fa-group','fa-users','fa-chain','fa-link','fa-cloud','fa-flask','fa-cut','fa-scissors','fa-copy','fa-files-o','fa-paperclip','fa-save','fa-floppy-o','fa-square','fa-bars','fa-list-ul','fa-list-ol','fa-strikethrough','fa-underline','fa-table','fa-magic','fa-truck','fa-pinterest','fa-pinterest-square','fa-google-plus-square','fa-google-plus','fa-money','fa-caret-down','fa-caret-up','fa-caret-left','fa-caret-right','fa-columns','fa-unsorted','fa-sort','fa-sort-down','fa-sort-asc','fa-sort-up','fa-sort-desc','fa-envelope','fa-linkedin','fa-rotate-left','fa-undo','fa-legal','fa-gavel','fa-dashboard','fa-tachometer','fa-comment-o','fa-comments-o','fa-flash','fa-bolt','fa-sitemap','fa-umbrella','fa-paste','fa-clipboard','fa-lightbulb-o','fa-exchange','fa-cloud-download','fa-cloud-upload','fa-user-md','fa-stethoscope','fa-suitcase','fa-bell-o','fa-coffee','fa-cutlery','fa-file-text-o','fa-building-o','fa-hospital-o','fa-ambulance','fa-medkit','fa-fighter-jet','fa-beer','fa-h-square','fa-plus-square','fa-angle-double-left','fa-angle-double-right','fa-angle-double-up','fa-angle-double-down','fa-angle-left','fa-angle-right','fa-angle-up','fa-angle-down','fa-desktop','fa-laptop','fa-tablet','fa-mobile-phone','fa-mobile','fa-circle-o','fa-quote-left','fa-quote-right','fa-spinner','fa-circle','fa-mail-reply','fa-reply','fa-github-alt','fa-folder-o','fa-folder-open-o','fa-smile-o','fa-frown-o','fa-meh-o','fa-gamepad','fa-keyboard-o','fa-flag-o','fa-flag-checkered','fa-terminal','fa-code','fa-reply-all','fa-mail-reply-all','fa-star-half-empty','fa-star-half-full','fa-star-half-o','fa-location-arrow','fa-crop','fa-code-fork','fa-unlink','fa-chain-broken','fa-question','fa-info','fa-exclamation','fa-superscript','fa-subscript','fa-eraser','fa-puzzle-piece','fa-microphone','fa-microphone-slash','fa-shield','fa-calendar-o','fa-fire-extinguisher','fa-rocket','fa-maxcdn','fa-chevron-circle-left','fa-chevron-circle-right','fa-chevron-circle-up','fa-chevron-circle-down','fa-html5','fa-css3','fa-anchor','fa-unlock-alt','fa-bullseye','fa-ellipsis-h','fa-ellipsis-v','fa-rss-square','fa-play-circle','fa-ticket','fa-minus-square','fa-minus-square-o','fa-level-up','fa-level-down','fa-check-square','fa-pencil-square','fa-external-link-square','fa-share-square','fa-compass','fa-toggle-down','fa-caret-square-o-down','fa-toggle-up','fa-caret-square-o-up','fa-toggle-right','fa-caret-square-o-right','fa-euro','fa-eur','fa-gbp','fa-dollar','fa-usd','fa-rupee','fa-inr','fa-cny','fa-rmb','fa-yen','fa-jpy','fa-ruble','fa-rouble','fa-rub','fa-won','fa-krw','fa-bitcoin','fa-btc','fa-file','fa-file-text','fa-sort-alpha-asc','fa-sort-alpha-desc','fa-sort-amount-asc','fa-sort-amount-desc','fa-sort-numeric-asc','fa-sort-numeric-desc','fa-thumbs-up','fa-thumbs-down','fa-youtube-square','fa-youtube','fa-xing','fa-xing-square','fa-youtube-play','fa-dropbox','fa-stack-overflow','fa-instagram','fa-flickr','fa-adn','fa-bitbucket','fa-bitbucket-square','fa-tumblr','fa-tumblr-square','fa-long-arrow-down','fa-long-arrow-up','fa-long-arrow-left','fa-long-arrow-right','fa-apple','fa-windows','fa-android','fa-linux','fa-dribbble','fa-skype','fa-foursquare','fa-trello','fa-female','fa-male','fa-gittip','fa-sun-o','fa-moon-o','fa-archive','fa-bug','fa-vk','fa-weibo','fa-renren','fa-pagelines','fa-stack-exchange','fa-arrow-circle-o-right','fa-arrow-circle-o-left','fa-toggle-left','fa-caret-square-o-left','fa-dot-circle-o','fa-wheelchair','fa-vimeo-square','fa-turkish-lira','fa-try','fa-plus-square-o');
+  
+  return array_combine($icons, $icons);
+}
+
+/**
+ * @see theme_menu_link(&$vars).
+ */
+function noo_citilights_preprocess_menu_link(&$vars) {
+  $element = &$vars['element'];
+  if ($element['#original_link']['menu_name'] == 'menu-top-menu') {
+    $icon = variable_get('noo_citilights_icon_' . $element['#original_link']['mlid'], '');
+    $element['#attributes']['icon'][] = $icon;
+  }
+}

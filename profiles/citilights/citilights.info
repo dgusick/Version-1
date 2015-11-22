@@ -1,0 +1,5 @@
+name = "CitiLights - Premium Real Estate Drupal Theme"
+description = "Full size package (recomended)"
+core = "7.x"
+
+; files[] = citilights.profile

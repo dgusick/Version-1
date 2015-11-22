@@ -1,0 +1,46 @@
+name = CitiLights
+description = CitiLights Drupal Theme.
+core = 7.x
+engine = phptemplate
+
+settings[toggle_logo] = 1
+settings[toggle_name] = 1
+settings[toggle_slogan] = 1
+settings[toggle_node_user_picture] = 1
+settings[toggle_comment_user_picture] = 1
+settings[toggle_comment_user_verification] = 1
+settings[toggle_favicon] = 1
+settings[toggle_main_menu] = 1
+settings[toggle_secondary_menu] = 1
+settings[default_logo] = 1
+settings[default_favicon] = 1
+settings[css3_textarea] = 0
+settings[webclip_precomp] = 1
+settings[typo_heading_style_enable] = 0
+settings[nodetitle_enable] = 0
+settings[typo_view_title_enable] = 0
+settings[skins] = 'blu'
+settings[header_size] = 'full'
+settings[header_background_type] = 'video'
+settings[header_video_play] = 0
+settings[header_video_content_display] = 1
+settings[nf_background] = 'custom'
+settings[menu_sticky] = 1
+settings[menu_custom_enable] = 0
+settings[sidebar_position] = 'right'
+settings[enable_preloader] = 1
+settings[enable_map] = 1
+
+
+; Important Drupal regions
+
+regions[header]            = Header
+regions[main_menu]         = Main Menu
+regions[home_slider]       = Home Slider
+regions[content]           = Content
+regions[sidebar]           = Sidebar
+regions[footer]            = Footer
+
+version = "7.x-2.0"
+core = "7.x"
+project = "citilights"

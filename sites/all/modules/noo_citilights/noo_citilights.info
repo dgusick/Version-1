@@ -1,0 +1,4 @@
+name = citilights
+description = citilights custom config
+core = 7.x
+package = custom
