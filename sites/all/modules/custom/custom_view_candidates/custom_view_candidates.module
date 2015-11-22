@@ -1,0 +1,12 @@
+<?php
+    function custom_view_candidates_views_query_alter(&$view, &$query) {
+        global $user;
+        if($view->name == 'list_candidates'){
+            
+            if (array_key_exists(3, $user->roles)) {
+                unset($query->where[0]);
+            }
+        }
+    }
+
+?>

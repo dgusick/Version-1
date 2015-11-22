@@ -1,0 +1,5 @@
+name = Custom View Candidates
+description = A container that contains some tutorial code
+package = Custom
+core = 7.x
+files[] = custom_view_candidates.module
