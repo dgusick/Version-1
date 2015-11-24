@@ -39,7 +39,11 @@
           </button>
           <div class="logo">
             <div class="logo-image">
+              <?php if($logo) { ?>
               <a href="<?php print base_path(); ?>" title="<?php print $site_name; ?>"><img src="<?php ($logo_path) ? print $logo_path : print $logo; ?>" alt="Logo"></a>
+              <?php } else { ?>
+              <a href="<?php print base_path(); ?>" title="<?php print $site_name; ?>"><?php echo $site_name;  ?></a>
+              <?php } ?>
             </div>
           </div>
         </div>

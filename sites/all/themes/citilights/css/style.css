@@ -4568,3 +4568,9 @@ border-bottom-color: #FFF;
     font-size: 13px;
   }
 }
+
+
+
+
+/*custom css*/
+.navbar-header .logo .logo-image a { font-size: 2.5em;}
