@@ -601,7 +601,15 @@
         });
       }
     })();
-
+  
+    $('#user-login ul li a').removeAttr('href');
+    $('#user-login ul li a').attr('onclick',"window.open('http://dev.askit1.com/d/di1399289/linkedin/login/0', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes');")
+;    // $('#user-login ul li a').click(function(){
+       
+    //         var linklogin = $(this).attr('href');
+            
+    //         window.open(linklogin,'_blank');
+    // });
 
     
     /* --------------------------------------------------------------------- */

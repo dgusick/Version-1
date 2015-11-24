@@ -8,5 +8,46 @@
             }
         }
     }
+    
+    function custom_view_candidates_form_alter(&$form, &$form_state, $form_id) {
+    	// global $user;
+    	if($form_id == "profile2_edit_evaluation_form"){
+    		$user = user_load(arg(1));
+			$entity_field[0]['value'] = $user->uid;
+			
+			$result = db_query("SELECT users.name AS users_name, users.uid AS uid, invite_users.uid AS invite_users_uid, users.created AS users_created
+									FROM 
+									{users} users
+									LEFT JOIN {invite} invite_users ON users.uid = invite_users.invitee
+									INNER JOIN {users_roles} users_roles ON users.uid = users_roles.uid
+									WHERE (( (users.status <> '0') AND (users_roles.rid = '6') AND (users.uid = '".$entity_field[0]['value']."')))
+									ORDER BY users_created DESC
+									LIMIT 10 OFFSET 0");
+			$view_result = $result->fetchObject();
+    		$form['evaluation_form_title'] = array(
+			 '#type' => 'markup',
+			 '#markup' => '<h1 class="content-title">EVALUATION FORM</h1>',
+			 '#weight' => -15
+			);
+			if($view_result->invite_users_uid!=''){
+				$user_rec=user_load($view_result->invite_users_uid);
+				$username_recruiter=$user_rec->name;
+				$form['evaluation_form_recruiter'] = array(
+				 '#type' => 'markup',
+				 '#markup' => '<div class="filed-evaluation-name"><span class="evaluation-name">Recruiter: </span>'.$username_recruiter.'</div>',
+				 '#weight' => -14
+				);
+			}
+			$form['evaluation_form_candidate'] = array(
+			 '#type' => 'markup',
+			 '#markup' => '<div class="filed-evaluation-name"><span class="evaluation-name">Candidate: </span>'.$view_result->users_name.'</div>',
+			 '#weight' => -13
+			);
+		
+    	}
+    	
+    }
+    
+    	
 
 ?>
