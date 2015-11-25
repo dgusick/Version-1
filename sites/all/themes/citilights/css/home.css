@@ -10,7 +10,6 @@
 */
 
 
-
 /* --------------------------------------------------------------------- */
 /* 1. HOME SLIDER
 /* --------------------------------------------------------------------- */
@@ -557,5 +556,26 @@
 	.our-partners .our-partners-inner .item-col .item-image {
 		padding: 15px 0;
 	}
+}
+
+#user-login .last a{
+    background: url("../../../../../sites/all/themes/citilights/images/ld_btn.jpg") no-repeat;
+    display: block;
+    width: 231px;
+    height: 48px;
+    color: #fff;
+    clear: both;
+    padding-left: 70px;
+    padding-top: 10px;
+    cursor:pointer;
+    margin-left:15px;
+}
+
+.form-type-password{
+    margin-bottom:15px;
+}
+
+.input-lg{
+    width:50% !important;
 }
 

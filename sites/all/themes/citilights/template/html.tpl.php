@@ -25,6 +25,7 @@
     	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
     	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   	<![endif]-->
+  
 </head>
 <body data-spy="scroll" data-target=".navigation" class="home map-vertical <?php print theme_get_setting('theme', 'citilights'); ?> <?php print theme_get_setting('layout', 'citilights'); ?> <?php print $classes; ?>" <?php if(theme_get_setting('layout', 'citilights') == "boxed-layout") print 'style="background-image: url('.base_path().path_to_theme().'/images/patterns/'.theme_get_setting('layout_bg', 'citilights').'.png); background-repeat: repeat;"'; ?> <?php print $attributes;?>>
 <?php print $page_top; ?>
