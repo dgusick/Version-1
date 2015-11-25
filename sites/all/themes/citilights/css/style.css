@@ -4600,10 +4600,13 @@ border-bottom-color: #FFF;
 
 #invite-form input[type="submit"] {
 	margin-left:132px;
+	background-color:#36699D;
+	color:white;
 }
 #invite-form .field-name-field-invitation-email-address .form-type-textfield .description {
 	margin-left:132px;
 	padding-bottom:10px;
+	
 }
 
 
