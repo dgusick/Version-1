@@ -1,49 +1,79 @@
 <?php
+	function custom_view_candidates_init() {
+		drupal_add_js(drupal_get_path('module', 'custom_view_candidates') . '/custom_view_candidates.js'); //provides add-account feature .. 
+		drupal_add_css(drupal_get_path('module', 'custom_view_candidates') . '/custom_view_candidates.css');
+	}
     function custom_view_candidates_views_query_alter(&$view, &$query) {
         global $user;
+      
         if($view->name == 'list_candidates'){
             
             if (array_key_exists(3, $user->roles)) {
                 unset($query->where[0]);
             }
+  
         }
     }
+
     
     function custom_view_candidates_form_alter(&$form, &$form_state, $form_id) {
-    	// global $user;
-    	if($form_id == "profile2_edit_evaluation_form"){
-    		$user = user_load(arg(1));
-			$entity_field[0]['value'] = $user->uid;
+    	global $user;
+    	
+    	if($form_id == "evaluation_node_form"){
+    		if(isset($_GET['canid'])){
+    		    $idgetcan = $_GET['canid'];
+        		$users = user_load($_GET['canid']);
+    			$entity_field[0]['value'] = $users->uid;
+    			$username_candidate = $users->name;
+    	
 			
+			// $form['#action'] = '/d/di1399289/node/add/evaluation';
 			$result = db_query("SELECT users.name AS users_name, users.uid AS uid, invite_users.uid AS invite_users_uid, users.created AS users_created
 									FROM 
 									{users} users
 									LEFT JOIN {invite} invite_users ON users.uid = invite_users.invitee
 									INNER JOIN {users_roles} users_roles ON users.uid = users_roles.uid
-									WHERE (( (users.status <> '0') AND (users_roles.rid = '6') AND (users.uid = '".$entity_field[0]['value']."')))
+									WHERE (( (users.status <> '0') AND (users_roles.rid = '6') AND (users.uid = '".$idgetcan."')))
 									ORDER BY users_created DESC
 									LIMIT 10 OFFSET 0");
-			$view_result = $result->fetchObject();
+			$view_result = $result->fetchAssoc();
+
+			for($i=1;$i<=100;$i++){
+				if(isset($form['field_skill_rating']['und'][0]['field_skill_'.$i])){
+					$arr = $form['field_skill_rating']['und'][0]['field_skill_'.$i]['und'][0]['#prefix']='<input id="checkvote" class="checkvote" type="checkbox" name="chooserat'.$i.'"/>';
+				}	
+			}
+			
+			
+			$form['title']['#type'] = "hidden";
+			// $form['field_user_id']['#type'] = "hidden";
+			
+		    $form['field_user_id']['und'][0]['value']['#default_value'] = $_GET['canid'];
+			
+			
     		$form['evaluation_form_title'] = array(
 			 '#type' => 'markup',
 			 '#markup' => '<h1 class="content-title">EVALUATION FORM</h1>',
 			 '#weight' => -15
 			);
-			if($view_result->invite_users_uid!=''){
-				$user_rec=user_load($view_result->invite_users_uid);
+			if($view_result['invite_users_uid']!=''){
+				$user_rec=user_load($view_result['invite_users_uid']);
 				$username_recruiter=$user_rec->name;
 				$form['evaluation_form_recruiter'] = array(
 				 '#type' => 'markup',
 				 '#markup' => '<div class="filed-evaluation-name"><span class="evaluation-name">Recruiter: </span>'.$username_recruiter.'</div>',
 				 '#weight' => -14
 				);
+				$form['title']['#default_value'] = $username_recruiter.'-'.$username_candidate;
+			}else{
+				$form['title']['#default_value'] = $user->name.'-'.$username_candidate;
 			}
 			$form['evaluation_form_candidate'] = array(
 			 '#type' => 'markup',
-			 '#markup' => '<div class="filed-evaluation-name"><span class="evaluation-name">Candidate: </span>'.$view_result->users_name.'</div>',
+			 '#markup' => '<div class="filed-evaluation-name"><span class="evaluation-name">Candidate: </span>'.$view_result['users_name'].'</div>',
 			 '#weight' => -13
 			);
-		
+    		}
     	}
     	
     }

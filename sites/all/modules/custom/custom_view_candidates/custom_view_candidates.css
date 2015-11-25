@@ -1,0 +1,9 @@
+#edit-field-notes-feedback{
+    margin-top:20px;
+}
+#edit-field-notes-feedback label{
+    font-weight:bold;
+}
+#edit-field-notes-feedback textarea{
+    min-height:100px;
+}

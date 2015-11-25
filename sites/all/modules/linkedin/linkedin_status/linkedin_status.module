@@ -81,10 +81,11 @@ function linkedin_status_form_alter(&$form, &$form_state, $form_id) {
  * Implements hook_node_insert().
  */
 function linkedin_status_node_insert($node) {
+  /*
   if ($node->linkedin_status['posting'] == '1' && !empty($node->linkedin_status['status'])) {
     global $user;    
     linkedin_status_set_status($node->linkedin_status['status'], $node);
-  }
+  }*/
 }
 
 /**
