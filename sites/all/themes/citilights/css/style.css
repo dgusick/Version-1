@@ -4574,3 +4574,38 @@ border-bottom-color: #FFF;
 
 /*custom css*/
 .navbar-header .logo .logo-image a { font-size: 2.5em;}
+
+.footer .copyright .logo-image img{
+	display:none;
+}
+
+#invite-form .field-name-field-invitation-email-address .form-type-textfield input {
+	width:215px;
+}
+
+#invite-form .field-name-field-invitation-email-address label {
+	width:130px;
+	text-align:right;
+	padding-right:18px;
+}
+
+#invite-form .field-name-field-invite-user-relation-type label {
+	width:130px;
+}
+
+#invite-form .field-name-field-invite-user-relation-type .description {
+	margin-left:132px;
+	padding-bottom:10px;
+}
+
+#invite-form input[type="submit"] {
+	margin-left:132px;
+}
+#invite-form .field-name-field-invitation-email-address .form-type-textfield .description {
+	margin-left:132px;
+	padding-bottom:10px;
+}
+
+
+
+
