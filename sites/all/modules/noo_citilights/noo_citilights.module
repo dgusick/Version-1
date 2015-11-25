@@ -25,6 +25,7 @@ function noo_citilights_block_info() {
   $blocks['user_sidebar_menu'] = array(
     'info' => t('User sidebar menu'),
   );
+
   $blocks['contact_map'] = array(
     'info' => t('Contact Map'),
   );
