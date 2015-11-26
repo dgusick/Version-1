@@ -12,7 +12,10 @@ drupal_add_css(drupal_get_path('theme', 'citilights') . '/css/theme-settings.css
 drupal_add_css(drupal_get_path('theme', 'citilights') . '/js/lib/colorpicker/css/colorpicker.css', array('group' => CSS_THEME));
 drupal_add_css(drupal_get_path('theme', 'citilights') . '/js/lib/css/modal-default.css', array('group' => CSS_THEME));
 drupal_add_css(drupal_get_path('theme', 'citilights') . '/js/lib/css/modal-component.css', array('group' => CSS_THEME));
-drupal_add_css(drupal_get_path('theme', 'citilights') . '/js/lib/css/bootstrap-dialog.css', array('group' => CSS_THEME));
+drupal_add_css(drupal_get_path('theme', 'citilights') . '/js/lib/css/bootstrap-dialog.css', array('group' => CSS_THEME)); 
+
+drupal_add_css(drupal_get_path('theme', 'citilights') . '/css/custom.css', array('group' => CSS_THEME)); 
+
 if(module_exists('icon') && module_exists('fontello')) {
     $icon_bundles = icon_bundles();
     foreach($icon_bundles as $key => $value) {

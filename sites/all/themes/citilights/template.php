@@ -78,9 +78,16 @@ function citilights_menu_link__menu_top_menu($variables) {
   $arr = $element['#localized_options'] ;
   
   if(isset($element['#attributes']['icon'])) {
-	  if (strpos($element['#href'], 'user') !== FALSE)
-		$output = l('<i class="fa '.$element['#attributes']['icon'][0].'"></i> '.$element['#title'], base_path().$element['#href'], array('external' => TRUE, 'html' => TRUE));
-	  else
+	  if (strpos($element['#href'], 'user') !== FALSE) { //$element['#href']
+      if($element['#href'] == 'user/login')
+        $output = l('<i class="fa '.$element['#attributes']['icon'][0].'"></i> '.$element['#title'], base_path().'#', array('attributes' => array('onclick'=>"window.open('".base_path()."linkedin/login/0', '_blank', 'location=yes,height=570,width=520,scrollbars=yes,status=yes'); "), 'external' => TRUE, 'html' => TRUE));
+      else 
+        $output = l('<i class="fa '.$element['#attributes']['icon'][0].'"></i> '.$element['#title'], base_path().$element['#href'], array('external' => TRUE, 'html' => TRUE));
+    
+     
+
+    }
+		else
 		$output = l('<i class="fa '.$element['#attributes']['icon'][0].'"></i> '.$element['#title'], $element['#href'], array('external' => TRUE, 'html' => TRUE));
   }
   else {

@@ -4609,6 +4609,50 @@ border-bottom-color: #FFF;
 	
 }
 
+#field-skills-rating-values .draggable label {
+	display:inline;
+} 
+
+.content .view-id-invite .view-content .views-table td {
+	padding: 1em;
+	text-align:left;
+}
+
+.content .view-id-invite .view-content .views-table thead tr th {
+	padding:1em;
+}
+
+.content .views-exposed-form .views-exposed-widget .form-submit {
+	background-color: #36699D;
+	color:white;
+	border:none;
+	padding:6px 19px;
+	border-radius: 7px;
+}
+.content .view-list-candidates .view-content .views-table {
+	width:90%;
+	border-collapse:collapse;
+}
+
+.content .view-list-candidates .view-content .views-table td {
+	color:#678197;
+	border-bottom:1px solid #e5eff8;
+	border-left:1px solid #e5eff8;
+	padding:.5em 1em;
+	text-align:left;
+}
+
+.content .view-list-candidates .view-content .views-table thead tr th {
+	text-align:center;
+}
+
+.content .view-list-candidates .view-content .views-table tbody tr td {
+	border:1px solid;
+}
+#field-skills-rating-values {  width: 100%;}
+#field-skills-rating-values .field-type-taxonomy-term-reference.field-name-field-skills.field-widget-taxonomy-autocomplete { 
+  float: left;
+}
 
 
 
