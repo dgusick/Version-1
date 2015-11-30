@@ -31,5 +31,20 @@ li[attributes="linkedin-auth-login-link-drupal-login-block"] a{
 
 li[attributes="linkedin-auth-login-link-drupal-login-block"]{
     list-style:none;
-    margin-left:-39px;
+    margin-left:-39px !important;
+}
+
+li[attributes="linkedin-auth-login-link-drupal-login-page"] a{
+    background: url("../../../../../sites/default/files/btn_linkedin.jpg") no-repeat;
+    width: 231px;
+    height: 48px;
+    display: block;
+    color: #fff;
+    padding-left: 75px;
+    padding-top: 14px;
+}
+
+li[attributes="linkedin-auth-login-link-drupal-login-page"]{
+    list-style:none;
+    margin-left:-39px !important;
 }

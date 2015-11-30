@@ -131,6 +131,7 @@
 	
 	function result_search_candidates(){
 	
+		global $user;
 		if(isset($_GET['skill']) && isset($_GET['feedback']) && isset($_GET['rating'])){
 			if($_GET['skill'] == '' && $_GET['feedback'] == '' && $_GET['rating'] == ''){
 				$result = db_query("SELECT users.name AS users_name, users.uid AS uid, users.mail AS email, users.created AS users_created
@@ -297,10 +298,17 @@
         	$output .= '<td>'.format_date($record['users_created'], 'custom', 'm/d/Y').'</td>';
             $result_action = db_query("SELECT n.uid,n.nid FROM field_data_field_user_id candidate, node n WHERE candidate.field_user_id_value = '".$record['uid']."' AND n.nid = candidate.entity_id AND n.type = candidate.bundle");
 			$view_result_action = $result_action->fetchAssoc();
+			
+			$output .= '<td>'.$view_result_action['uid'].'-'.$user->uid.'</td>';
+			
+			
 			if($view_result_action['uid']==''){
 			    $output .= '<td><a href="request-access/'.$record['uid'].'" >Request Access</a> | <a href="node/add/evaluation?canid='.$record['uid'].'">Create new evaluation</a></td>';          
-			}else{ 
-				$output .= '<td><a href="request-access/'.$record['uid'].'" >Request Access</a> | <a href="node/'.$view_result_action['nid'].'">View evaluation</a></td>';
+			}else if($view_result_action['uid']!=$user->uid){ 
+				$output .= '<td><a href="request-access/'.$record['uid'].'" >Request Access</a> | <a href="node/add/evaluation?canid='.$record['uid'].'">Create new evaluation</a></td>'; 
+			}else if($view_result_action['uid']==$user->uid)
+			{
+			    $output .= '<td><a href="request-access/'.$record['uid'].'" >Request Access</a> | <a href="node/'.$view_result_action['nid'].'">View evaluation</a></td>';
 			}
         	$output .= '</tr>';
         }
@@ -310,6 +318,7 @@
 	}
 	function allcandidates(){
 	
+		global $user;
 		$result = db_query("SELECT users.name AS users_name, users.uid AS uid, users.mail AS email, users.created AS users_created
 								FROM users users, invite invite_users, users_roles users_roles
 								WHERE users.status =1
@@ -330,8 +339,11 @@
 			$view_result_action = $result_action->fetchAssoc();
 			if($view_result_action['uid']==''){
 			    $output .= '<td><a href="request-access/'.$record['uid'].'" >Request Access</a> | <a href="node/add/evaluation?canid='.$record['uid'].'">Create new evaluation</a></td>';          
-			}else{
-				$output .= '<td><a href="request-access/'.$record['uid'].'" >Request Access</a> | <a href="node/'.$view_result_action['nid'].'">View evaluation</a></td>';
+			}else if($view_result_action['uid']!=$user->uid){ 
+				$output .= '<td><a href="request-access/'.$record['uid'].'" >Request Access</a> | <a href="node/add/evaluation?canid='.$record['uid'].'">Create new evaluation</a></td>'; 
+			}else
+			{
+			    $output .= '<td><a href="request-access/'.$record['uid'].'" >Request Access</a> | <a href="node/'.$view_result_action['nid'].'">View evaluation</a></td>';
 			}
         	
         	$output .= '</tr>';
@@ -420,7 +432,7 @@
           '#weight' => 1,
         );
     }
-
+    
     function custom_view_candidates_form_alter(&$form, &$form_state, $form_id) {
     	global $user;
     	
@@ -466,10 +478,10 @@
 				$username_recruiter=$user_rec->name;
 				$form['evaluation_form_recruiter'] = array(
 				 '#type' => 'markup',
-				 '#markup' => '<div class="filed-evaluation-name"><span class="evaluation-name">Recruiter: </span>'.$username_recruiter.'</div>',
+				 '#markup' => '<div class="filed-evaluation-name"><span class="evaluation-name">Recruiter: </span>'.$user->name.'</div>',
 				 '#weight' => -14
 				);
-				$form['title']['#default_value'] = $username_recruiter.'-'.$username_candidate;
+				$form['title']['#default_value'] = $user->name.'-'.$username_candidate;
 			}else{
 				$form['title']['#default_value'] = $user->name.'-'.$username_candidate;
 			}
@@ -478,29 +490,48 @@
 			 '#markup' => '<div class="filed-evaluation-name"><span class="evaluation-name">Candidate: </span>'.$view_result['users_name'].'</div>',
 			 '#weight' => -13
 			);
-    		}
+    		} 
     		
     		$user_data = user_load($user->uid);
-            $field_user_candidate_uid = $user_data->field_user_candidate_uid['und']['0']['value'];
-            
-            if($field_user_candidate_uid==$idgetcan)
+            if(isset($user_data->field_user_candidate_uid['und']['0']['value']))
             {
-                //load Evaluation form.
+                $field_user_candidate_uid = $user_data->field_user_candidate_uid['und']['0']['value'];
             }
-            //access denied config
+            
+            if(isset($user_data->field_user_candidate_uid['und']['0']['value']))
+            {
+                if($field_user_candidate_uid==$idgetcan)
+                {
+                    //load Evaluation form.
+                }
+                //access denied config
+                else if(!array_key_exists(3, $user->roles)){
+    	    		if(isset($user_rec->uid)){
+    		    		if($user_rec->uid != $user->uid){
+    		    			drupal_access_denied();
+    		    			module_invoke_all('exit');
+    						drupal_exit();
+    		    		}
+    	    		}else{
+    	    			drupal_access_denied();
+    		    		module_invoke_all('exit');
+    					drupal_exit();
+    	    		}
+        		}
+            }
             else if(!array_key_exists(3, $user->roles)){
-	    		if(isset($user_rec->uid)){
-		    		if($user_rec->uid != $user->uid){
-		    			drupal_access_denied();
-		    			module_invoke_all('exit');
-						drupal_exit();
-		    		}
-	    		}else{
-	    			drupal_access_denied();
-		    		module_invoke_all('exit');
-					drupal_exit();
-	    		}
-    		}
+    	    		if(isset($user_rec->uid)){
+    		    		if($user_rec->uid != $user->uid){
+    		    			drupal_access_denied();
+    		    			module_invoke_all('exit');
+    						drupal_exit();
+    		    		}
+    	    		}else{
+    	    			drupal_access_denied();
+    		    		module_invoke_all('exit');
+    					drupal_exit();
+    	    		}
+        		}
     	}
     	
     }
