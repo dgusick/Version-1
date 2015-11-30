@@ -7,3 +7,29 @@
 #edit-field-notes-feedback textarea{
     min-height:100px;
 }
+
+#user-register-form .form-required{
+    display:none;
+}
+#group-search-candidate{
+    display: inline-block;
+    margin-bottom: 20px;
+}
+.submit-candidates{
+    margin-top: 25px;
+}
+
+li[attributes="linkedin-auth-login-link-drupal-login-block"] a{
+    background: url("../../../../../sites/default/files/btn_linkedin.jpg") no-repeat;
+    width: 231px;
+    height: 48px;
+    display: block;
+    color: #fff;
+    padding-left: 75px;
+    padding-top: 14px;
+}
+
+li[attributes="linkedin-auth-login-link-drupal-login-block"]{
+    list-style:none;
+    margin-left:-39px;
+}

@@ -50,6 +50,31 @@
 	    $('#evaluation-node-form  #edit-preview').hide();
 	    
 	    $('#evaluation-node-form #edit-submit').val('Create New Evaluation');
+	 
+	    $('.submit-candidates').click(function(){
+	        var skill = $('#list-skills').val();
+	        var feedback = $('#feedback').val();
+	        var rating = $('#list-rating').val();
+	        $('#group-result-search table').remove();
+	        $.ajax({
+    		    url: Drupal.settings.candidates_list.ajaxUrl,
+    			method: "GET",
+    			data:   {
+    				'skill': skill,
+    				'feedback': feedback,
+    				'rating': rating
+    			},
+    			dataType: "html",
+    			beforeSend: function() {
+                    jQuery('#group-result-search').after('<div class="loadgiftran" style="text-align:center;margin-top:50px;"><img style="width:10%;" src="sites/all/themes/citilights/images/ajax_loader.gif"/></div>');
+                },
+    			success: function(data, textStatus, jqXHR){
+    				$('.loadgiftran').remove();
+    				$('#group-result-search').html(data);
+    			}
+    		});
+    		return false;
+	    });
     }
   };
   

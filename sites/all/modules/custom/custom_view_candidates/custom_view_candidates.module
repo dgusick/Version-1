@@ -1,21 +1,426 @@
 <?php
 	function custom_view_candidates_init() {
+		drupal_add_js(array('candidates_list' => array('ajaxUrl' => url('candidate-list/ajax'))), 'setting');
 		drupal_add_js(drupal_get_path('module', 'custom_view_candidates') . '/custom_view_candidates.js'); //provides add-account feature .. 
 		drupal_add_css(drupal_get_path('module', 'custom_view_candidates') . '/custom_view_candidates.css');
 	}
+	function custom_view_candidates_menu()
+	{
+		$menu['candidate-list/ajax'] = array(
+		  'type' => MENU_CALLBACK,
+		  'page callback' => 'result_search_candidates',
+		  'access arguments' => array('access content'),
+		  'access callback' => 'user_is_logged_in',
+		  );
+		$menu['candidate-lists'] = array
+		  (
+			'title' => 'List Candidates',
+			'page callback' => 'custom_view_candidates_new_item',
+			'access callback' => 'user_is_logged_in',
+		);
+		$menu['request-access/%'] = array(
+	        'title' => 'Request Access',
+	        'page callback' => 'request_access_page',
+	        'page arguments' => array(1),
+	        'access arguments' => array('access content'),
+	        'type' => MENU_CALLBACK,
+	    );
+	    $menu['access-approve/%/%/%'] = array(
+	        'title' => 'Access Approve',
+	        'page callback' => 'process_access_approve',
+	        'page arguments' => array(1),
+	        'page arguments' => array(2),
+	        'page arguments' => array(3),
+	        'access arguments' => array('access content'),
+	        'type' => MENU_CALLBACK,
+	    );
+		
+		return $menu;  
+	}
+	
+    function custom_view_candidates_menu_alter(&$items) {
+       //$items['user/%']['access callback'] = 'custom_view_candidates_check_permission';
+    }
+    
+    function custom_view_candidates_check_permission($account) {
+        //global $user;
+        //return $account && $account->uid && user_access('recruiter');
+    }
+
+	function process_access_approve(){
+		$user_request_uid = arg(1);
+		$user_candidate_uid = arg(2);
+		$user_approve_uid = arg(3);
+		
+		$account = user_load($user_request_uid); // Loading account
+		$edit = array(
+		  'field_user_candidate_uid' => array(
+		    'und' => array(
+		      0 => array(
+		        'value' => $user_candidate_uid,
+		      ),
+		    ),
+		  ),
+		);
+		user_save($account, $edit);
+		
+		drupal_set_message("Your request is approved! You now can start invitation with the candidate and create Evaluation form");
+	    drupal_goto('candidate-lists');
+		return "Approved";
+	}
+	
+	function request_access_page(){
+		global $user;
+		global $base_url;
+		//print_r($user);
+		$current_user_name = $user->name;
+		$request_uid = arg(1);
+		$users = user_load($request_uid);
+		$entity_field[0]['value'] = $users->uid;
+    	$username_candidate = $users->name;
+		
+		// $form['#action'] = '/d/di1399289/node/add/evaluation';
+			$result = db_query("SELECT users.name AS users_name, users.uid AS uid, invite_users.uid AS invite_users_uid, users.created AS users_created
+									FROM 
+									{users} users
+									LEFT JOIN {invite} invite_users ON users.uid = invite_users.invitee
+									INNER JOIN {users_roles} users_roles ON users.uid = users_roles.uid
+									WHERE (( (users.status <> '0') AND (users_roles.rid = '6') AND (users.uid = '".$request_uid."')))
+									ORDER BY users_created DESC
+									LIMIT 10 OFFSET 0");
+			$view_result = $result->fetchAssoc();
+		
+		$user_rec=user_load($view_result['invite_users_uid']);
+		$email_recruiter=$user_rec->mail;
+		$name_recruiter = $user_rec->name;
+		
+		//send email to recruiter
+		$approve_link = $base_url."/access-approve/".$user->uid."/".$users->uid."/".$user_rec->uid;
+		$message = "";
+		$message .= "Hi ".$name_recruiter.",\r\n\r\n";
+		$message .= $current_user_name."has requested to access: ".$username_candidate." profile\r\n\r\n";
+		$message .= "Please click ".$approve_link." to approve.\r\n\r\n";
+		$message .= "Regards,";
+	      // Send the email.
+	      $params = array(
+	        'subject' => t('[Request Access] - '.$current_user_name.' sent request access for '.$username_candidate.''),
+	        'body' => check_markup(
+	          t($message),
+	          'plain_text'
+	        ),
+	      );
+	      drupal_mail('custom_view_candidates', 'any_key', $email_recruiter, language_default(), $params);
+		
+	    drupal_set_message("Sent request to ".$name_recruiter."");
+	    drupal_goto('candidate-lists');
+		
+		return "Thanks for your request. Please wait for the recruiter to approve.";		
+	}
+	
+	/**
+	 * Implements hook_mail for module_name.
+	 */
+	function custom_view_candidates_mail($key, &$message, $params) {
+	  switch ($key) {
+	    case 'any_key':
+	      $message['subject'] = $params['subject'];
+	      $message['body'][] = $params['body'];
+	      break;
+	  }
+	}
+	
+	function result_search_candidates(){
+	
+		if(isset($_GET['skill']) && isset($_GET['feedback']) && isset($_GET['rating'])){
+			if($_GET['skill'] == '' && $_GET['feedback'] == '' && $_GET['rating'] == ''){
+				$result = db_query("SELECT users.name AS users_name, users.uid AS uid, users.mail AS email, users.created AS users_created
+								FROM users users, invite invite_users, users_roles users_roles
+								WHERE users.status =1
+								AND users.uid = invite_users.invitee
+								AND users.uid = users_roles.uid
+								AND users_roles.rid =6
+							");
+			}
+			if($_GET['skill'] != '' && $_GET['feedback'] == '' && $_GET['rating'] == ''){
+				$result = db_query("SELECT users.name AS users_name, users.uid AS uid, users.mail AS email, users.created AS users_created
+									FROM users users, invite invite_users, users_roles users_roles
+									WHERE users.status =1
+									AND users.uid = invite_users.invitee
+									AND users.uid = users_roles.uid
+									AND users_roles.rid =6
+									AND invite_users.uid
+									IN (
+									
+									SELECT c.uid
+									FROM field_revision_field_skills a, field_data_field_skills_rating b, node c, field_data_field_notes_feedback d, field_data_field_skill_1 e
+									WHERE a.entity_id = b.field_skills_rating_value
+									AND c.nid = b.entity_id
+									AND e.entity_id = b.field_skills_rating_value
+									AND c.nid = d.entity_id
+									AND a.field_skills_tid = '".$_GET['skill']."'
+									)
+								");
+			}
+			if($_GET['skill'] == '' && $_GET['feedback'] != '' && $_GET['rating'] == ''){
+				$result = db_query("SELECT users.name AS users_name, users.uid AS uid, users.mail AS email, users.created AS users_created
+									FROM users users, invite invite_users, users_roles users_roles
+									WHERE users.status =1
+									AND users.uid = invite_users.invitee
+									AND users.uid = users_roles.uid
+									AND users_roles.rid =6
+									AND invite_users.uid
+									IN (
+									
+									SELECT c.uid
+									FROM field_revision_field_skills a, field_data_field_skills_rating b, node c, field_data_field_notes_feedback d, field_data_field_skill_1 e
+									WHERE a.entity_id = b.field_skills_rating_value
+									AND c.nid = b.entity_id
+									AND e.entity_id = b.field_skills_rating_value
+									AND c.nid = d.entity_id
+									AND d.field_notes_feedback_value LIKE '%".$_GET['feedback']."%'
+									)
+								");
+			}
+			if($_GET['skill'] == '' && $_GET['feedback'] == '' && $_GET['rating'] != ''){
+				$result = db_query("SELECT users.name AS users_name, users.uid AS uid, users.mail AS email, users.created AS users_created
+									FROM users users, invite invite_users, users_roles users_roles
+									WHERE users.status =1
+									AND users.uid = invite_users.invitee
+									AND users.uid = users_roles.uid
+									AND users_roles.rid =6
+									AND invite_users.uid
+									IN (
+									
+									SELECT c.uid
+									FROM field_revision_field_skills a, field_data_field_skills_rating b, node c, field_data_field_notes_feedback d, field_data_field_skill_1 e
+									WHERE a.entity_id = b.field_skills_rating_value
+									AND c.nid = b.entity_id
+									AND e.entity_id = b.field_skills_rating_value
+									AND c.nid = d.entity_id
+									AND e.field_skill_1_rating = '".$_GET['rating']."'
+									)
+								");
+			}
+			if($_GET['skill'] != '' && $_GET['feedback'] != '' && $_GET['rating'] == ''){
+				$result = db_query("SELECT users.name AS users_name, users.uid AS uid, users.mail AS email, users.created AS users_created
+									FROM users users, invite invite_users, users_roles users_roles
+									WHERE users.status =1
+									AND users.uid = invite_users.invitee
+									AND users.uid = users_roles.uid
+									AND users_roles.rid =6
+									AND invite_users.uid
+									IN (
+									
+									SELECT c.uid
+									FROM field_revision_field_skills a, field_data_field_skills_rating b, node c, field_data_field_notes_feedback d, field_data_field_skill_1 e
+									WHERE a.entity_id = b.field_skills_rating_value
+									AND c.nid = b.entity_id
+									AND e.entity_id = b.field_skills_rating_value
+									AND c.nid = d.entity_id
+									AND a.field_skills_tid = '".$_GET['skill']."'
+									AND d.field_notes_feedback_value LIKE '%".$_GET['feedback']."%'
+									)
+								");
+			}
+			if($_GET['skill'] == '' && $_GET['feedback'] != '' && $_GET['rating'] != ''){
+				$result = db_query("SELECT users.name AS users_name, users.uid AS uid, users.mail AS email, users.created AS users_created
+									FROM users users, invite invite_users, users_roles users_roles
+									WHERE users.status =1
+									AND users.uid = invite_users.invitee
+									AND users.uid = users_roles.uid
+									AND users_roles.rid =6
+									AND invite_users.uid
+									IN (
+									
+									SELECT c.uid
+									FROM field_revision_field_skills a, field_data_field_skills_rating b, node c, field_data_field_notes_feedback d, field_data_field_skill_1 e
+									WHERE a.entity_id = b.field_skills_rating_value
+									AND c.nid = b.entity_id
+									AND e.entity_id = b.field_skills_rating_value
+									AND c.nid = d.entity_id
+									AND d.field_notes_feedback_value LIKE '%".$_GET['feedback']."%'
+									AND e.field_skill_1_rating = '".$_GET['rating']."'
+									)
+								");
+			}
+			if($_GET['skill'] != '' && $_GET['feedback'] == '' && $_GET['rating'] != ''){
+				$result = db_query("SELECT users.name AS users_name, users.uid AS uid, users.mail AS email, users.created AS users_created
+									FROM users users, invite invite_users, users_roles users_roles
+									WHERE users.status =1
+									AND users.uid = invite_users.invitee
+									AND users.uid = users_roles.uid
+									AND users_roles.rid =6
+									AND invite_users.uid
+									IN (
+									
+									SELECT c.uid
+									FROM field_revision_field_skills a, field_data_field_skills_rating b, node c, field_data_field_notes_feedback d, field_data_field_skill_1 e
+									WHERE a.entity_id = b.field_skills_rating_value
+									AND c.nid = b.entity_id
+									AND e.entity_id = b.field_skills_rating_value
+									AND c.nid = d.entity_id
+									AND a.field_skills_tid = '".$_GET['skill']."'
+									AND e.field_skill_1_rating = '".$_GET['rating']."'
+									)
+								");
+			}
+			if($_GET['skill'] != '' && $_GET['feedback'] != '' && $_GET['rating'] != ''){
+				$result = db_query("SELECT users.name AS users_name, users.uid AS uid, users.mail AS email, users.created AS users_created
+									FROM users users, invite invite_users, users_roles users_roles
+									WHERE users.status =1
+									AND users.uid = invite_users.invitee
+									AND users.uid = users_roles.uid
+									AND users_roles.rid =6
+									AND invite_users.uid
+									IN (
+									
+									SELECT c.uid
+									FROM field_revision_field_skills a, field_data_field_skills_rating b, node c, field_data_field_notes_feedback d, field_data_field_skill_1 e
+									WHERE a.entity_id = b.field_skills_rating_value
+									AND c.nid = b.entity_id
+									AND e.entity_id = b.field_skills_rating_value
+									AND c.nid = d.entity_id
+									AND a.field_skills_tid = '".$_GET['skill']."'
+									AND d.field_notes_feedback_value LIKE '%".$_GET['feedback']."%'
+									AND e.field_skill_1_rating = '".$_GET['rating']."'
+									)
+								");
+			}
+		}
+        $output = '';
+        $output = '<table class="table table-bordered">';
+        $output .= '<tr><th>Name</th><th>Email</th><th>Created date</th><th>Action</th></tr>';
+        while($record =  $result->fetchAssoc()){
+        	$output .= '<tr>';
+        	$output .= '<td><a href="user/'.$record['uid'].'">'.$record['users_name'].'</a></td>';
+        	$output .= '<td>'.$record['email'].'</td>';
+        	$output .= '<td>'.format_date($record['users_created'], 'custom', 'm/d/Y').'</td>';
+            $result_action = db_query("SELECT n.uid,n.nid FROM field_data_field_user_id candidate, node n WHERE candidate.field_user_id_value = '".$record['uid']."' AND n.nid = candidate.entity_id AND n.type = candidate.bundle");
+			$view_result_action = $result_action->fetchAssoc();
+			if($view_result_action['uid']==''){
+			    $output .= '<td><a href="request-access/'.$record['uid'].'" >Request Access</a> | <a href="node/add/evaluation?canid='.$record['uid'].'">Create new evaluation</a></td>';          
+			}else{ 
+				$output .= '<td><a href="request-access/'.$record['uid'].'" >Request Access</a> | <a href="node/'.$view_result_action['nid'].'">View evaluation</a></td>';
+			}
+        	$output .= '</tr>';
+        }
+        $output .= '</table>';
+        
+        echo $output;    
+	}
+	function allcandidates(){
+	
+		$result = db_query("SELECT users.name AS users_name, users.uid AS uid, users.mail AS email, users.created AS users_created
+								FROM users users, invite invite_users, users_roles users_roles
+								WHERE users.status =1
+								AND users.uid = invite_users.invitee
+								AND users.uid = users_roles.uid
+								AND users_roles.rid =6
+							");
+		$output = '';
+        $output = '<table class="table table-bordered">';
+        $output .= '<tr><th>Name</th><th>Email</th><th>Created date</th><th>Action</th></tr>';
+        while($record =  $result->fetchAssoc()){
+        	
+        	$output .= '<tr>';
+        	$output .= '<td><a href="user/'.$record['uid'].'">'.$record['users_name'].'</a></td>';
+        	$output .= '<td>'.$record['email'].'</td>';
+        	$output .= '<td>'.format_date($record['users_created'], 'custom', 'm/d/Y').'</td>';
+        	$result_action = db_query("SELECT n.uid,n.nid FROM field_data_field_user_id candidate, node n WHERE candidate.field_user_id_value = '".$record['uid']."' AND n.nid = candidate.entity_id AND n.type = candidate.bundle");
+			$view_result_action = $result_action->fetchAssoc();
+			if($view_result_action['uid']==''){
+			    $output .= '<td><a href="request-access/'.$record['uid'].'" >Request Access</a> | <a href="node/add/evaluation?canid='.$record['uid'].'">Create new evaluation</a></td>';          
+			}else{
+				$output .= '<td><a href="request-access/'.$record['uid'].'" >Request Access</a> | <a href="node/'.$view_result_action['nid'].'">View evaluation</a></td>';
+			}
+        	
+        	$output .= '</tr>';
+        }
+        $output .= '</table>';
+        return $output;
+	}
+	function custom_view_candidates_new_item(){
+		$result = db_query("SELECT tid,name FROM taxonomy_term_data WHERE vid=6");
+        
+        $arr_skill = array(''=>'- Any -');
+        while($record = $result->fetchAssoc()) {
+	        $key_skill = $record['tid'];
+        	$name_skill = $record['name'];
+        	$arr_skill[$key_skill] = $name_skill;
+	    }
+	    
+	    $form['markup-search-start'] = array(
+	    	'#markup' => '<div id="group-search-candidate">'
+	    );
+	    
+		$form['category-skill'] = array(
+		  '#title' => t('Skills'),
+		  '#type' => 'select',
+		  '#prefix' => '<div class="item-filter item-filter-skills col-md-3">',
+		  '#attributes' => array('id'=>array('list-skills')),
+		  '#options' => $arr_skill,
+		  '#default_value' => '', 
+		  '#suffix' => '</div>', 
+		); 
+		$form['feedback'] = array(
+		  '#type' => 'textfield',
+		  '#prefix' => '<div class="item-filter item-filter-feedback col-md-3">',
+		  '#title' => t('Feedback'), 
+		  '#attributes' => array('id'=>array('feedback')),
+		  '#suffix' => '</div>'
+	    ); 
+	    $arr_rating = array(''=>'- Any -',20=>1,40=>2,60=>3,80=>4,100=>5);
+	    $form['candidate-ratting'] = array(
+		  '#title' => t('Rating'),
+		  '#type' => 'select',
+		  '#prefix' => '<div class="item-filter item-filter-rating col-md-3">',
+		  '#attributes' => array('id'=>array('list-rating')),
+		  '#options' => $arr_rating,
+		  '#default_value' => '', 
+		  '#suffix' => '</div>', 
+		); 
+		$form['button'] = array(
+		'#type' => 'submit',
+		'#attributes' => array('class'=>array('submit-candidates col-md-1')),
+		'#value' => t('Search'));
+		$form['markup-search-end'] = array(
+	    	'#markup' => '</div>'
+	    );
+	    
+	    
+	    $form['result-search'] = array(
+	    	'#markup' => '<div id="group-result-search">'.allcandidates().'</div>'
+	    );
+		return $form;
+	}
     function custom_view_candidates_views_query_alter(&$view, &$query) {
         global $user;
-      
+        
         if($view->name == 'list_candidates'){
-            
+            // $result = db_query("SELECT c.uid
+            //         FROM `field_revision_field_skills` a, field_data_field_skills_rating b, node c
+            //         WHERE a.`entity_id` = b.field_skills_rating_value
+            //         AND c.nid = b.entity_id
+            //         AND a.field_skills_tid=30
+            //         LIMIT 0 , 30");
+            // $view_result = $result->fetchAssoc();
+            // print_r($view_result);
             if (array_key_exists(3, $user->roles)) {
                 unset($query->where[0]);
             }
   
         }
     }
-
     
+    //hook register form to add "login using Linkedin"
+    function custom_view_candidates_form_user_register_form_alter(&$form, &$form_state) {
+      // Add Linkedin button after register form
+      $form['form_item'] = array(
+          '#markup' => theme('linkedin_auth_display_login_block_button', array('display' => 'drupal_login_block')),
+          '#weight' => 1,
+        );
+    }
+
     function custom_view_candidates_form_alter(&$form, &$form_state, $form_id) {
     	global $user;
     	
@@ -73,6 +478,28 @@
 			 '#markup' => '<div class="filed-evaluation-name"><span class="evaluation-name">Candidate: </span>'.$view_result['users_name'].'</div>',
 			 '#weight' => -13
 			);
+    		}
+    		
+    		$user_data = user_load($user->uid);
+            $field_user_candidate_uid = $user_data->field_user_candidate_uid['und']['0']['value'];
+            
+            if($field_user_candidate_uid==$idgetcan)
+            {
+                //load Evaluation form.
+            }
+            //access denied config
+            else if(!array_key_exists(3, $user->roles)){
+	    		if(isset($user_rec->uid)){
+		    		if($user_rec->uid != $user->uid){
+		    			drupal_access_denied();
+		    			module_invoke_all('exit');
+						drupal_exit();
+		    		}
+	    		}else{
+	    			drupal_access_denied();
+		    		module_invoke_all('exit');
+					drupal_exit();
+	    		}
     		}
     	}
     	

@@ -34,10 +34,11 @@ function linkedin_access_token($account) {
   $consumer = new OAuthConsumer($consumer_key, $consumer_secret, NULL);
   $random = md5(rand());
   $callback = url('linkedin/' . $back . '/' . $account->uid, array('absolute' => TRUE, 'query' => array('action' => $random))); // random will be used to discard direct call to the path and for anonymous
-  // First or renewal request
+  // First or renewal request. Calls to LinkedIn to get oauth token.
   if (!isset($_GET['action']) || $_GET['action'] != $_SESSION['random']) {
     $_SESSION['random'] = $random;
-    $url = $base_url . "/requestToken";
+    //$url = $base_url . "/requestToken?scope=r_fullprofile+r_emailaddress+r_contactinfo";
+	$url = $base_url . "/requestToken";
     $request = OAuthRequest::from_consumer_and_token($consumer, NULL, 'POST', $url);
     $request->set_parameter("oauth_callback", $callback);
     $request->sign_request($signature, $consumer, NULL);
@@ -87,10 +88,10 @@ function linkedin_access_token($account) {
       drupal_goto();
     }
   }
+// Second request. LinkedIn oauth token has been returned.
   else {
     //this is called when the OAuth callback is invoked. User has authorised the token.
     //Now retrieve the stored request token and ask for an access token
-
     $url = $base_url . '/accessToken';
     if (!$anon) {
       $result = db_query("SELECT token_secret FROM {linkedin_token} WHERE uid = :uid AND type = :type", array(':uid' => $account->uid, ':type' => 'request'))->fetchField();
@@ -127,13 +128,118 @@ function linkedin_access_token($account) {
       drupal_goto("user/$account->uid/edit/linkedin");
     }
     else {
+      // Query for UID using oauth token values returned from LinkedIn.	
       $uid = db_query("SELECT uid FROM {linkedin_token} WHERE token_key = :token_key AND token_secret = :token_secret AND type = :type ", array(':token_key' => $oauth['oauth_token'], ':token_secret' => $oauth['oauth_token_secret'], ':type' => 'access'))->fetchField();
-
+      // If user is found, log them in.
       if ($uid > 0) {
         module_invoke_all('linkedin_external_login', $uid);
       }
+	  // Token not associated with uid.
+	  // Token expired or user never was associated with LinkedIn.
       else {
-        module_invoke_all('linkedin_tie_external_login', $uid, $oauth['oauth_token'], $oauth['oauth_token_secret']);
+      	// We have LinkedIn access, get user profile information.
+      	$base_user_url = "https://api.linkedin.com/v1/people/";
+		$tokens = array('token_key' => $oauth['oauth_token'], 'token_secret' => $oauth['oauth_token_secret']);
+		$append = '~';
+		$type = 'auth';
+		
+		$fields = _linkedin_profile_vget_user_page_linkedin_fields();
+		// Make sure we pass in the required attributes needed to create a user.
+		$fields = array_merge($fields, array('id', 'first-name', 'last-name'));
+		$append .= _linkedin_build_fields_request(array_unique($fields), $type);
+		$url = $base_user_url . $append;
+		$response = linkedin_get_fields($url, $tokens);
+		
+		// Check authmap table for user with same LinkedIn user id.
+		// Called in the event LinkedIn auth token has been revoked or expired.
+		$account = user_external_load($response['person']['id']);
+		if (isset($account->uid)) {
+			// Overwrite out of date token with new token. Authmap doesn't change.
+			db_merge('linkedin_token')
+				->key(array('uid' => $account->uid))
+				->fields(array(
+				'uid' => $account->uid,
+				'token_key' => $oauth['oauth_token'],
+				'token_secret' => $oauth['oauth_token_secret'],
+				'type' => 'access',
+			))
+			->execute();
+			// Login user.
+			user_external_login_register($response['person']['id'], 'linkedin');
+			drupal_goto();
+		}
+		
+		// User associated with LinkedIn account does not exist.
+		// Create new user using LinkedIn profile information.
+		// Get email address.
+		$url = $base_user_url .'~/email-address';
+		$email_response = linkedin_get_fields($url, $tokens);
+		
+		if (!isset($email_response['email-address'])) {
+			return drupal_set_message(t('The website could not communicate with LinkedIn. It is likely your API credentials are misconfigured.'), 'error');
+		}
+		
+		global $user;
+		
+		// See if email is already in use as either email or username.
+		$email_or_name = db_or()
+			->condition('mail', $email_response['email-address'], '=')
+			->condition('name', $email_response['email-address'], '=');
+		$exists_email = db_select('users', 'u')
+			->fields('u', array('name', 'mail'))
+			->condition($email_or_name)
+			->execute()
+			->fetchObject();
+			
+		if ($exists_email) {
+			drupal_set_message(
+				t('An account registered to the email address of that LinkedIn user already exists. You must first !login with your !site password and then associate the account with your LinkedIn profile before you can login with LinkedIn. If you do not remember your !site username and password, you can !reset.',
+					array(
+						'!reset' => l(t('request a new password'), 'user/password'),
+						'!login' => l(t('login'), 'user/login'),
+						'!site' => variable_get('site_name', $_SERVER['HTTP_HOST']),
+					)), 'error'
+			);
+			drupal_goto('user/login');
+		}
+
+		// Create new user.
+		$newUser = array(
+			'name' => $email_response['email-address'],
+			'pass' => user_password(),
+			'mail' => $email_response['email-address'],
+			'status' => 1,
+			'roles' => array(
+			    DRUPAL_AUTHENTICATED_RID => 'authenticated user',
+    			5 => 'custom role',
+			  ),
+		);
+		$account = user_save($user, $newUser);
+		
+		// Save acces token for future requests
+		$sql = array(
+			'uid' => $account->uid,
+			'token_key' => $oauth['oauth_token'],
+			'token_secret' => $oauth['oauth_token_secret'],
+			'type' => 'access',
+		);
+		drupal_write_record('linkedin_token', $sql);
+		
+		// Associate LinkedIn ID with uid for future use
+		user_set_authmaps($account, array('authmap_linkedin' => $response['person']['id']));
+		
+		//user_external_login($account);
+		
+		$form_state['uid'] = $account->uid;
+		user_login_submit(array(), $form_state);
+		
+		$user = $account;
+		$liuser = $response + $email_response;
+		
+		// Allow other modules to manipulate the user information after save.
+		module_invoke_all('linkedin_user_save', $account, $liuser);
+		drupal_goto();
+      	
       }
     }
   }
