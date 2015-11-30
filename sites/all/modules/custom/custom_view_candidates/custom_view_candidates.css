@@ -48,3 +48,7 @@ li[attributes="linkedin-auth-login-link-drupal-login-page"]{
     list-style:none;
     margin-left:-39px !important;
 }
+
+.tabs--secondary{
+    display:none !important;
+}

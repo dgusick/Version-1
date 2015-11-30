@@ -39,12 +39,13 @@
 	}
 	
     function custom_view_candidates_menu_alter(&$items) {
-       //$items['user/%']['access callback'] = 'custom_view_candidates_check_permission';
+       //code goes here
     }
     
     function custom_view_candidates_check_permission($account) {
         //global $user;
-        //return $account && $account->uid && user_access('recruiter');
+        $account1 = user_load($account);
+        var_dump($account1);
     }
 
 	function process_access_approve(){
@@ -299,17 +300,31 @@
             $result_action = db_query("SELECT n.uid,n.nid FROM field_data_field_user_id candidate, node n WHERE candidate.field_user_id_value = '".$record['uid']."' AND n.nid = candidate.entity_id AND n.type = candidate.bundle");
 			$view_result_action = $result_action->fetchAssoc();
 			
-			$output .= '<td>'.$view_result_action['uid'].'-'.$user->uid.'</td>';
+			$query = new EntityFieldQuery;
+            $query->entityCondition('entity_type', 'node')
+              ->entityCondition('bundle', 'evaluation')
+              ->fieldCondition('field_user_id', 'value', $record['uid']);
+            
+            $results = $query->execute();
+            $recruiter_id = "";
+            
+            if (isset($results['node'])) {
+              $nodes = node_load_multiple(array_keys($results['node']));
+            
+              foreach ($nodes as $node) {
+                $field_user_id = field_get_items('node', $node, 'field_recruiter_id');
+                $recruiter_id = $field_user_id[0]['value'];
+                $node_id = $node->nid;
+              }
+            }
 			
-			
-			if($view_result_action['uid']==''){
-			    $output .= '<td><a href="request-access/'.$record['uid'].'" >Request Access</a> | <a href="node/add/evaluation?canid='.$record['uid'].'">Create new evaluation</a></td>';          
-			}else if($view_result_action['uid']!=$user->uid){ 
-				$output .= '<td><a href="request-access/'.$record['uid'].'" >Request Access</a> | <a href="node/add/evaluation?canid='.$record['uid'].'">Create new evaluation</a></td>'; 
-			}else if($view_result_action['uid']==$user->uid)
-			{
-			    $output .= '<td><a href="request-access/'.$record['uid'].'" >Request Access</a> | <a href="node/'.$view_result_action['nid'].'">View evaluation</a></td>';
+			if($recruiter_id==$user->uid){ 
+				$output .= '<td><a href="request-access/'.$record['uid'].'" >Request Access</a> | <a href="node/'.$node_id.'">View evaluation</a></td>';
 			}
+			else {
+			    $output .= '<td><a href="request-access/'.$record['uid'].'" >Request Access</a> | <a href="node/add/evaluation?canid='.$record['uid'].'">Create new evaluation</a></td>';          
+			}
+			
         	$output .= '</tr>';
         }
         $output .= '</table>';
@@ -317,6 +332,8 @@
         echo $output;    
 	}
 	function allcandidates(){
+	
+        custom_view_candidates_check_permission(32);
 	
 		global $user;
 		$result = db_query("SELECT users.name AS users_name, users.uid AS uid, users.mail AS email, users.created AS users_created
@@ -337,13 +354,30 @@
         	$output .= '<td>'.format_date($record['users_created'], 'custom', 'm/d/Y').'</td>';
         	$result_action = db_query("SELECT n.uid,n.nid FROM field_data_field_user_id candidate, node n WHERE candidate.field_user_id_value = '".$record['uid']."' AND n.nid = candidate.entity_id AND n.type = candidate.bundle");
 			$view_result_action = $result_action->fetchAssoc();
-			if($view_result_action['uid']==''){
+			
+			$query = new EntityFieldQuery;
+            $query->entityCondition('entity_type', 'node')
+              ->entityCondition('bundle', 'evaluation')
+              ->fieldCondition('field_user_id', 'value', $record['uid']);
+            
+            $results = $query->execute();
+            $recruiter_id = "";
+            
+            if (isset($results['node'])) {
+              $nodes = node_load_multiple(array_keys($results['node']));
+            
+              foreach ($nodes as $node) {
+                $field_user_id = field_get_items('node', $node, 'field_recruiter_id');
+                $recruiter_id = $field_user_id[0]['value'];
+                $node_id = $node->nid;
+              }
+            }
+			
+			if($recruiter_id==$user->uid){ 
+				$output .= '<td><a href="request-access/'.$record['uid'].'" >Request Access</a> | <a href="node/'.$node_id.'">View evaluation</a></td>';
+			}
+			else {
 			    $output .= '<td><a href="request-access/'.$record['uid'].'" >Request Access</a> | <a href="node/add/evaluation?canid='.$record['uid'].'">Create new evaluation</a></td>';          
-			}else if($view_result_action['uid']!=$user->uid){ 
-				$output .= '<td><a href="request-access/'.$record['uid'].'" >Request Access</a> | <a href="node/add/evaluation?canid='.$record['uid'].'">Create new evaluation</a></td>'; 
-			}else
-			{
-			    $output .= '<td><a href="request-access/'.$record['uid'].'" >Request Access</a> | <a href="node/'.$view_result_action['nid'].'">View evaluation</a></td>';
 			}
         	
         	$output .= '</tr>';
@@ -463,9 +497,11 @@
 			
 			
 			$form['title']['#type'] = "hidden";
-			// $form['field_user_id']['#type'] = "hidden";
+			$form['field_user_id']['#type'] = "hidden";
+			$form['field_recruiter_id']['#type'] = "hidden";
 			
 		    $form['field_user_id']['und'][0]['value']['#default_value'] = $_GET['canid'];
+		    $form['field_recruiter_id']['und'][0]['value']['#default_value'] = $user->uid;
 			
 			
     		$form['evaluation_form_title'] = array(
@@ -512,10 +548,6 @@
     		    			module_invoke_all('exit');
     						drupal_exit();
     		    		}
-    	    		}else{
-    	    			drupal_access_denied();
-    		    		module_invoke_all('exit');
-    					drupal_exit();
     	    		}
         		}
             }
