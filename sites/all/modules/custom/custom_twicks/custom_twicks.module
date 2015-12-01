@@ -1,0 +1,155 @@
+<?php
+
+function custom_twicks_menu() { //views - cash-inflow-chart 
+
+$items['user/edit'] = array(
+      'type' => MENU_CALLBACK,
+      'page callback' => 'custom_twicks_user_edit_redirect',
+      'access callback' => 'user_is_logged_in',
+  ); 
+  
+  /*
+  $items['candidate/register'] = array(
+    'title' => 'Create new account',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('user_register_form'),
+    'access callback' => 'user_register_access',
+    'type' => MENU_CALLBACK,
+  );
+  */
+  return $items; 
+}
+
+function custom_twicks_user_edit_redirect() { 
+  global $user; 
+    
+    if($user->uid) { 
+      drupal_goto('user/'.$user->uid.'/edit'); 
+    }
+}
+
+function custom_twicks_username_alter(&$name, $account) {
+/* load the full user object, since $account not always provide all informations */  
+  $user = user_load($account->uid);
+/* 
+field_extract_value(): function provided by field_extract module (thanks adaddinsane!)
+ */
+  if (!empty($user->field_first_name) && !empty($user->field_last_name)) {
+    $name = $user->field_first_name['und'][0]['value'] . ' ' . $user->field_last_name['und'][0]['value'];
+  }
+}
+
+/**
+ * Implements hook_connector_action_alter().
+ *
+ * We change the default connector to redirect to our own action.
+ */
+function custom_twicks_connector_action_alter(&$connector_actions) { //url differnt __ 
+  $connector_actions['default']['create account callback'] = '_cz_connector_create_account'; 
+  
+} // add connection or create account callback ? 
+
+function _cz_connector_create_account($connector_name, $cid = NULL, $consumer = NULL, $access_token = NULL, $request_token = NULL) { 
+  global $user; //hopefully anonymous 
+  
+  //before import fetch email field__ 
+  $connector = _connector_get_connectors($connector_name);
+  if (!$connector) {
+    return FALSE;
+  }
+  $authname = $connector_name . '__' . $cid;
+
+  if (variable_get('user_register', 1)) {
+    $userinfo = array(
+      'name' => $authname,
+      'pass' => user_password(),
+      'init' => $authname,
+      'status' => variable_get('user_register', 1) == 1,
+      'access' => REQUEST_TIME, 
+			'roles' => array(
+			    DRUPAL_AUTHENTICATED_RID => 'authenticated user',
+    			//5 => 'custom role',
+			  ),
+    );
+    //reset this role if invited __ 
+    //$userinfo['roles'][5]
+    if( isset($_SESSION['invite_code']) && $_SESSION['invite_code'] ) { 
+        //this is candidate role -- 
+        $userinfo['roles'][6] = 'candidate'; 
+    } else {
+        $userinfo['roles'][5] = 'recruiter'; 
+    }
+    
+    // Try to assign values from connection.
+    $info = array();
+    if (!empty($connector['information callback']) && is_callable($connector['information callback'])) {
+      $info = $connector['information callback']($connector, $cid, array(), $access_token);
+    }
+    
+     watchdog('custom_twicks', "info Data register -".print_r($info, true) .print_r($_SESSION, true) , array(), WATCHDOG_NOTICE);  
+     
+    $allowed_fields = array('name', 'mail');  
+    //'field_linkedin_user_id', 'field_first_name', 'field_interests', 'field_last_name', 'field_picture_url', 'field_summary'
+    
+    foreach ($info as $field) {
+      if (isset($field['sync']) && $field['sync'] && in_array($field['sync'], $allowed_fields)) {
+        $exists = db_select('users', 'u')
+          ->fields('u')
+          ->condition($field['sync'], $field['value'])
+          ->execute()
+          ->rowCount();
+        if ($exists < 1) {
+          $userinfo[$field['sync']] = $field['value'];
+        }
+      }
+      
+      if(isset($field['sync'])) { 
+          $fldname = $field['sync'];  
+          //try save field as profile field 
+          if(!is_array($field['value']) && is_string($field['sync']) && isset($field['sync']) && $field['sync'] && !isset($userinfo[$fldname]) ) { 
+              
+            $userinfo[$fldname]['und'][0]['value'] = $field['value']; 
+          }
+      }
+    }
+    
+    $new_account = user_save('', $userinfo); 
+    // Terminate if an error occured during user_save().
+    if (!$new_account) {
+      drupal_set_message(t("Error saving user account."), 'error');
+    } else {
+      watchdog('user', 'New external user: %name using module %module.', array('%name' => $authname, '%module' => 'connector'), WATCHDOG_NOTICE, l(t('edit'), 'user/' . $new_account->uid . '/edit'));
+      return $new_account;
+    }
+  }
+  else {
+    drupal_set_message(t('Only site administrators can create new user accounts.'), 'error');
+    if (isset($connector['logout callback']) && is_callable($connector['logout callback'])) {
+      call_user_func($connector['logout callback'], $connector, $connection->cid);
+    }
+  }
+}
+
+
+function cz_user_update_picture($file, $account) { 
+  $file->fid = $file->fid;
+  $file->filename = $file->filename;
+  if($file->fid) {
+    $edit = array(); 
+    $file->uid = $account->uid; // need file save again ? 
+    
+    db_update('file_managed')
+      ->fields(array(
+      'uid' => $account->uid,
+      ))->condition('fid', $file->fid)->execute();
+    
+    //file_usage_add($file, 'user', 'user', $account->uid);
+    
+    db_update('users')
+      ->fields(array(
+      'picture' => $file->fid,
+      ))->condition('uid', $account->uid)->execute();
+    
+  } 
+} 
+

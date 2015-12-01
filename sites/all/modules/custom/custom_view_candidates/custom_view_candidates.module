@@ -45,7 +45,7 @@
     function custom_view_candidates_check_permission($account) {
         //global $user;
         $account1 = user_load($account);
-        var_dump($account1);
+        //var_dump($account1);
     }
 
 	function process_access_approve(){

@@ -1,0 +1,5 @@
+name = Custom Twicks
+description = custom for edivvy
+package = Custom
+core = 7.x
+files[] = custom_twicks.module
