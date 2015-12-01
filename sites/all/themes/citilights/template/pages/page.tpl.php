@@ -148,10 +148,12 @@
             </div>
             <!-- END NOO MAINBODY -->
         <?php else : ?>
+            
         	<!-- START NOO-MAINBODY -->
             <div class="container noo-mainbody">
               <div class="noo-mainbody-inner">
                   <div class="row clearfix">
+                    <h1 class="page-title"><?php echo $title; ?></h1>
                       <?php if ($tabs): ?><?php print render($tabs); ?><?php endif; ?>
 					  <?php print $messages; ?>
 					  <?php print render($page['content']); ?>	
