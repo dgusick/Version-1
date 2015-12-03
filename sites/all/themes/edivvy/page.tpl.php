@@ -77,7 +77,7 @@
  
   <div id="wrapper">
   <div id="page">
-    
+    <?php if($user->uid) { ?>
      <nav class="navbar-default navbar-static-side" role="navigation">
         <div class="sidebar-collapse">
             <ul class="nav metismenu skin-2" id="side-menu">
@@ -119,8 +119,10 @@
 
         </div>
     </nav>
+    <?php } ?>
     
     <div id="page-wrapper" class="gray-bg" style="min-height: 490px;">
+    <?php if($user->uid) { ?>
        <div class="row border-bottom">
             <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0">
                 <div class="navbar-header">
@@ -144,19 +146,20 @@
 
             </nav>
         </div>
-        
+         <?php } ?>
+         
         <div class="wrapper wrapper-content"> 
            <div class="row">
              <div class="col-md-12">
             <!-- -->
-            <?php if ($main_menu || $secondary_menu): ?>
+            <?php if (($main_menu || $secondary_menu) && $user->uid): ?>
 		      <div id="navigation"><div class="section">
 		        <?php print theme('links__system_main_menu', array('links' => $main_menu, 'attributes' => array('id' => 'main-menu', 'class' => array('links', 'inline', 'clearfix')), 'heading' => t('Main menu'))); ?>
 		        <?php print theme('links__system_secondary_menu', array('links' => $secondary_menu, 'attributes' => array('id' => 'secondary-menu', 'class' => array('links', 'inline', 'clearfix')), 'heading' => t('Secondary menu'))); ?>
 		      </div></div> <!-- /.section, /#navigation -->
 		    <?php endif; ?>
 		
-		    <?php if ($breadcrumb): ?>
+		    <?php if ($breadcrumb && $user->uid): ?>
 		      <div id="breadcrumb"><?php print $breadcrumb; ?></div>
 		    <?php endif; ?>
 		

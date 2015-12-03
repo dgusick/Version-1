@@ -11,7 +11,8 @@
                 </div>
                 <?php unset($form['actions']);  ?>
                 <button type="submit" id="edit-submit" name="op"  class="btn btn-primary block full-width m-b" >Login</button>
-                <button type="submit" class="btn btn-success btn-facebook block full-width m-b"><i class="fa fa-linkedin"></i>&nbsp;&nbsp;<span class="bold">Sign in using LinkedIn</span></button>
+                
+                <button type="button" onclick="window.location.href='<?php echo url('connect/oauthconnector_linkedin') ?>'" class="btn btn-success btn-facebook block full-width m-b"><i class="fa fa-linkedin"></i>&nbsp;&nbsp;<span class="bold">Sign in using LinkedIn</span></button>
 
 
                 <a href="<?php echo url('user/password'); ?>"><small>Forgot password?</small></a>
