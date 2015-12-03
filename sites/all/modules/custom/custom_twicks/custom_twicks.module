@@ -20,6 +20,14 @@ $items['user/edit'] = array(
   return $items; 
 }
 
+function custom_twicks_info() { 
+	global $user; 
+	
+	if($user->uid == 0 && arg(0) == 'user' && arg(1) == '') { 
+		drupal_goto('user/login'); 
+	}
+}
+
 function custom_twicks_user_edit_redirect() { 
   global $user; 
     
