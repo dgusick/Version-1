@@ -71,8 +71,22 @@
  *
  * @ingroup themeable
  */
-  $filepath = variable_get('user_picture_default', ''); 
-  $pic = theme('image', array('path' => $filepath, 'alt' => 'Image', 'title' => $alt)); //img-circle 
+  //$filepath = variable_get('user_picture_default', ''); 
+  //$pic = theme('image', array('path' => $filepath, 'alt' => 'Image', 'title' => $alt)); //img-circle 
+  
+  global $user;
+  $users = user_load($user->uid);
+  if($users->picture){
+  	 $pic = theme('user_picture', array('account' =>$users));
+  }else{
+  	 $base_theme_url = drupal_get_path('theme',$GLOBALS['theme']);
+  	 $pic = '<a title="Profile" href=/user><img class="img-circle" src="'.$base_theme_url.'/img/default-avatar.png" /></a>';
+  }
+  $full_name = $user->name; 
+  if (!empty($user->field_first_name) && !empty($user->field_last_name)) {
+    $full_name = $user->field_first_name['und'][0]['value'] . ' ' . $user->field_last_name['und'][0]['value'];
+  }
+  
 ?>
  
   <div id="wrapper">
@@ -87,11 +101,11 @@
                            <?php echo $pic; ?>  
                              </span>
                             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                            <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold">David Williams</strong>
-                             </span> <span class="text-muted text-xs block">Recruiter <b class="caret"></b></span> </span> </a>
+                            <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold"><?php echo $full_name; ?></strong>
+                             </span> <span class="text-muted text-xs block"><?php if(isset($user->roles[5])) { echo 'Recruiter'; } else if(isset($user->roles[5])) { echo 'Candidate'; } else { echo 'LoggedIn'; } ?> <b class="caret"></b></span> </span> </a>
                             <ul class="dropdown-menu animated fadeInRight m-t-xs">
                                 <li><a href="<?php echo url('user'); ?>">Profile</a></li>
-
+								<li><a href="<?php echo url('messages'); ?>">Mailbox</a></li>
                                 <li><a href="<?php echo url('user/logout'); ?>">Logout</a></li>
                             </ul>
                     </div>
@@ -103,13 +117,13 @@
                     <a href="<?php echo url('user'); ?>"><i class="fa fa-home"></i> <span class="nav-label">Home</span></a>
                 </li>
                 <li>
-                    <a href="<?php echo url('search'); ?>"><i class="fa fa-search"></i> <span class="nav-label">Search</span></a>
+                    <a href="<?php echo url('candidate-search'); ?>"><i class="fa fa-search"></i> <span class="nav-label">Search</span></a>
                 </li>
-                <li class="active">
-                    <a href="<?php echo url('user'); ?>"><i class="fa fa-group"></i> <span class="nav-label">Recruiters</span></a>
+                <li class="active1">
+                    <a href="<?php echo url('recruiter-list'); ?>"><i class="fa fa-group"></i> <span class="nav-label">Recruiters</span></a>
                 </li>
                 <li>
-                    <a href="<?php echo url('user'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Add Profile</span></a>
+                    <a href="<?php echo url('invite/add/invite_by_email'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Add Profile</span></a>
                 </li>
 
                 <li>
@@ -124,11 +138,11 @@
     <div id="page-wrapper" class="gray-bg" style="min-height: 490px;">
     <?php if($user->uid) { ?>
        <div class="row border-bottom">
-            <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0">
+            <nav class="navbar navbar-static-top grey-bg" role="navigation" style="margin-bottom: 0">
                 <div class="navbar-header">
                     <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
                     
-                    <form role="search" class="navbar-form-custom" action="search.html">
+                    <form role="search" class="navbar-form-custom" action="<?php echo url('candidate-search-top'); ?>">
                         <div class="form-group">
                             <input type="text" placeholder="Search for something..." class="form-control" name="top-search" id="top-search">
                         </div>
@@ -147,20 +161,31 @@
             </nav>
         </div>
          <?php } ?>
-         
+         <div class="row wrapper border-bottom white-bg page-heading">
+		        <div class="col-lg-10">
+		        <?php print render($title_prefix); ?>
+		        <?php if ($title): ?><h2 class="title" id="page-title"><?php print $title; ?></h2><?php endif; ?>
+		        <?php print render($title_suffix); ?>
+		        </div>
+		        </div>
+		        
         <div class="wrapper wrapper-content"> 
-           <div class="row">
-             <div class="col-md-12">
+           <div class="row animated fadeInRight">
+            
+            <?php if(arg(0) != 'user') {  ?>
+            <div class="col-md-12"><div class="ibox float-e-margins"><div class="ibox-content">
+             <div class="content-padding">
+             <?php } ?>
             <!-- -->
             <?php if (($main_menu || $secondary_menu) && $user->uid): ?>
 		      <div id="navigation"><div class="section">
-		        <?php print theme('links__system_main_menu', array('links' => $main_menu, 'attributes' => array('id' => 'main-menu', 'class' => array('links', 'inline', 'clearfix')), 'heading' => t('Main menu'))); ?>
-		        <?php print theme('links__system_secondary_menu', array('links' => $secondary_menu, 'attributes' => array('id' => 'secondary-menu', 'class' => array('links', 'inline', 'clearfix')), 'heading' => t('Secondary menu'))); ?>
+		        <?php //print theme('links__system_main_menu', array('links' => $main_menu, 'attributes' => array('id' => 'main-menu', 'class' => array('links', 'inline', 'clearfix')), 'heading' => t('Main menu'))); ?>
+		        <?php //print theme('links__system_secondary_menu', array('links' => $secondary_menu, 'attributes' => array('id' => 'secondary-menu', 'class' => array('links', 'inline', 'clearfix')), 'heading' => t('Secondary menu'))); ?>
 		      </div></div> <!-- /.section, /#navigation -->
 		    <?php endif; ?>
 		
 		    <?php if ($breadcrumb && $user->uid): ?>
-		      <div id="breadcrumb"><?php print $breadcrumb; ?></div>
+		      <div id="breadcrumb"><?php //print $breadcrumb; ?></div>
 		    <?php endif; ?>
 		
 		    <?php print $messages; ?>
@@ -170,9 +195,7 @@
 		      <div id="content" class="column"><div class="section">
 		        <?php if ($page['highlighted']): ?><div id="highlighted"><?php print render($page['highlighted']); ?></div><?php endif; ?>
 		        <a id="main-content"></a>
-		        <?php print render($title_prefix); ?>
-		        <?php if ($title): ?><h1 class="title" id="page-title"><?php print $title; ?></h1><?php endif; ?>
-		        <?php print render($title_suffix); ?>
+		         
 		        <?php if ($tabs): ?><div class="tabs"><?php print render($tabs); ?></div><?php endif; ?>
 		        <?php print render($page['help']); ?>
 		        <?php if ($action_links): ?><ul class="action-links"><?php print render($action_links); ?></ul><?php endif; ?>
@@ -194,7 +217,11 @@
 		
 		    </div></div> <!-- /#main, /#main-wrapper -->
 		    
-		  </div>
+		    <?php if(arg(0) != 'user') {  ?>
+		  </div></div> <!-- /.row -->
+		  </div></div>
+		  <?php } ?>
+		  
 		  </div>
 
         </div>

@@ -7478,3 +7478,57 @@ body.skin-3 {
     display: none;
   }
 }
+
+
+/* Custom CSS */
+.content-padding{
+    margin-left:5px;
+}
+.bg-page-title{
+    padding-top: 1px;
+    padding-bottom: 16px;
+    padding-left: 20px;
+}
+.wrapper-content{
+    
+}
+
+.pd-top-content{
+    padding-top:25px !important;
+}
+.pd-top-content .row .col-lg-3:nth-child(n+9){
+    display:none;
+}
+#side-menu img.img-circle{
+    width:48px;
+    height:auto;
+}
+.email_row{
+    white-space: nowrap;
+}
+.chosen-container{
+    width:100% !important;
+}
+.clients-list .tab-pane {
+    height:auto !important;
+}
+select {
+    -webkit-appearance: none;
+    -webkit-border-radius: 0px;
+}
+#edit-field-job-title-tid, #edit-field-specialization-tid, #edit-field-certification-tid, #edit-field-technology-tid, #edit-field-experience-tid, #edit-field-expertise-tid{
+    width:100%;
+}
+.form-group .views-widget{
+    margin-bottom:20px;
+}
+.item-list{
+    text-align:center;
+}
+.pager1 li{
+    list-style:none;
+}
+
+.btn-white li a{
+    color:#000 !important;
+}

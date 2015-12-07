@@ -58,3 +58,10 @@ function edivvy_preprocess_user_pass(&$vars) {
   $vars['intro_text'] = t('');
 }
 
+function edivvy_preprocess_pager(&$variables, $hook) {
+  if ($variables['quantity'] > 5) $variables['quantity'] = 5;
+  $variables['tags'][0] = '<<';
+  $variables['tags'][1] = '<';
+  $variables['tags'][3] = '>';
+  $variables['tags'][4] = '>>';
+}
