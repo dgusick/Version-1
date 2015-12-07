@@ -9,6 +9,7 @@ stylesheets[screen][] = font-awesome/css/font-awesome.css
 stylesheets[screen][] = css/animate.css
 stylesheets[screen][] = css/style.css
 stylesheets[screen][] = css/custom.css
+stylesheets[screen][] = css/extra.css
 stylesheets[screen][] = css/plugins/chosen/chosen.css
 stylesheets[screen][] = css/plugins/sweetalert/sweetalert.css
 stylesheets[screen][] = css/plugins/toastr/toastr.min.css

@@ -1,0 +1,85 @@
+
+.page-messages #privatemsg-list #privatemsg-list-form .privatemsg-list {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 20px;
+}
+
+.page-messages #privatemsg-list #privatemsg-list-form .privatemsg-list tbody tr td{
+    padding: 10px;
+    background-color: #FFF;
+    border-top: 1px solid #e7eaec;
+}
+
+.page-messages #privatemsg-list #privatemsg-list-form .privatemsg-list tbody tr td a{
+    color: inherit;
+    font-weight: normal;
+}
+
+.page-messages #privatemsg-list #privatemsg-list-form .privatemsg-list tbody {
+	color: #676a6c;
+	font-size: 13px;
+	font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+	vertical-align: top;
+}
+
+
+.page-messages #privatemsg-list #privatemsg-list-form .privatemsg-list tbody tr:hover td{
+    background-color: #F5F5F5;
+}
+
+
+.page-messages #privatemsg-list #privatemsg-list-form .privatemsg-list thead th.privatemsg-header-subject {
+    width: 20%;
+}
+
+.page-messages #privatemsg-list #privatemsg-list-form .privatemsg-list thead th.privatemsg-header-participants {
+    width: 60%;
+}
+
+.page-messages #privatemsg-list #privatemsg-list-form .privatemsg-list thead th.privatemsg-header-lastupdated {
+   
+    
+}
+
+.page-messages #privatemsg-list #privatemsg-list-form .privatemsg-list thead th.select-all {
+    width: 5%;
+    
+}
+
+.page-messages #privatemsg-list #privatemsg-list-form .privatemsg-list thead th {
+	padding: 10px;
+	border-bottom: none;
+}
+
+
+
+.page-messages-new form#privatemsg-new label {
+	display: block;
+}
+
+.page-messages-new form#privatemsg-new .form-item .description .item-list {
+	text-align: left;
+}
+
+
+.page-user table.views-table {
+	   width: 100%;
+	   border-collapse: collapse;
+	   margin:0px;padding:0px;
+}
+
+.page-user table.views-table tbody tr td {
+    padding: 10px;
+    border: 1px solid;
+}
+
+.page-user table.views-table thead > tr >th {
+    padding: 10px;
+    border: 1px solid #676A6C;
+    background-color: #323232;
+    color: #FFF;
+}
+
+
+
