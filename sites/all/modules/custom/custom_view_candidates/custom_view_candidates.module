@@ -119,6 +119,34 @@
         {
         	$user_candidate_id_string = $user_candidate_uid;
         }
+        
+        //get current field_approved_recruiter_uid
+		if(isset($account->field_approved_recruiter_uid['und']['0']['value']))
+            {
+                $field_approved_recruiter_uid = $account->field_approved_recruiter_uid['und']['0']['value'];
+            }
+        
+        //store field_approved_recruiter_uid_string
+        if($field_approved_recruiter_uid!="")
+        {
+        	//check existed value
+        	$check_user_approved_recruiter = explode(",",$field_approved_recruiter_uid);
+        	
+        	if (in_array($user_approve_uid, $check_user_approved_recruiter))
+			{
+			  	//not storing anything, keep the old value
+			  	$user_approved_recruiter_id_string = $field_approved_recruiter_uid;
+			}
+			else
+			{
+			  	//store new value
+        		$user_approved_recruiter_id_string = $field_approved_recruiter_uid.",".$user_approve_uid;
+			}
+        }
+        else if($field_approved_recruiter_uid=="")
+        {
+        	$user_approved_recruiter_id_string = $user_approve_uid;
+        }
 				
 		//save user_candidate_id_string into recruiter's field
 		$edit = array(
@@ -126,6 +154,13 @@
 		    'und' => array(
 		      0 => array(
 		        'value' => $user_candidate_id_string,
+		      ),
+		    ),
+		  ),
+		  'field_approved_recruiter_uid' => array(
+		    'und' => array(
+		      0 => array(
+		        'value' => $user_approved_recruiter_id_string,
 		      ),
 		    ),
 		  ),
@@ -182,7 +217,7 @@
 		
 	    drupal_set_message("Sent request to ".$name_recruiter."");
 	    drupal_goto('candidate-lists');
-		
+		//return $approve_link;
 		return "Thanks for your request. Please wait for the recruiter to approve.";		
 	}
 	

@@ -3,6 +3,7 @@
     global $user;
     $search_value = $_GET['top-search'];
 ?>
+		<!--
 		<div class="row wrapper  white-bg page-heading">
             <div class="col-lg-12">
                 <h2>Search Candidates</h2>
@@ -10,14 +11,25 @@
             </div>
 
         </div>
+        -->
 
-        <div class="row wrapper white-bg form-inline">
+        <div class="row wrapper white-bg form-inline pd-top-content">
             
             <?php
                 $exposed_form = $view->display_handler->get_plugin('exposed_form');
                 print $exposed_form->render_exposed_form(true);
             ?>
-            
+            <?php if ($attachment_after): ?>
+		    <div class="attachment attachment-after">
+		      <?php print $attachment_after; ?>
+		    </div>
+		  <?php endif;    ?>
+            <?php if ($attachment_before): ?>
+		    <div class="attachment attachment-before">
+		      <?php print $attachment_before; ?>
+		    </div>
+		  <?php endif;   ?>
+		  
         </div>
         
         <div class="wrapper wrapper-content  animated fadeInRight pd-top-content">
@@ -31,7 +43,7 @@
                             <br/>
                             <div class="clients-list">
                                 <ul class="nav nav-tabs">
-                                    <span class="pull-right small text-muted">1406 results</span>
+                                    <span class="pull-right small text-muted"><?php echo $view->total_rows; ?> results</span>
                                     <li class="active"><a data-toggle="tab" href="#tab-1"><i class="fa fa-user"></i> Profiles</a></li>
                                     <!--<li class=""><a data-toggle="tab" href="#tab-2"><i class="fa fa-briefcase"></i> Other</a></li>-->
                                 </ul>
@@ -108,7 +120,7 @@
 	                                                        <td> <?php print $item['field_job_level']; ?> </td>
 	                                                        <td> <?php print $item['field_role_department']; ?> </td>
 	                                                        <td class="client-status">
-	                                                            <span>
+	                                                            <span> <?php print $item['ops']; ?>  
 	                                                                <a data-toggle="button" type="button" class="btn btn-xs btn-outline btn-danger save-btn"><i class="fa fa-heart-o"></i> Save </a>
 	                                                                <a data-toggle="button" type="button"  class="btn btn-xs btn-outline  btn-success contact-btn "><i class="fa fa-envelope-o"></i> Contact </a>
 	                                                            </span>
@@ -155,4 +167,5 @@
 
                         </div>
                     </div>
+                </div>
                 </div>

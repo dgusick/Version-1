@@ -7532,3 +7532,25 @@ select {
 .btn-white li a{
     color:#000 !important;
 }
+.page-user .tabs{
+    display: none;
+}
+.m-b-sm .img-circle{
+    width:96px;   
+    height:96px;
+}
+.contact-box .img-circle{
+    width:61px;   
+    height:61px;
+}
+
+.page-user #block-block-5 a{
+    display:none;
+}
+
+.page-user .ibox-content{
+    padding-bottom:40px;
+}
+
+
+

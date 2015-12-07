@@ -76,12 +76,29 @@
   
   global $user;
   $users = user_load($user->uid);
-  if($users->picture){
-  	 $pic = theme('user_picture', array('account' =>$users));
-  }else{
-  	 $base_theme_url = drupal_get_path('theme',$GLOBALS['theme']);
-  	 $pic = '<a title="Profile" href=/user><img class="img-circle" src="'.$base_theme_url.'/img/default-avatar.png" /></a>';
-  }
+  
+  if($users->field_picture_url)
+     {
+        $pic = '<img class="img-circle" src="'.$users->field_picture_url['und'][0]['value'].'" />';  
+     }
+  else
+     {
+        if($users->picture->uri){
+        $pic = theme_image_style(
+            array(
+                'style_name' => 'thumbnail',
+                'path' => $users->picture->uri,
+                'attributes' => array(
+                 'class' => 'img-circle'
+                 )            
+            )
+        ); 
+        }else{ 
+            $base_theme_url = drupal_get_path('theme',$GLOBALS['theme']);
+            $pic = '<img class="img-circle" src="'.base_path().'/'.$base_theme_url.'/img/default-avatar.png" />';
+        }
+     }
+         
   $full_name = $user->name; 
   if (!empty($user->field_first_name) && !empty($user->field_last_name)) {
     $full_name = $user->field_first_name['und'][0]['value'] . ' ' . $user->field_last_name['und'][0]['value'];

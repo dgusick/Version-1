@@ -5,6 +5,15 @@ $(document).ready(function () {
             $('.btn-block.m-t').hide();
         }
     });
+    
+    $('.btn-block.m-t.btn-read-more').click(function () {
+        $('.contact-box-content .row .col-lg-4:hidden').slice(0, 9).show();
+        if ($('.contact-box-content .row .col-lg-4').length == $('.contact-box-content .row .col-lg-4:visible').length) {
+            $('.btn-block.m-t.btn-read-more').hide();
+        }
+    });
+    
+    
     $('#side-menu .user-picture img').addClass('img-circle');
     
     //fix custom exposed filter
@@ -144,6 +153,31 @@ $(document).ready(function () {
             "hideMethod": "fadeOut"
         }
     });
+    
+    //Styling checkbox
+    $(document).ready(function(){
+            $('.i-checks').iCheck({
+                checkboxClass: 'icheckbox_square-green',
+                radioClass: 'iradio_square-green',
+            });
+
+
+            $('.summernote').summernote();
+
+        });
+        var edit = function() {
+            $('.click2edit').summernote({focus: true});
+        };
+        var save = function() {
+            var aHTML = $('.click2edit').code(); //save HTML If you need(aHTML: array).
+            $('.click2edit').destroy();
+        };
+    
+    //adding title suffix
+    $(".page-recruiter-list #page-title").after('<span class="text-muted">You can follow recruiters to be notified of new profiles</span>');
+    $(".page-candidate-search #page-title").after('<span class="text-muted">Choose a Title, A Skill, and Location</span>');
+    $(".page-candidate-search-top #page-title").after('<span class="text-muted">Choose a Title, A Skill, and Location</span>');
+    
     
     //var follow_string = $('.follow-btn a').html();
     //$('.follow-btn a').text( "Follow" );
