@@ -119,10 +119,23 @@
                              </span>
                             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                             <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold"><?php echo $full_name; ?></strong>
-                             </span> <span class="text-muted text-xs block"><?php if(isset($user->roles[5])) { echo 'Recruiter'; } else if(isset($user->roles[5])) { echo 'Candidate'; } else { echo 'LoggedIn'; } ?> <b class="caret"></b></span> </span> </a>
+                             </span> <span class="text-muted text-xs block"><?php if(isset($user->roles[5])) { echo 'Recruiter'; } else if(isset($user->roles[6])) { echo 'Candidate'; } else { echo 'LoggedIn'; } ?> <b class="caret"></b></span> </span> </a>
                             <ul class="dropdown-menu animated fadeInRight m-t-xs">
                                 <li><a href="<?php echo url('user'); ?>">Profile</a></li>
+                                
+                                <?php if(isset($user->roles[5])) { //rec. menu  ?>
+                                <li><a href="<?php echo url('user/'.$user->uid.'/wishlist'); ?>">My Wishlist</a></li>
+                                <li><a href="<?php echo url('user/'.$user->uid.'/following'); ?>">Im Following</a></li>
+                                <li><a href="<?php echo url('user/'.$user->uid.'/followers'); ?>">My Followers</a></li>
+                                <?php } ?>
+                                
+                                <?php if(isset($user->roles[6])) { //candidate menu ?>
+                                <?php } ?>
+                                
 								<li><a href="<?php echo url('messages'); ?>">Mailbox</a></li>
+								
+								
+								
                                 <li><a href="<?php echo url('user/logout'); ?>">Logout</a></li>
                             </ul>
                     </div>
@@ -133,6 +146,8 @@
                 <li>
                     <a href="<?php echo url('user'); ?>"><i class="fa fa-home"></i> <span class="nav-label">Home</span></a>
                 </li>
+                
+                <?php if(isset($user->roles[5])) { //rec. menu  ?>
                 <li>
                     <a href="<?php echo url('candidate-search'); ?>"><i class="fa fa-search"></i> <span class="nav-label">Search</span></a>
                 </li>
@@ -142,10 +157,18 @@
                 <li>
                     <a href="<?php echo url('invite/add/invite_by_email'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Add Profile</span></a>
                 </li>
-
                 <li>
                     <a href="<?php echo url('user'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Add Requirement</span></a>
                 </li>
+                <?php } ?>
+                                
+                <?php if(isset($user->roles[6])) { //candidate menu ?>
+                <?php } ?>
+                
+                
+                
+
+                
             </ul>
 
         </div>
@@ -250,7 +273,7 @@
             </div>
             
             <div>
-                <strong>Copyright</strong> Example Company © 2014-2015
+                <strong>Copyright</strong> Edivvy &copy; 2014-2016
             </div>
         </div>
       </div>
