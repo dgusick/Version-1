@@ -1,10 +1,37 @@
 <?php
+//print_r($user->uid); 
   //get current uid from url
   $uid_get = arg(1);
   $user_get = user_load($uid_get);
   //print_r($user_get);
+  $is_rec = false; 
+  $is_can = false; 
+  $contact_display = true; 
  
- //get user fields 
+ if(isset($user_get->roles[5])) {$is_rec = true;  } 
+ if(isset($user_get->roles[6])) {$is_can = true; $contact_display = false;  } 
+ 
+ //check if connected -- 
+ //print_r($field_approved_recruiter_uid); 
+ //get field_approved_recruiter_uid
+  if(!empty($user_get->field_approved_recruiter_uid)){
+    $field_approved_recruiter_uid =  $user_get->field_approved_recruiter_uid['und'][0]['value'];
+  }
+    
+  //explode array field_approved_recruiter_uid
+  $field_approved_recruiter_uid_explode = explode(",",$field_approved_recruiter_uid);
+  if($field_approved_recruiter_uid!=""){
+        $total_connection = count($field_approved_recruiter_uid_explode);
+  }
+  else{
+        $total_connection = 0;
+  }
+  
+  if(in_array($user->uid, $field_approved_recruiter_uid_explode)) { 
+  	$contact_display = true; //this recruiter is in candidates connection__ 
+  }  
+  
+ //get user fields  
  if($user_get->field_picture_url)
  {
     $pic = '<img class="img-circle" src="'.$user_get->field_picture_url['und'][0]['value'].'" />';  
@@ -40,17 +67,17 @@
   
   //get field_phone
   if(!empty($user_get->field_phone)){
-    $field_phone =  $user_get->field_phone['und'][0]['value'];
+    $field_phone =  $contact_display ? $user_get->field_phone['und'][0]['value'] : 'Hidden';
   }
   
   //get field_skype
   if(!empty($user_get->field_skype)){
-    $field_skype =  $user_get->field_skype['und'][0]['value'];
+    $field_skype =  $contact_display ? $user_get->field_skype['und'][0]['value'] : 'Hidden';
   }
   
   //get field_twitter_account
   if(!empty($user_get->field_twitter_account)){
-    $field_twitter_account =  $user_get->field_twitter_account['und'][0]['value'];
+    $field_twitter_account =  $contact_display ? $user_get->field_twitter_account['und'][0]['value'] : 'Hidden';
   }
   
   //get field_location
@@ -80,12 +107,12 @@
   
   //get field_corporate_email
   if(!empty($user_get->field_corporate_email)){
-    $field_corporate_email =  $user_get->field_corporate_email['und'][0]['value'];
+    $field_corporate_email = $contact_display ? $user_get->field_corporate_email['und'][0]['value'] : 'Hidden'; 
   }
   
   //get field_linkedin_user_id
   if(!empty($user_get->field_linkedin_user_id)){
-    $field_linkedin_user_id =  $user_get->field_linkedin_user_id['und'][0]['value'];
+    $field_linkedin_user_id =  $contact_display ? $user_get->field_linkedin_user_id['und'][0]['value']  : 'Hidden'; 
   }
   
   //get field_agree_term
@@ -93,19 +120,7 @@
     $field_agree_term =  $user_get->field_agree_term['und'][0]['value'];
   }
       
-  //get field_approved_recruiter_uid
-  if(!empty($user_get->field_approved_recruiter_uid)){
-    $field_approved_recruiter_uid =  $user_get->field_approved_recruiter_uid['und'][0]['value'];
-  }
-    
-  //explode array field_approved_recruiter_uid
-  $field_approved_recruiter_uid_explode = explode(",",$field_approved_recruiter_uid);
-  if($field_approved_recruiter_uid!=""){
-        $total_connection = count($field_approved_recruiter_uid_explode);
-  }
-  else{
-        $total_connection = 0;
-  }
+  
     
 ?>
 <div class="col-md-3">
@@ -145,7 +160,7 @@
                         -->
                         <h4 class="media-heading">Contact</h4>
                             <p><i class="fa fa-phone"></i> <?php echo $field_phone ?></p>
-                            <p><i class="fa fa-inbox"></i> <?php echo $user_get->mail ?></p>
+                            <p><i class="fa fa-inbox"></i> <?php echo $contact_display ? $user_get->mail : 'Hidden'; ?></p>
                             <p><i class="fa fa-skype"></i> <?php echo $field_skype ?></p>
                             <p><i class="fa fa-twitter"></i> @<?php echo $field_twitter_account ?> (twitter.com/<?php echo $field_twitter_account ?>)</p>
                             <p>
@@ -254,7 +269,7 @@
                                                 </dl>
                                                 <dl class="dl-horizontal">
                                                     <dt>Private Email</dt>
-                                                    <dd><?php echo $user_get->mail ?></dd>
+                                                    <dd><?php echo $contact_display ? $user_get->mail : 'Hidden'; ?></dd>
                                                 </dl>
                                                 <dl class="dl-horizontal">
                                                     <dt>Linkedin Profile</dt>
@@ -268,10 +283,12 @@
                                                     <dt>Skype</dt>
                                                     <dd><?php echo $field_skype ?></dd>
                                                 </dl>
+                                                <?php if( $contact_display ) : ?>
                                                 <dl class="dl-horizontal">
                                                     <dt>Address</dt>
                                                     <dd><?php echo $field_location ?></dd>
                                                 </dl>
+                                                <?php  endif; ?>
                                             </div>
                                             <hr class="hr-line-solid"/>
                                             <div class="form-group">
@@ -302,7 +319,7 @@
                                             
                                             <?php
                                                 //get list connection
-                                                if($field_approved_recruiter_uid!="")
+                                                if($field_approved_recruiter_uid != "")
                                                 {
                                                     for($i=0;$i<count($field_approved_recruiter_uid_explode);$i++)
                                                     {

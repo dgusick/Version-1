@@ -181,13 +181,13 @@
             <nav class="navbar navbar-static-top grey-bg" role="navigation" style="margin-bottom: 0">
                 <div class="navbar-header">
                     <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
-                    
+                    <?php if(0): ?>
                     <form role="search" class="navbar-form-custom" action="<?php echo url('candidate-search-top'); ?>">
                         <div class="form-group">
                             <input type="text" placeholder="Search for something..." class="form-control" name="top-search" id="top-search">
                         </div>
                     </form>
-
+                   <?php endif;?>
                 </div>
                 <ul class="nav navbar-top-links navbar-right">
 
