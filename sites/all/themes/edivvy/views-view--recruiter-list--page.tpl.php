@@ -39,17 +39,10 @@
                     	$url_pic = '<img class="img-circle m-t-xs img-responsive" src="'.$item['field_picture_url'].'" />';  
                     }else{
                         
-                        if($user_load->picture->uri){
-                        $url_pic = theme_image_style(
-                            array(
-                                'style_name' => 'thumbnail',
-                                'path' => $user_load->picture->uri,
-                                'attributes' => array(
-                                 'class' => 'img-circle m-t-xs img-responsive'
-                                 )            
-                            )
-                        ); 
-                      }else{ 
+                        if($user_load->field_user_picture){
+                            $field_user_picture = file_create_url($user_load->field_user_picture[LANGUAGE_NONE][0]['uri']);
+                            $url_pic = '<img class="img-circle m-t-xs img-responsive" src="'.$field_user_picture.'" />'; 
+                        }else{ 
                         $base_theme_url = drupal_get_path('theme',$GLOBALS['theme']);
                         $url_pic = '<img class="img-circle m-t-xs img-responsive" src="'.base_path().'/'.$base_theme_url.'/img/default-avatar.png" />';
                       }
