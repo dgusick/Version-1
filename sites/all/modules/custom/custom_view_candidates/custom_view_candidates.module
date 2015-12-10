@@ -74,9 +74,9 @@
 			    
 			if($view_result['invite_users_uid'] != ''){
 			  	if(!in_array($account->uid, $user_log_explode) && $view_result['invite_users_uid'] != $user->uid && $account->uid != $user->uid){
-	              	drupal_access_denied();
-	               	module_invoke_all('exit');
-	               	drupal_exit();
+	              	//drupal_access_denied();
+	               	//module_invoke_all('exit');
+	               	//drupal_exit();
 	            }
 			}
    
@@ -167,8 +167,8 @@
 		);
 		user_save($account, $edit);
 		
-		drupal_set_message("Your request is approved! You now can start invitation with the candidate and create Evaluation form");
-	    drupal_goto('candidate-lists');
+		drupal_set_message("Your request is approved! You now can start interviewing with the candidate and create Evaluation form");
+	    drupal_goto('candidate-search');
 		return "Approved";
 		//return $user_candidate_id_string;
 	}
@@ -179,9 +179,12 @@
 		//print_r($user);
 		$current_user_name = $user->name;
 		$request_uid = arg(1);
+		//print $request_uid;
+		//echo "test";
 		$users = user_load($request_uid);
 		$entity_field[0]['value'] = $users->uid;
     	$username_candidate = $users->name;
+    	//echo $username_candidate;
 		
 		// $form['#action'] = '/d/di1399289/node/add/evaluation';
 			$result = db_query("SELECT users.name AS users_name, users.uid AS uid, invite_users.uid AS invite_users_uid, users.created AS users_created
@@ -193,10 +196,17 @@
 									ORDER BY users_created DESC
 									LIMIT 10 OFFSET 0");
 			$view_result = $result->fetchAssoc();
+	       
+	    //print_r($view_result);    
 		
 		$user_rec=user_load($view_result['invite_users_uid']);
 		$email_recruiter=$user_rec->mail;
 		$name_recruiter = $user_rec->name;
+		//print_r($user_rec);
+		
+		//get admin email
+		$site_email = variable_get('site_mail', '');
+		//echo $site_email;
 		
 		//send email to recruiter
 		$approve_link = $base_url."/access-approve/".$user->uid."/".$users->uid."/".$user_rec->uid;
@@ -213,10 +223,22 @@
 	          'plain_text'
 	        ),
 	      );
-	      drupal_mail('custom_view_candidates', 'any_key', $email_recruiter, language_default(), $params);
+	    
+	    if($email_recruiter=="")
+	    {
+	        $email_send = $site_email;
+	        $name_send = $site_email;
+	    }
+	    else
+	    {
+	        $email_send = $email_recruiter;
+	        $name_send = $name_recruiter;
+	    }
+	    
+	    drupal_mail('custom_view_candidates', 'any_key', $email_send, language_default(), $params);
 		
-	    drupal_set_message("Sent request to ".$name_recruiter."");
-	    drupal_goto('candidate-lists');
+	    drupal_set_message("Sent request to ".$name_send."");
+	    drupal_goto('candidate-search');
 		//return $approve_link;
 		return "Thanks for your request. Please wait for the recruiter to approve.";		
 	}
@@ -561,13 +583,20 @@
         );
     }
     
+    //hook after submit form to go to candidate search page
+    function custom_candidate_redirect_handler($form, &$form_state){
+        drupal_goto('candidate-search');
+    }
+    
     function custom_view_candidates_form_alter(&$form, &$form_state, $form_id) {
     	global $user;
     	
+    	$idgetcan = arg(3);
+    	//echo $idgetcan;
+    	
     	if($form_id == "evaluation_node_form"){
-    		if(isset($_GET['canid'])){
-    		    $idgetcan = $_GET['canid'];
-        		$users = user_load($_GET['canid']);
+    		if(isset($idgetcan)){
+        		$users = user_load($idgetcan);
     			$entity_field[0]['value'] = $users->uid;
     			$username_candidate = $users->name;
     	
@@ -582,6 +611,7 @@
 									ORDER BY users_created DESC
 									LIMIT 10 OFFSET 0");
 			$view_result = $result->fetchAssoc();
+			//print_r($view_result);
 
 			for($i=1;$i<=100;$i++){
 				if(isset($form['field_skill_rating']['und'][0]['field_skill_'.$i])){
@@ -594,7 +624,7 @@
 			$form['field_user_id']['#type'] = "hidden";
 			$form['field_recruiter_id']['#type'] = "hidden";
 			
-		    $form['field_user_id']['und'][0]['value']['#default_value'] = $_GET['canid'];
+		    $form['field_user_id']['und'][0]['value']['#default_value'] = $idgetcan;
 		    $form['field_recruiter_id']['und'][0]['value']['#default_value'] = $user->uid;
 			
 			
@@ -603,6 +633,11 @@
 			 '#markup' => '<h1 class="content-title">EVALUATION FORM</h1>',
 			 '#weight' => -15
 			);
+			
+			//print_r($user);
+			//echo $user->name;
+			//echo $view_result['invite_users_uid'];
+			
 			if($view_result['invite_users_uid']!=''){
 				$user_rec=user_load($view_result['invite_users_uid']);
 				$username_recruiter=$user_rec->name;
@@ -622,7 +657,10 @@
 			);
     		} 
     		
+    		$form['actions']['submit']['#submit'][] = 'custom_candidate_redirect_handler';
+    		
     		$user_data = user_load($user->uid);
+    		//print_r($user_data);
             if(isset($user_data->field_user_candidate_uid['und']['0']['value']))
             {
                 $field_user_candidate_uid = $user_data->field_user_candidate_uid['und']['0']['value'];
@@ -632,37 +670,25 @@
             {
                 //explode $field_user_candidate_uid
                 $explode_field_user_candidate_uid = explode(",",$field_user_candidate_uid);
+                
+                //print_r($explode_field_user_candidate_uid);
+                //echo $idgetcan;
+                //echo $user->roles;
+                //print_r($user->roles);
               	
               	//check with $idgetcan for each array value
-                if (in_array($idgetcan, $explode_field_user_candidate_uid))
+                if (in_array($idgetcan, $explode_field_user_candidate_uid) and array_key_exists(5, $user->roles))
                 //if($field_user_candidate_uid==$idgetcan)
                 {
-                    //load Evaluation form.
+                    //load Evaluation form. 
                 }
                 //access denied config
-                else if(!array_key_exists(3, $user->roles)){
-    	    		if(isset($user_rec->uid)){
-    		    		if($user_rec->uid != $user->uid){
-    		    			drupal_access_denied();
-    		    			module_invoke_all('exit');
-    						drupal_exit();
-    		    		}
-    	    		}
-        		}
+                else{
+                    drupal_access_denied();
+    		    	module_invoke_all('exit');
+    				drupal_exit();
+                }
             }
-            else if(!array_key_exists(3, $user->roles)){
-    	    		if(isset($user_rec->uid)){
-    		    		if($user_rec->uid != $user->uid){
-    		    			drupal_access_denied();
-    		    			module_invoke_all('exit');
-    						drupal_exit();
-    		    		}
-    	    		}else{
-    	    			drupal_access_denied();
-    		    		module_invoke_all('exit');
-    					drupal_exit();
-    	    		}
-        		}
         		
     	}
     	

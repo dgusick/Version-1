@@ -76,26 +76,35 @@
                                                     ?>
                                                     
                                                     <?php
+                                                    $uid = $item['uid'];
+                                                    //echo $uid;
+                                                    
+                                                    //get node evaluation by field_recruiter_id
+                                                    $query = new EntityFieldQuery;
+                                                    $query->entityCondition('entity_type', 'node')
+                                                      ->entityCondition('bundle', 'evaluation')
+                                                      ->fieldCondition('field_user_id', 'value', $item['uid']);
+                                                    
+                                                    $results = $query->execute();
+                                                    
+                                                    $recruiter_id = "";
+                                                    if (isset($results['node'])) {
+                                                      $nodes = node_load_multiple(array_keys($results['node']));
+                                                    
+                                                      foreach ($nodes as $node) {
+                                                        $field_user_id = field_get_items('node', $node, 'field_recruiter_id');
+                                                        $recruiter_id = $field_user_id[0]['value'];
+                                                        $node_id = $node->nid;
+                                                      }
+                                                    }
+
+                                                    //echo $node_id;
                                                     
                                                     $compare = strtolower($item['field_skills']);
                                                     $keyword = strtolower($search_value);
                                                     
                                                    	//echo $compare;	
-                                                   
-                                                    $uid = $item['uid'];
                                                     
-		                          			//Fix duplicate value, eliminate the duplicated ones
-		                                    if(!array_key_exists($item['uid'],$already_matched)) { 
-												$already_matched[$item['uid']] = true;
-													// append the css class. This is the first match
-													//echo "yes";
-												}
-											else 
-												{ 
-													// This is the second and all subsequent matches
-													//echo "no";
-												}         
-                                            
                                                     if(strpos($compare, $keyword) !== false){
                                                     //if(!isset($search_value) or $search_value==""){
                                                     		$count_result_search++;
@@ -121,6 +130,26 @@
 	                                                        <td> <?php print $item['field_role_department']; ?> </td>
 	                                                        <td class="client-status">
 	                                                            <span> <?php print $item['ops']; ?>  
+	                                                                <a href="<?php echo url('request-access/'.$uid.'') ?>" type="button" class="btn btn-xs btn-outline btn-danger"> Request Access </a>
+	                                                                
+	                                                                <?php
+	                                                                //echo $recruiter_id;
+	                                                                //echo $user->uid;
+	                                                                if($recruiter_id==$user->uid)
+	                                                                {
+	                                                                    ?>
+	                                                                    <a href="<?php echo url('node/'.$node_id.'') ?>" type="button"  class="btn btn-xs btn-outline  btn-success " style="width: 140px;"> View Evaluation </a>
+	                                                                    <?php
+	                                                                }
+	                                                                else
+	                                                                {
+	                                                                    ?>
+	                                                                        <a href="<?php echo url('node/add/evaluation/'.$uid.'') ?>" type="button"  class="btn btn-xs btn-outline  btn-success " style="width: 140px;"> Create New Evaluation </a>
+	                                                                    <?php
+	                                                                }
+	                                                                ?>
+	                                                                
+	                                                                
 	                                                                <a data-toggle="button" type="button" class="btn btn-xs btn-outline btn-danger save-btn"><i class="fa fa-heart-o"></i> Save </a>
 	                                                                <a data-toggle="button" type="button"  class="btn btn-xs btn-outline  btn-success contact-btn "><i class="fa fa-envelope-o"></i> Contact </a>
 	                                                            </span>

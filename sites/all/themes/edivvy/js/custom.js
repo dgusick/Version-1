@@ -59,8 +59,8 @@ $(document).ready(function () {
     
     //style paging
     $('.pager').replaceWith('<div class="pager1 btn-group">' + $('.pager').html() +'</div>');
-    $('.pager1 li').wrap('<button class="btn btn-white"></button>');
-    $('.pager-current').parent('button').addClass('active');
+    $('.pager1 li').wrap('<div class="btn btn-white"></div>');
+    $('.pager-current').parent('div').addClass('active');
     
     //set all advanced select to display none
     $('.grid-3').addClass("hide");
@@ -178,6 +178,15 @@ $(document).ready(function () {
     $(".page-candidate-search #page-title").after('<span class="text-muted">Choose a Title, A Skill, and Location</span>');
     $(".page-candidate-search-top #page-title").after('<span class="text-muted">Choose a Title, A Skill, and Location</span>');
     
+    //Fix layout candidate register page
+    $(".page-candidate-register").addClass("gray-bg");
+    $(".page-candidate-login").addClass("gray-bg");
+    
+    //Fix change Login link of candidate register to candidate login
+    $(".page-candidate-register .btn-white").attr('href',Drupal.settings.basePath+'candidate/login');
+    
+    //Fix Firefox issue of pagination button
+    $(".page-candidate-search .pager1 button").removeClass("btn");
     
     //var follow_string = $('.follow-btn a').html();
     //$('.follow-btn a').text( "Follow" );

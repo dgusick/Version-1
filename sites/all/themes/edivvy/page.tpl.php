@@ -83,16 +83,9 @@
      }
   else
      {
-        if($users->picture->uri){
-        $pic = theme_image_style(
-            array(
-                'style_name' => 'thumbnail',
-                'path' => $users->picture->uri,
-                'attributes' => array(
-                 'class' => 'img-circle'
-                 )            
-            )
-        ); 
+        if($users->field_user_picture){
+            $field_user_picture = file_create_url($users->field_user_picture[LANGUAGE_NONE][0]['uri']);
+            $pic = '<img class="img-circle" src="'.$field_user_picture.'" />'; 
         }else{ 
             $base_theme_url = drupal_get_path('theme',$GLOBALS['theme']);
             $pic = '<img class="img-circle" src="'.base_path().'/'.$base_theme_url.'/img/default-avatar.png" />';

@@ -1,5 +1,7 @@
 <?php
-//print_r($user->uid); 
+  global $user;
+  $user_load = user_load($user->uid);
+  //print_r($user->uid); 
   //get current uid from url
   $uid_get = arg(1);
   $user_get = user_load($uid_get);
@@ -7,7 +9,7 @@
   $is_rec = false; 
   $is_can = false; 
   $contact_display = true; 
- 
+  
  if(isset($user_get->roles[5])) {$is_rec = true;  } 
  if(isset($user_get->roles[6])) {$is_can = true; $contact_display = false;  } 
  
@@ -27,7 +29,7 @@
         $total_connection = 0;
   }
   
-  if(in_array($user->uid, $field_approved_recruiter_uid_explode)) { 
+  if(in_array($user->uid, $field_approved_recruiter_uid_explode) or $user_load->uid==$user_get->uid) { 
   	$contact_display = true; //this recruiter is in candidates connection__ 
   }  
   
@@ -38,28 +40,21 @@
  }
  else
  {
-     if($user_get->picture->uri){
-        $pic = theme_image_style(
-            array(
-                'style_name' => 'thumbnail',
-                'path' => $user_get->picture->uri,
-                'attributes' => array(
-                 'class' => 'img-circle'
-                 )            
-            )
-        ); 
-      }else{ 
+     if($user_get->field_user_picture){
+            $field_user_picture = file_create_url($user_get->field_user_picture[LANGUAGE_NONE][0]['uri']);
+            $pic = '<img class="img-circle" src="'.$field_user_picture.'" />'; 
+     }else{ 
         $base_theme_url = drupal_get_path('theme',$GLOBALS['theme']);
         $pic = '<img class="img-circle" src="'.base_path().'/'.$base_theme_url.'/img/default-avatar.png" />';
       }
  }
  
- 
+  //get full_name
   $full_name = $user_get->name; 
   if (!empty($user_get->field_first_name) && !empty($user_get->field_last_name)) {
     $full_name = $user_get->field_first_name['und'][0]['value'] . ' ' . $user_get->field_last_name['und'][0]['value'];
   }
-
+  
   //get field_user_about
   if(!empty($user_get->field_user_about)){
     $field_user_about =  $user_get->field_user_about['und'][0]['value'];
@@ -119,8 +114,29 @@
   if(!empty($user_get->field_agree_term)){
     $field_agree_term =  $user_get->field_agree_term['und'][0]['value'];
   }
-      
   
+  //field_private_email
+  $field_private_email = $contact_display ? $user_get->mail : 'Hidden';
+  
+  //setting hidden to Basic Information fields
+  if(!empty($user_load->field_recruiter_status)){
+    $field_recruiter_status =  $user_load->field_recruiter_status['und'][0]['value'];
+   	
+   	if($field_recruiter_status=="Inactive" and $user_load->uid!=$user_get->uid)
+   	{
+   		$full_name = "hidden";
+   		$field_gender = "hidden";
+   		$field_birthday = "hidden";
+   		$field_marital_status = "hidden";
+   		$field_phone = "hidden";
+   		$field_corporate_email = "hidden";
+   		$field_private_email = "hidden";
+   		$field_linkedin_user_id = "hidden";
+   		$field_twitter_account = "hidden";
+   		$field_skype = "hidden";
+   	}
+
+  }
     
 ?>
 <div class="col-md-3">
@@ -269,7 +285,7 @@
                                                 </dl>
                                                 <dl class="dl-horizontal">
                                                     <dt>Private Email</dt>
-                                                    <dd><?php echo $contact_display ? $user_get->mail : 'Hidden'; ?></dd>
+                                                    <dd><?php echo $field_private_email; ?></dd>
                                                 </dl>
                                                 <dl class="dl-horizontal">
                                                     <dt>Linkedin Profile</dt>
@@ -308,7 +324,20 @@
                                                             <input type="checkbox" <?php echo $check ?> value=""> <i></i> &nbsp; I agree to the <a class="text-info"
                                                             href="#">Terms and conditions</a>. 
                                                         </label>
+                                                        
                                                     </div>
+                                                </div>
+                                                <div class="col-lg-12">	
+                                                	<p style="color:red">
+                                                        	<?php
+                                                        	if($field_recruiter_status=="Inactive")
+                                                        	{
+                                                        		?>
+                                                        			Note: This candidate has not permitted to see his/her info, you can see the info by inviting through 'Add Profile' or 'Request Access' from search.
+                                                        		<?php
+                                                        	}
+                                                        	?>
+                                                    </p>
                                                 </div>
                                             </div>
                                         </div>

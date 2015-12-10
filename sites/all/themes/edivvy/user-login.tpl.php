@@ -18,7 +18,12 @@
                 <a href="<?php echo url('user/password'); ?>"><small>Forgot password?</small></a>
                 <p class="text-muted text-center"><small>Do not have an account?</small></p>
                 <a class="btn btn-sm btn-white btn-block" href="<?php echo url('user/register'); ?>">Create an account</a>
-
+                <?php if(arg(0) == 'user') {?>
+                    <a href="<?php echo url('candidate/login'); ?>"><small>Login as Candidate</small></a>
+                    <?php } 
+                    else { ?>
+                        <a href="<?php echo url('user/login'); ?>"><small>Login as Recruiter</small></a>
+                    <?php } ?>
 
 <div class="edivvy-user-login-form-wrapper">
   <?php print drupal_render_children($form) ?>

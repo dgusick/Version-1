@@ -7531,7 +7531,14 @@ select {
 
 .btn-white li a{
     color:#000 !important;
+    display: block;
+    padding: 6px 12px;
 }
+
+.page-candidate-search .pager1 .active li{
+    padding: 6px 12px;
+}
+
 .page-user .tabs{
     display: none;
 }
@@ -7549,7 +7556,15 @@ select {
 }
 
 .page-user .ibox-content{
-    padding-bottom:40px;
+    padding-bottom:70px;
+}
+
+.page-candidate-search .pager1 .btn-white{
+	padding:0px !important;
+}
+
+.page-candidate-search .pager1 div{
+
 }
 
 
