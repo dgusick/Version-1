@@ -118,8 +118,8 @@
                                 
                                 <?php if(isset($user->roles[5])) { //rec. menu  ?>
                                 <li><a href="<?php echo url('user/'.$user->uid.'/wishlist'); ?>">My Wishlist</a></li>
-                                <li><a href="<?php echo url('user/'.$user->uid.'/following'); ?>">Im Following</a></li>
-                                <li><a href="<?php echo url('user/'.$user->uid.'/followers'); ?>">My Followers</a></li>
+                                <li><a href="<?php echo url('user/'.$user->uid.'/my_following'); ?>">Im Following</a></li>
+                                <li><a href="<?php echo url('user/'.$user->uid.'/my_followers'); ?>">My Followers</a></li>
                                 <?php } ?>
                                 
                                 <?php if(isset($user->roles[6])) { //candidate menu ?>
@@ -194,6 +194,7 @@
             </nav>
         </div>
          <?php } ?>
+         
          <div class="row wrapper border-bottom white-bg page-heading">
 		        <div class="col-lg-10">
 		        <?php print render($title_prefix); ?>
@@ -205,7 +206,7 @@
         <div class="wrapper wrapper-content"> 
            <div class="row animated fadeInRight">
             
-            <?php if(arg(0) != 'user') {  ?>
+            <?php if(arg(0) != 'user' || (arg(0) == 'user' && arg(1) != '' && arg(2) == 'edit' ) ) {  ?>
             <div class="col-md-12"><div class="ibox float-e-margins"><div class="ibox-content">
              <div class="content-padding">
              <?php } ?>
@@ -250,7 +251,7 @@
 		
 		    </div></div> <!-- /#main, /#main-wrapper -->
 		    
-		    <?php if(arg(0) != 'user') {  ?>
+		    <?php if(arg(0) != 'user' || (arg(0) == 'user' && arg(1) != '' && arg(2) == 'edit' ) ) {  ?>
 		  </div></div> <!-- /.row -->
 		  </div></div>
 		  <?php } ?>

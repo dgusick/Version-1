@@ -76,14 +76,14 @@
         <div>
             <div>
 
-                <h1 class="logo-name">IN+</h1>
+                <h1 class="logo-name">EDV</h1>
 
             </div>
             
             <div id="content" class="column"><div class="section">
                 <?php if ($page['highlighted']): ?><div id="highlighted"><?php print render($page['highlighted']); ?></div><?php endif; ?>
                 <a id="main-content"></a>
-                 <h3>Welcome to Saarwid</h3>
+                 <h3>Welcome to Edivvy</h3>
                  
                 <?php if ($tabs): ?><div class="tabs"><?php //print render($tabs); ?></div><?php endif; ?>
                 <?php print render($page['help']); ?>
@@ -94,7 +94,7 @@
               </div></div> <!-- /.section, /#content -->
               
               
-            <p class="m-t"> <small>Saarwid &copy; 2015</small> </p>
+            <p class="m-t"> <small>Edivvy &copy; 2015</small> </p>
             
             
             

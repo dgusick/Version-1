@@ -2,13 +2,22 @@
 // 
 function edivvy_preprocess_html(&$vars) {
     global $user; 
+    
   $path = drupal_get_path_alias();
   $aliases = explode('/', $path);
   if($aliases[0] == 'user' && $aliases[1] != '' && $user->uid == 0 ) { 
        $vars['classes_array'][] = 'gray-bg'; 
-  } else if($aliases[0] == 'user' && $aliases[1] == '' && $user->uid == 0 ) { 
+  } 
+  
+  if($aliases[0] == 'user' && $aliases[1] == '' && $user->uid == 0 ) { 
       drupal_goto('user/login');
   }
+  
+  if( ($path == '' || $path == 'home' || $path == '/') && $user->uid == 0  ) { 
+  	drupal_goto('user/login');
+  	
+  }
+  
 }
 
 function edivvy_theme() {

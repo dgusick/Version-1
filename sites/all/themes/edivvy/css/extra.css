@@ -123,6 +123,38 @@ input.form-submit {
     background-color: #323232;
     color: #FFF;
 }
+.page-messages .action-links {
+    list-style-type: none;
+    width: 156px;
+    background-color: #1ab394;
+    padding: 12px;
+    border-radius: 3px;	
+}
+.page-messages .action-links li a {
+	
+    color: #fff;
+    font-size: 14px;
+}
+ .node-evaluation-form .field-name-field-skills-rating table.field-multiple-table {
+   width: 100%;
+}
+.node-evaluation-form .field-name-field-skills-rating table.field-multiple-table #edit-field-skills-rating-und-0-remove-button {
+   float: right;
+   margin-right: 0px;
+}
+.btn-danger.btn-outline,
+.btn-success.btn-outline,
+.btn-green.btn-outline{
+   margin-right: 5px;
+}
+.btn-green.btn-outline:hover {
+    background-color: green;
+    color: #fff;
+}
+.btn-green.btn-outline {
+    pointer-events: none;
 
-
-
+}
+.page-user-edit label {
+	display: block;
+}

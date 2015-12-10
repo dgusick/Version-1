@@ -6,8 +6,19 @@ $(document).ready(function () {
         }
     });
     
+    var item_perpage = 9;
+    
+    $(window).load(function() {
+        var count_visible_items = $('.contact-box-content .row .col-lg-4').length;
+
+        if(count_visible_items<item_perpage)
+        {
+            $('.btn-block.m-t.btn-read-more').hide();
+        }
+    });
+    
     $('.btn-block.m-t.btn-read-more').click(function () {
-        $('.contact-box-content .row .col-lg-4:hidden').slice(0, 9).show();
+        $('.contact-box-content .row .col-lg-4:hidden').slice(0, item_perpage).show();
         if ($('.contact-box-content .row .col-lg-4').length == $('.contact-box-content .row .col-lg-4:visible').length) {
             $('.btn-block.m-t.btn-read-more').hide();
         }
@@ -162,11 +173,11 @@ $(document).ready(function () {
             });
 
 
-            $('.summernote').summernote();
+            //$('.summernote').summernote();
 
         });
         var edit = function() {
-            $('.click2edit').summernote({focus: true});
+            //$('.click2edit').summernote({focus: true});
         };
         var save = function() {
             var aHTML = $('.click2edit').code(); //save HTML If you need(aHTML: array).

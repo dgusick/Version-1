@@ -2,10 +2,17 @@
         <div>
             <div>
 
-                <h1 class="logo-name">IN+</h1>
+                <h1 class="logo-name">EDV</h1>
 
             </div>
-            <h3>Register to IN+</h3>
+            <?php if(  arg(0) == 'user') {?>
+           <h3>Register as recruiter</h3>
+                    <?php } 
+                    else  { ?>
+                      <h3>Register as a candidate</h3>
+                    <?php } ?>
+            
+            
             <p>Create account to see it in action.</p>
             
             <div id="content" class="column"><div class="section">
@@ -17,6 +24,10 @@
                 <?php print $feed_icons; ?>
               </div></div> <!-- /.section, /#content -->
               
-            <p class="m-t"> <small>Inspinia we app framework base on Bootstrap 3 &copy; 2014</small> </p>
+              
+            
+            <p class="m-t"> <small>Edivvy &copy; 2015</small> </p>
         </div>
     </div>
+    
+    

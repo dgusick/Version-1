@@ -151,8 +151,15 @@
 
                 </div>
                     <div class="ibox-content ">
+                        <?php
+                        	if($field_user_about!="")
+                        	{
+                        ?>
                         <h4 class="media-heading">About</h4>
                         <p><?php echo $field_user_about ?></p>
+                        <?php
+                        	}
+                        ?>
                         <br/>
                         <!--
                         <div >
@@ -175,15 +182,43 @@
                         <br/>
                         -->
                         <h4 class="media-heading">Contact</h4>
+                            <?php
+                        	if($field_phone!="")
+	                        	{
+	                        ?>
                             <p><i class="fa fa-phone"></i> <?php echo $field_phone ?></p>
+                            <?php
+	                        	}
+                            ?>
                             <p><i class="fa fa-inbox"></i> <?php echo $contact_display ? $user_get->mail : 'Hidden'; ?></p>
+                            <?php
+                        	if($field_skype!="")
+	                        	{
+	                        ?>
                             <p><i class="fa fa-skype"></i> <?php echo $field_skype ?></p>
+                            <?php
+	                        	}
+                            ?>
+                            <?php
+                        	if($field_twitter_account!="")
+	                        	{
+	                        ?>
                             <p><i class="fa fa-twitter"></i> @<?php echo $field_twitter_account ?> (twitter.com/<?php echo $field_twitter_account ?>)</p>
+                            <?php
+	                        	}
+                            ?>
+                            <?php
+                        	if($field_location!="")
+	                        	{
+	                        ?>
                             <p>
                                 <i class="fa fa-map-marker"></i>
 
                                     <?php echo $field_location; ?>
                             </p>
+                            <?php
+	                        	}
+                            ?>
                         <br/>
                         <h4 class="media-heading">Connections</h4>
                         <div class="team-members">
@@ -195,35 +230,47 @@
                                     for($i=0;$i<count($field_approved_recruiter_uid_explode);$i++)
                                     {
                                         $recruiter_uid = $field_approved_recruiter_uid_explode[$i];
-                                        //load recruiter user
-                                        $load_recruiter = user_load($recruiter_uid);
-                                        //print_r($load_recruiter);
                                         
-                                        if($load_recruiter->field_picture_url)
+                                        //echo $recruiter_uid;
+                                        //echo $user_load->uid;
+                                        
+                                        //check if list contains user own account
+                                        if($recruiter_uid!=$user_load->uid)
                                         {
-                                            $pic_recruiter = '<img class="img-circle" src="'.$load_recruiter->field_picture_url['und'][0]['value'].'" />';  
+                                        
+	                                        //load recruiter user
+	                                        $load_recruiter = user_load($recruiter_uid);
+	                                        //print_r($load_recruiter);
+	                                        
+	                                        if($load_recruiter->field_picture_url)
+	                                        {
+	                                            $pic_recruiter = '<img class="img-circle" src="'.$load_recruiter->field_picture_url['und'][0]['value'].'" />';  
+	                                        }
+	                                        else
+	                                        {
+	                                            if($load_recruiter->picture->uri){
+	                                              	    $pic_recruiter = theme_image_style(
+	                                                    array(
+	                                                    'style_name' => 'thumbnail',
+	                                                    'path' => $load_recruiter->picture->uri,
+	                                                    'attributes' => array(
+	                                                                        'class' => 'img-circle'
+	                                                                    )            
+	                                                    )
+	                                                ); 
+	                                            }else{ 
+	                                              	 $base_theme_url = drupal_get_path('theme',$GLOBALS['theme']);
+	                                              	 $pic_recruiter = '<img class="img-circle" src="'.base_path().'/'.$base_theme_url.'/img/default-avatar.png" />';
+	                                            }
+	                                        }
+	                                        ?>
+	                                         <a href="<?php echo url("user/".$load_recruiter->uid) ?>"><?php echo $pic_recruiter ?></a>
+	                                        <?php
                                         }
-                                        else
-                                        {
-                                            if($load_recruiter->picture->uri){
-                                              	    $pic_recruiter = theme_image_style(
-                                                    array(
-                                                    'style_name' => 'thumbnail',
-                                                    'path' => $load_recruiter->picture->uri,
-                                                    'attributes' => array(
-                                                                        'class' => 'img-circle'
-                                                                    )            
-                                                    )
-                                                ); 
-                                            }else{ 
-                                              	 $base_theme_url = drupal_get_path('theme',$GLOBALS['theme']);
-                                              	 $pic_recruiter = '<img class="img-circle" src="'.base_path().'/'.$base_theme_url.'/img/default-avatar.png" />';
-                                            }
-                                        }
-                                        ?>
-                                         <a href="<?php echo url("user/".$load_recruiter->uid) ?>"><?php echo $pic_recruiter ?></a>
-                                        <?php
                                     }
+                                }
+                                else{
+                                	echo "This user has no connection.";
                                 }
                             ?>
 
@@ -245,65 +292,149 @@
                                 <div class="tab-content">
                                     <div id="tab-1" class="tab-pane active">
                                         <div class="full-height-scroll">
+                                            <?php
+				                        	if($field_summary!="")
+					                        	{
+					                        ?>
                                             <br/>
                                             <h2 class="media-heading"><i class="fa fa-bar-chart"></i>&nbsp;Summary</h2>
                                             <div class="click2edit wrapper p-md">
                                                 <?php echo $field_summary ?>
                                             </div>
+                                            <?php
+					                        	}
+                                            ?>
                                             
                                             <br/>
                                             <h2 class="media-heading"><i class="fa fa-user"></i>&nbsp;Basic Information</h2>
                                             <br/>
                                             <div class="pmbb-view">
+                                                <?php
+					                        	if($full_name!="")
+						                        	{
+						                        ?>
                                                 <dl class="dl-horizontal">
                                                     <dt>Full Name</dt>
                                                     <dd><?php echo $full_name ?></dd>
                                                 </dl>
+                                                <?php
+						                        	}
+                                                ?>
+                                                <?php
+					                        	if($field_gender!="")
+						                        	{
+						                        ?>
                                                 <dl class="dl-horizontal">
                                                     <dt>Gender</dt>
                                                     <dd><?php echo $field_gender ?></dd>
                                                 </dl>
+                                                <?php
+						                        	}
+                                                ?>
+                                                <?php
+					                        	if($field_birthday!="")
+						                        	{
+						                        ?>
                                                 <dl class="dl-horizontal">
                                                     <dt>Birthday</dt>
                                                     <dd><?php echo $field_birthday ?></dd>
                                                 </dl>
+                                                <?php
+						                        	}
+                                                ?>
+                                                <?php
+					                        	if($field_marital_status!="")
+						                        	{
+						                        ?>
                                                 <dl class="dl-horizontal">
                                                     <dt>Martial Status</dt>
                                                     <dd><?php echo $field_marital_status ?></dd>
                                                 </dl>
+                                                <?php
+						                        	}
+                                                ?>
                                             </div>
                                             <h2 class="media-heading"><i class="fa fa-phone"></i>&nbsp;Contact Information</h2>
                                             <br/>
                                             <div>
+                                                <?php
+					                        	if($field_phone!="")
+						                        	{
+						                        ?>
                                                 <dl class="dl-horizontal">
                                                     <dt>Mobile Phone</dt>
                                                     <dd><?php echo $field_phone ?></dd>
                                                 </dl>
+                                                <?php
+						                        	}
+                                                ?>
+                                                <?php
+					                        	if($field_corporate_email!="")
+						                        	{
+						                        ?>
                                                 <dl class="dl-horizontal">
                                                     <dt>Corporate Email </dt>
                                                     <dd><?php echo $field_corporate_email ?> |&nbsp;<small class="text-muted">Last validated 18 days ago </small></dd>
                                                 </dl>
+                                                <?php
+						                        	}
+                                                ?>
+                                                <?php
+					                        	if($field_private_email!="")
+						                        	{
+						                        ?>
                                                 <dl class="dl-horizontal">
                                                     <dt>Private Email</dt>
                                                     <dd><?php echo $field_private_email; ?></dd>
                                                 </dl>
+                                                <?php
+						                        	}
+                                                ?>
+                                                <?php
+					                        	if($field_linkedin_user_id!="")
+						                        	{
+						                        ?>
                                                 <dl class="dl-horizontal">
                                                     <dt>Linkedin Profile</dt>
                                                     <dd><?php echo $field_linkedin_user_id ?></dd>
                                                 </dl>
+                                                <?php
+						                        	}
+                                                ?>
+                                                <?php
+					                        	if($field_twitter_account!="")
+						                        	{
+						                        ?>
                                                 <dl class="dl-horizontal">
                                                     <dt>Twitter</dt>
                                                     <dd>@<?php echo $field_twitter_account ?></dd>
                                                 </dl>
+                                                <?php
+						                        	}
+                                                ?>
+                                                <?php
+					                        	if($field_skype!="")
+						                        	{
+						                        ?>
                                                 <dl class="dl-horizontal">
                                                     <dt>Skype</dt>
                                                     <dd><?php echo $field_skype ?></dd>
                                                 </dl>
+                                                <?php
+						                        	}
+                                                ?>
                                                 <?php if( $contact_display ) : ?>
+                                                <?php
+					                        	if($field_location!="")
+						                        	{
+						                        ?>
                                                 <dl class="dl-horizontal">
                                                     <dt>Address</dt>
                                                     <dd><?php echo $field_location ?></dd>
                                                 </dl>
+                                                <?php
+						                        	}
+                                                ?>
                                                 <?php  endif; ?>
                                             </div>
                                             <hr class="hr-line-solid"/>
@@ -330,7 +461,21 @@
                                                 <div class="col-lg-12">	
                                                 	<p style="color:red">
                                                         	<?php
-                                                        	if($field_recruiter_status=="Inactive")
+                                                        	//get user_role
+                                                        	if(isset($$uid_get)){
+                                                        	    $user_role = $user_load->roles;
+                                                        	}else{
+                                                        	    $user_role = $user_get->roles;
+                                                        	}
+                                                            
+                                                            //print_r($user_role);
+                                                            
+                                                            if(array_key_exists(5, $user_role))
+                                                            {
+                                                                //echo "candidate";
+                                                            }
+                                                        	
+                                                        	if($field_recruiter_status=="Inactive" and !array_key_exists(5, $user_role))
                                                         	{
                                                         		?>
                                                         			Note: This candidate has not permitted to see his/her info, you can see the info by inviting through 'Add Profile' or 'Request Access' from search.
@@ -357,105 +502,110 @@
                                                         $load_recruiter = user_load($recruiter_uid);
                                                         //print_r($load_recruiter);
                                                         
-                                                        //get all fields
-                                                        //full_name
-                                                        $full_name_connection = $load_recruiter->name; 
-                                                        if (!empty($load_recruiter->field_first_name) && !empty($load_recruiter->field_last_name)) {
-                                                            $full_name_connection = $load_recruiter->field_first_name['und'][0]['value'] . ' ' . $load_recruiter->field_last_name['und'][0]['value'];
-                                                        }
+                                                        //check if list contains user own account
+				                                        if($recruiter_uid!=$user_load->uid)
+				                                        {
                                                         
-                                                        //linkedin
-                                                        //get field_linkedin_user_id
-                                                        if(!empty($load_recruiter->field_linkedin_user_id)){
-                                                            $field_linkedin_user_id_connection =  $load_recruiter->field_linkedin_user_id['und'][0]['value'];
-                                                        }
-                                                        
-                                                        if($load_recruiter->field_picture_url)
-                                                        {
-                                                            $pic_recruiter = '<img class="img-circle m-t-xs img-responsive" src="'.$load_recruiter->field_picture_url['und'][0]['value'].'" />';  
-                                                        }
-                                                        else
-                                                        {
-                                                            if($load_recruiter->picture->uri){
-                                                              	    $pic_recruiter = theme_image_style(
-                                                                    array(
-                                                                    'style_name' => 'thumbnail',
-                                                                    'path' => $load_recruiter->picture->uri,
-                                                                    'attributes' => array(
-                                                                                        'class' => 'img-circle m-t-xs img-responsive'
-                                                                                    )            
-                                                                    )
-                                                                ); 
-                                                            }else{ 
-                                                              	 $base_theme_url = drupal_get_path('theme',$GLOBALS['theme']);
-                                                              	 $pic_recruiter = '<img class="img-circle m-t-xs img-responsive" src="'.base_path().'/'.$base_theme_url.'/img/default-avatar.png" />';
-                                                            }
-                                                        }
-                                                          
-                                                          ?>
-                                                            <div class="col-lg-4">
-                                                                <div class="contact-box">
-                                                                    <a href="<?php echo url("user/".$load_recruiter->uid) ?>">
-                                                                        <div class="row">
-                                                                            <div class="col-sm-4 col-sm-push-4">
-                                                                                <div class="text-center">
-                                                                                    <?php echo $pic_recruiter ?>
-                                                                                    <div class="m-t-xs font-bold">Recruiter, Veritas</div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="row">
-                                                                            <div class="col-sm-12">
-                                                                                <h3><strong><?php echo $full_name_connection ?></strong></h3>
-                                                                                <p><i class="fa fa-linkedin-square"></i> <?php echo $load_recruiter->field_first_name['und'][0]['value'].".".$load_recruiter->field_last_name['und'][0]['value'] ?></p>
-                                                                                <p><i class="fa fa-inbox"></i> <a href="mailto:<?php echo $load_recruiter->mail ?>"> <?php echo $load_recruiter->mail ?></a></p>
-                                                                                <!--
-                                                                                <div>
-                                                                                    <div>
-                                                                                        <span>Quality of candidates</span>
-                                                                                        <small class="pull-right">4.5 / 5</small>
-                                                                                    </div>
-                                                                                    <div class="progress progress-mini">
-                                                                                        <div style="width: 90%;" class="progress-bar"></div>
-                                                                                    </div>
-                
-                                                                                    <div>
-                                                                                        <span>Quality of feedback</span>
-                                                                                        <small class="pull-right">2.5 / 5</small>
-                                                                                    </div>
-                                                                                    <div class="progress progress-mini">
-                                                                                        <div style="width: 50%;" class="progress-bar progress-bar-danger"></div>
-                                                                                    </div>
-                                                                                </div>
-                                                                                -->
-                                                                            </div>
-                                                                        </div>
-                                                                        <!--
-                                                                        <div class=" m-t-lg">
-                                                                            <div class="col-md-4">
-                                                                                <span class="line">5,3,9,6,5,9,7,3,5,2,5,6,7,7,2,2</span>
-                                                                                <h5><strong>169</strong> Posts</h5>
-                                                                            </div>
-                                                                            <div class="col-md-4">
-                                                                                <span class="line">5,3,9,6,5,9,7,3,5,2</span>
-                                                                                <h5><strong>28</strong> Following</h5>
-                                                                            </div>
-                                                                            <div class="col-md-4">
-                                                                                <span class="line">5,3,2,-1,-3,-2,2,3,5,2</span>
-                                                                                <h5><strong>24</strong> Followers</h5>
-                                                                            </div>
-                                                                        </div>
-                                                                        -->
-                                                                        <div class="col-sm-12">
-                                                                            <div class="div-btn-follow btn btn-block btn-outline btn-primary follow-btn">
-                                                                                <?php print flag_create_link('follow', $load_recruiter->uid); ?>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="clearfix"></div>
-                                                                    </a>
-                                                                </div>
-                                                            </div>
-                                                          <?php
+	                                                        //get all fields
+	                                                        //full_name
+	                                                        $full_name_connection = $load_recruiter->name; 
+	                                                        if (!empty($load_recruiter->field_first_name) && !empty($load_recruiter->field_last_name)) {
+	                                                            $full_name_connection = $load_recruiter->field_first_name['und'][0]['value'] . ' ' . $load_recruiter->field_last_name['und'][0]['value'];
+	                                                        }
+	                                                        
+	                                                        //linkedin
+	                                                        //get field_linkedin_user_id
+	                                                        if(!empty($load_recruiter->field_linkedin_user_id)){
+	                                                            $field_linkedin_user_id_connection =  $load_recruiter->field_linkedin_user_id['und'][0]['value'];
+	                                                        }
+	                                                        
+	                                                        if($load_recruiter->field_picture_url)
+	                                                        {
+	                                                            $pic_recruiter = '<img class="img-circle m-t-xs img-responsive" src="'.$load_recruiter->field_picture_url['und'][0]['value'].'" />';  
+	                                                        }
+	                                                        else
+	                                                        {
+	                                                            if($load_recruiter->picture->uri){
+	                                                              	    $pic_recruiter = theme_image_style(
+	                                                                    array(
+	                                                                    'style_name' => 'thumbnail',
+	                                                                    'path' => $load_recruiter->picture->uri,
+	                                                                    'attributes' => array(
+	                                                                                        'class' => 'img-circle m-t-xs img-responsive'
+	                                                                                    )            
+	                                                                    )
+	                                                                ); 
+	                                                            }else{ 
+	                                                              	 $base_theme_url = drupal_get_path('theme',$GLOBALS['theme']);
+	                                                              	 $pic_recruiter = '<img class="img-circle m-t-xs img-responsive" src="'.base_path().'/'.$base_theme_url.'/img/default-avatar.png" />';
+	                                                            }
+	                                                        }
+	                                                          
+	                                                          ?>
+	                                                            <div class="col-lg-4">
+	                                                                <div class="contact-box">
+	                                                                    <a href="<?php echo url("user/".$load_recruiter->uid) ?>">
+	                                                                        <div class="row">
+	                                                                            <div class="col-sm-4 col-sm-push-4">
+	                                                                                <div class="text-center">
+	                                                                                    <?php echo $pic_recruiter ?>
+	                                                                                    <div class="m-t-xs font-bold">Recruiter, Veritas</div>
+	                                                                                </div>
+	                                                                            </div>
+	                                                                        </div>
+	                                                                        <div class="row">
+	                                                                            <div class="col-sm-12">
+	                                                                                <h3><strong><?php echo $full_name_connection ?></strong></h3>
+	                                                                                <p><i class="fa fa-linkedin-square"></i> <?php echo $load_recruiter->field_first_name['und'][0]['value'].".".$load_recruiter->field_last_name['und'][0]['value'] ?></p>
+	                                                                                <p><i class="fa fa-inbox"></i> <a href="mailto:<?php echo $load_recruiter->mail ?>"> <?php echo $load_recruiter->mail ?></a></p>
+	                                                                                <!--
+	                                                                                <div>
+	                                                                                    <div>
+	                                                                                        <span>Quality of candidates</span>
+	                                                                                        <small class="pull-right">4.5 / 5</small>
+	                                                                                    </div>
+	                                                                                    <div class="progress progress-mini">
+	                                                                                        <div style="width: 90%;" class="progress-bar"></div>
+	                                                                                    </div>
+	                
+	                                                                                    <div>
+	                                                                                        <span>Quality of feedback</span>
+	                                                                                        <small class="pull-right">2.5 / 5</small>
+	                                                                                    </div>
+	                                                                                    <div class="progress progress-mini">
+	                                                                                        <div style="width: 50%;" class="progress-bar progress-bar-danger"></div>
+	                                                                                    </div>
+	                                                                                </div>
+	                                                                                -->
+	                                                                            </div>
+	                                                                        </div>
+	                                                                        <!--
+	                                                                        <div class=" m-t-lg">
+	                                                                            <div class="col-md-4">
+	                                                                                <span class="line">5,3,9,6,5,9,7,3,5,2,5,6,7,7,2,2</span>
+	                                                                                <h5><strong>169</strong> Posts</h5>
+	                                                                            </div>
+	                                                                            <div class="col-md-4">
+	                                                                                <span class="line">5,3,9,6,5,9,7,3,5,2</span>
+	                                                                                <h5><strong>28</strong> Following</h5>
+	                                                                            </div>
+	                                                                            <div class="col-md-4">
+	                                                                                <span class="line">5,3,2,-1,-3,-2,2,3,5,2</span>
+	                                                                                <h5><strong>24</strong> Followers</h5>
+	                                                                            </div>
+	                                                                        </div>
+	                                                                        -->
+	                                                                        <div class="col-sm-12">
+	                                                                            <div class="div-btn-follow btn btn-block btn-outline btn-primary follow-btn">
+	                                                                                <?php print flag_create_link('follow', $load_recruiter->uid); ?>
+	                                                                            </div>
+	                                                                        </div>
+	                                                                        <div class="clearfix"></div>
+	                                                                    </a>
+	                                                                </div>
+	                                                            </div>
+	                                                          <?php
+				                                        }
                                                     }
                                                 }
                                             ?>

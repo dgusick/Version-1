@@ -1,6 +1,7 @@
 <?php
     $base_theme_url = drupal_get_path('theme',$GLOBALS['theme']);
     global $user;
+    $user_load = user_load($user->uid);
     $search_value = $_GET['top-search'];
 ?>
 		<!--
@@ -130,7 +131,27 @@
 	                                                        <td> <?php print $item['field_role_department']; ?> </td>
 	                                                        <td class="client-status">
 	                                                            <span> <?php print $item['ops']; ?>  
-	                                                                <a href="<?php echo url('request-access/'.$uid.'') ?>" type="button" class="btn btn-xs btn-outline btn-danger"> Request Access </a>
+	                                                                <?php
+	                                                                	$field_user_candidate_uid = $user_load->field_user_candidate_uid['und'][0]['value'];
+	                                                                	$field_user_candidate_uid_explode = explode(',',$field_user_candidate_uid);
+
+	        															//echo $field_user_candidate_uid;
+	        															//echo $item['uid'];
+	        															//print_r($field_user_candidate_uid_explode);
+	        															
+	        															if(in_array($item['uid'], $field_user_candidate_uid_explode)){
+	        																?>
+	        																	<a href="#" type="button" class="btn btn-xs btn-outline btn-green" style="width: 100px;"> Accessed </a>
+	        																<?php
+	        															}
+	        															else{
+																			?>	        															
+	        																	<a href="<?php echo url('request-access/'.$uid.'') ?>" type="button" class="btn btn-xs btn-outline btn-danger" style="width: 100px;"> Request Access </a>
+	        																<?php
+	        															}
+	                                                                ?>
+	                                                                
+	                                                                
 	                                                                
 	                                                                <?php
 	                                                                //echo $recruiter_id;

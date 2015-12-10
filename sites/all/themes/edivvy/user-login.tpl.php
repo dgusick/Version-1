@@ -16,12 +16,12 @@
 
 
                 <a href="<?php echo url('user/password'); ?>"><small>Forgot password?</small></a>
-                <p class="text-muted text-center"><small>Do not have an account?</small></p>
-                <a class="btn btn-sm btn-white btn-block" href="<?php echo url('user/register'); ?>">Create an account</a>
-                <?php if(arg(0) == 'user') {?>
+                <p class="text-muted text-center"><a class="" href="<?php echo url('user/register'); ?>"><small>Do not have an account?</small></a></p>
+                
+                <?php if(0 && arg(0) == 'user') {?>
                     <a href="<?php echo url('candidate/login'); ?>"><small>Login as Candidate</small></a>
                     <?php } 
-                    else { ?>
+                    else if(0) { ?>
                         <a href="<?php echo url('user/login'); ?>"><small>Login as Recruiter</small></a>
                     <?php } ?>
 
