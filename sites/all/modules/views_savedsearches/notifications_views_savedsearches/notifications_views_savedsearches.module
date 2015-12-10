@@ -17,7 +17,8 @@
 function notifications_views_savedsearches_form_alter(&$form, $form_state, $form_id) {
   global $user;
   if ($form_id == 'views_savedsearches_delete_search_form' && user_access('subscribe to views savedsearch')) {
-    $curr_subs = notifications_user_get_subscriptions($user->uid, 'viewsnewitem', NULL);
+    //$curr_subs = notifications_user_get_subscriptions($user->uid, 'viewsnewitem', NULL);
+    $curr_subs = array();
     $sids = array();
     foreach ($curr_subs as $k => $sub) {
       $sids[$sub->fields['sid']] = $sub->sid;
@@ -32,12 +33,12 @@ function notifications_views_savedsearches_form_alter(&$form, $form_state, $form
     foreach ($saved_searches as  $k => $option) {
       $link = '';
       if (isset($sids[$option->sid])) {
-        $link = notifications_get_link('unsubscribe', array('sid' => $sids[$option->sid], 'signed' => TRUE, 'absolute' => TRUE, 'destination' => $view->get_path()));
-        $links[] = l(t('Unsubscribe from !search', array('!search' => $option->name)), $link['href'], $link['options']);
+        //$link = notifications_get_link('unsubscribe', array('sid' => $sids[$option->sid], 'signed' => TRUE, 'absolute' => TRUE, 'destination' => $view->get_path()));
+       // $links[] = l(t('Unsubscribe from !search', array('!search' => $option->name)), $link['href'], $link['options']);
       }
       else {
-        $link = notifications_get_link('subscribe', array('uid' => $user->uid, 'type' => 'savedsearch', 'confirm' => TRUE, 'fields' => array('sid' => $option->sid), 'destination' => $view->get_path()));
-        $links[] = l(t('Subscribe to !search', array('!search' => $option->name)), $link['href'], $link['options']);
+        //$link = notifications_get_link('subscribe', array('uid' => $user->uid, 'type' => 'savedsearch', 'confirm' => TRUE, 'fields' => array('sid' => $option->sid), 'destination' => $view->get_path()));
+        //$links[] = l(t('Subscribe to !search', array('!search' => $option->name)), $link['href'], $link['options']);
       }
     }
     $form['saved_collapse']['#suffix'] = theme('notifications_views_savedsearches_links', $links);
