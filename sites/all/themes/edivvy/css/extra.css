@@ -97,14 +97,42 @@ input.form-submit {
 
 
 
-.page-messages-new form#privatemsg-new label {
+.page-messages-new #privatemsg-new label {
 	display: block;
 }
 
-.page-messages-new form#privatemsg-new .form-item .description .item-list {
+.page-messages-new #privatemsg-new .form-item .description .item-list {
 	text-align: left;
 }
 
+.page-profile-main table {
+	width: 100%;
+}
+.page-profile-main table tbody tr td .ds-2col .group-left {
+	width: 57%;
+    float: left;
+}
+.page-profile-main table tbody tr td .ds-2col .group-right .form-type-fivestar label {
+	display:none;
+}
+.page-profile-main table tbody tr td .ds-2col .group-right {
+	float: left;
+    width: 40%;
+}
+.page-profile-main table tbody tr td .ds-2col .group-left label {
+	margin-right: 4px;
+}
+.page-profile-main table tbody tr td input[type="submit"] {
+	float:right;
+	margin-right: 0;
+}
+.page-profile-main table tbody tr td {
+	/*    padding-top: 10px; */
+}
+.page-profile-main table tbody tr td input[type="text"]  {
+	border: 1px solid #ccc;
+    border-top-color: #999; 
+}
 
 .page-user table.views-table {
 	   width: 100%;

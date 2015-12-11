@@ -141,16 +141,30 @@
 	        															//echo $item['uid'];
 	        															//print_r($field_user_candidate_uid_explode);
 	        															
+	        															//echo $item['inviter'];
+	        															//echo $user->uid;
+	        															
+	        															
 	        															if(in_array($item['uid'], $field_user_candidate_uid_explode)){
-	        																?>
-	        																	<a href="#" type="button" class="btn btn-xs btn-outline btn-green" style="width: 100px;"> Accessed </a>
-	        																<?php
+	        																if($recruiter_id==$user->uid)
+	                                                                			{
+	                                                                				?> <a href="<?php echo url('node/'.$node_id.'') ?>" type="button"  class="btn btn-xs btn-outline  btn-success " style="width: 140px;"> View Evaluation </a> <?php
+	                                                                			}
+	                                                                		else
+	                                                                			{
+	                                                                				?> <a href="<?php echo url('node/add/evaluation/'.$uid.'') ?>" type="button"  class="btn btn-xs btn-outline  btn-success " style="width: 140px;"> Create New Evaluation </a> <?php
+	                                                                			}
 	        															}
-	        															else{
-																			?>	        															
-	        																	<a href="<?php echo url('request-access/'.$uid.'') ?>" type="button" class="btn btn-xs btn-outline btn-danger" style="width: 100px;"> Request Access </a>
-	        																<?php
+	        															//if current user is the recruiter that invited the candidate
+	        															else if($item['inviter']==$user->uid)
+	        															{
+	        																?> <a href="<?php echo url('node/add/evaluation/'.$uid.'') ?>" type="button"  class="btn btn-xs btn-outline  btn-success " style="width: 140px;"> Create New Evaluation </a> <?php	
 	        															}
+	        															else
+	        															{
+	                                                                		?> <a href="<?php echo url('request-access/'.$uid.'') ?>" type="button" class="btn btn-xs btn-outline btn-danger" style="width: 140px;"> Request Access </a> <?php 
+	                                                                	}
+	        															
 	                                                                ?>
 	                                                                
 	                                                                
@@ -158,18 +172,7 @@
 	                                                                <?php
 	                                                                //echo $recruiter_id;
 	                                                                //echo $user->uid;
-	                                                                if($recruiter_id==$user->uid)
-	                                                                {
-	                                                                    ?>
-	                                                                    <a href="<?php echo url('node/'.$node_id.'') ?>" type="button"  class="btn btn-xs btn-outline  btn-success " style="width: 140px;"> View Evaluation </a>
-	                                                                    <?php
-	                                                                }
-	                                                                else
-	                                                                {
-	                                                                    ?>
-	                                                                        <a href="<?php echo url('node/add/evaluation/'.$uid.'') ?>" type="button"  class="btn btn-xs btn-outline  btn-success " style="width: 140px;"> Create New Evaluation </a>
-	                                                                    <?php
-	                                                                }
+	                                                                
 	                                                                ?>
 	                                                                
 	                                                                

@@ -129,7 +129,6 @@
                                 <li><a href="<?php echo url('user'); ?>">Profile</a></li>
                                 
                                 <?php if(isset($user->roles[5])) { //rec. menu  ?>
-                                <li><a href="<?php echo url('user/'.$user->uid.'/invites'); ?>">My Invites</a></li>
                                 <li><a href="<?php echo url('user/'.$user->uid.'/wishlist'); ?>">My Wishlist</a></li>
                                 <li><a href="<?php echo url('user/'.$user->uid.'/my_following'); ?>">Im Following</a></li>
                                 <li><a href="<?php echo url('user/'.$user->uid.'/my_followers'); ?>">My Followers</a></li>
@@ -157,12 +156,21 @@
                 <li>
                     <a href="<?php echo url('candidate-search'); ?>"><i class="fa fa-search"></i> <span class="nav-label">Search</span></a>
                 </li>
+                
+                <li>
+                    <a href="<?php echo url('user/'.$user->uid.'/invites'); ?>"><i class="fa fa-search"></i> <span class="nav-label">My Candidates</span></a>
+                </li>    
+                <li>
+                    <a href="<?php echo url('invite/add/invite_by_email'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Invite Candidate</span></a>
+                </li>
                 <li class="active1">
                     <a href="<?php echo url('recruiter-list'); ?>"><i class="fa fa-group"></i> <span class="nav-label">Recruiters</span></a>
                 </li>
+                
                 <li>
-                    <a href="<?php echo url('invite/add/invite_by_email'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Add Profile</span></a>
+                    <a href="<?php echo url('access-request'); ?>"><i class="fa fa-group"></i> <span class="nav-label">Access Requests</span></a>
                 </li>
+                
                 <li>
                     <a href="<?php echo url('node/add/requirement'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Add Requirement</span></a>
                 </li>
@@ -171,7 +179,10 @@
                 <?php if(isset($user->roles[6])) { //candidate menu ?>
                 <li>
                     <!--<a href="<?php echo url('user/'.$user->uid.'/approved'); ?>#tab-2"><i class="fa fa-user-plus"></i> <span class="nav-label">Approved recruiter</span></a>-->
-                    <a href="<?php echo url('approved-recruiter-list'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Approved recruiter</span></a>
+                    <a href="<?php echo url('profile-main/'.$user->uid.'/edit'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Edit My Skills</span></a>
+                    <a href="<?php echo url('approved-recruiter-list'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Approved recruiters</span></a>
+                    <a href="<?php echo url('access-request'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Access Requests</span></a>
+                    
                 </li>
                 
                 

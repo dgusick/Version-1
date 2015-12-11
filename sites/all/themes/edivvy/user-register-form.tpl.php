@@ -8,8 +8,9 @@
                 </div>
                 
                 <div class="form-group">
+           
+                  <input type="email" id="edit-mail"  placeholder="Email" name="mail" value="<?php echo isset($form['account']['mail']['#default_value']) ? $form['account']['mail']['#default_value'] : '' ; ?>" size="60" maxlength="254" class="form-control form-text required">
                   <?php unset($form['account']['mail']); ?>
-                  <input type="email" id="edit-mail"  placeholder="Email" name="mail" value="" size="60" maxlength="254" class="form-control form-text required">
                 </div>
                 <div class="form-group">
                 <?php unset($form['account']['pass']); ?>

@@ -88,6 +88,7 @@
 		$user_request_uid = arg(1);
 		$user_candidate_uid = arg(2);
 		$user_approve_uid = arg(3);
+		$approve_link_pattern = $user_request_uid."/".$user_candidate_uid."/".$user_approve_uid."=1";
 		
 		// Loading account
 		$account = user_load($user_request_uid); 
@@ -178,6 +179,37 @@
         {
         	$user_can_approved_recruiter_id_string = $user_request_uid;
         }
+        
+        //get field_approve_link
+		if(isset($account->field_approve_link['und']['0']['value']))
+            {
+                $field_approve_link = $account->field_approve_link['und']['0']['value'];
+            }
+        
+        //store field_approve_link to both candidate and recruiter
+        if($field_approve_link!="")
+        {
+        	//check existed value
+        	$check_field_approve_link = explode(",",$field_approve_link);
+        	
+        	if (in_array($approve_link_pattern, $check_field_approve_link))
+			{
+			  	//echo "duplicate";
+			  	//not storing anything, keep the old value
+			  	$field_approve_link_string = $field_approve_link;
+			}
+			else
+			{
+			  	//store new value
+        		$field_approve_link_string = $field_approve_link.",".$approve_link_pattern;
+			}
+        }
+        else if($field_approve_link=="")
+        {
+        	$field_approve_link_string = $approve_link_pattern;
+        }
+        
+        //echo $approve_link_pattern;
 				
 		//save user_candidate_id_string into recruiter's field
 		$edit = array(
@@ -195,6 +227,13 @@
 		      ),
 		    ),
 		  ),
+		  'field_approve_link' => array(
+		    'und' => array(
+		      0 => array(
+		        'value' => $field_approve_link_string,
+		      ),
+		    ),
+		  ),
 		);
 		user_save($account, $edit);
 		
@@ -204,6 +243,13 @@
 		    'und' => array(
 		      0 => array(
 		        'value' => $user_can_approved_recruiter_id_string,
+		      ),
+		    ),
+		  ),
+		  'field_approve_link' => array(
+		    'und' => array(
+		      0 => array(
+		        'value' => $field_approve_link_string,
 		      ),
 		    ),
 		  ),
@@ -248,11 +294,17 @@
 		//print_r($user_rec);
 		
 		//get admin email
-		$site_email = variable_get('site_mail', '');
+		//$site_email = variable_get('site_mail', '');
+		
+		//if no invite
+		$can_email = $users->mail;
+		$can_name = $users->name;
+		
 		//echo $site_email;
 		
 		//send email to recruiter
 		$approve_link = $base_url."/access-approve/".$user->uid."/".$users->uid."/".$user_rec->uid;
+		$approve_link_pattern = $user->uid."/".$users->uid."/".$user_rec->uid;
 		$message = "";
 		$message .= "Hi ".$name_recruiter.",\r\n\r\n";
 		$message .= $current_user_name."has requested to access: ".$username_candidate." profile\r\n\r\n";
@@ -269,14 +321,58 @@
 	    
 	    if($email_recruiter=="")
 	    {
-	        $email_send = $site_email;
-	        $name_send = $site_email;
+	        $email_send = $can_email;
+	        $name_send = $can_name;
 	    }
 	    else
 	    {
 	        $email_send = $email_recruiter;
 	        $name_send = $name_recruiter;
 	    }
+	    
+	    $account = user_load($user->uid);
+	    
+	    //get field_approve_link
+		if(isset($account->field_approve_link['und']['0']['value']))
+            {
+                $field_approve_link = $account->field_approve_link['und']['0']['value'];
+            }
+        
+        //store field_approve_link to both candidate and recruiter
+        if($field_approve_link!="")
+        {
+        	//check existed value
+        	$check_field_approve_link = explode(",",$field_approve_link);
+        	
+        	if (in_array($approve_link_pattern, $check_field_approve_link))
+			{
+			  	//echo "duplicate";
+			  	//not storing anything, keep the old value
+			  	$field_approve_link_string = $field_approve_link;
+			}
+			else
+			{
+			  	//store new value
+        		$field_approve_link_string = $field_approve_link.",".$approve_link_pattern;
+			}
+        }
+        else if($field_approve_link=="")
+        {
+        	$field_approve_link_string = $approve_link_pattern;
+        }
+	    
+	    //save approve link after sent
+		$edit = array(
+		  'field_approve_link' => array(
+		    'und' => array(
+		      0 => array(
+		        'value' => $field_approve_link_string,
+		      ),
+		    ),
+		  ),
+		);
+		user_save($account, $edit);
+		
 	    
 	    drupal_mail('custom_view_candidates', 'any_key', $email_send, language_default(), $params);
 		
@@ -647,6 +743,13 @@
       global $user;
       $idgetcan = arg(3);
       
+      if(isset($idgetcan))
+      {
+        $my_inviter = db_query("select uid from {invite} where invitee =  ".$idgetcan)->fetchField();
+      }
+      //echo $my_inviter;
+      
+      
       $type = is_string($node) ? $node : $node->type;
       
       $user_data = user_load($user->uid);
@@ -659,10 +762,13 @@
     
       if ($type == 'evaluation' && ($op == 'create' || $op == 'update')) {
         if (in_array($idgetcan, $explode_field_user_candidate_uid) and array_key_exists(5, $user->roles)) { // allow access
-          return NODE_ACCESS_ALLOW;
+            return NODE_ACCESS_ALLOW;
+        }
+        else if($my_inviter==$user->uid){
+            return NODE_ACCESS_ALLOW;
         }
         else {
-          return NODE_ACCESS_DENY;
+            return NODE_ACCESS_DENY;
         }
       }
     

@@ -1,6 +1,6 @@
 <?php
   global $user;
-  $user_load = user_load($user->uid);
+  $user_load = user_load($user->uid); 
   //print_r($user->uid); 
   //get current uid from url
   if(arg(1)!= '') { 
@@ -19,7 +19,7 @@
  if(isset($user_get->roles[5])) {$is_rec = true;  } 
  if(isset($user_get->roles[6])) {$is_can = true; $contact_display = false; 
  
- 	$my_inviter = db_query("select uid from {invite} where invitee =  ".$user->uid)->fetchField();
+ 	$my_inviter = db_query("select uid from {invite} where invitee =  ".$user_get->uid)->fetchField(); //logged in user 
  	
  } 
  
@@ -33,7 +33,7 @@
   
   if(isset($my_inviter) && $my_inviter) 
    $field_approved_recruiter_uid = $my_inviter.','.$field_approved_recruiter_uid; 
-    
+   
   //explode array field_approved_recruiter_uid
   $field_approved_recruiter_uid_explode = array_filter (explode(",",$field_approved_recruiter_uid));
   
@@ -152,7 +152,7 @@ if($field_approved_recruiter_uid!="")
   if(!empty($user_load->field_recruiter_status)){
     $field_recruiter_status =  $user_load->field_recruiter_status['und'][0]['value'];
    	
-   	if($field_recruiter_status=="Inactive" and $user_load->uid != $user_get->uid)
+   	if($field_recruiter_status=="Inactive" and ($user_load->uid != $user_get->uid) and $my_inviter != $user_load->uid )
    	{
    		$full_name = "Hidden";
    		$field_gender = "Hidden";
