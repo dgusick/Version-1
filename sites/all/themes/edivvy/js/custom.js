@@ -1,6 +1,17 @@
 $(document).ready(function () {
+    var recruiter_per_page = 8;
+    
+    $(window).load(function() {
+        var count_visible_recruiters = $('.pd-top-content .row .col-lg-3').length;
+
+        if(count_visible_recruiters<recruiter_per_page)
+        {
+            $('.btn-block.m-t').hide();
+        }
+    });
+    
     $('.btn-block.m-t').click(function () {
-        $('.pd-top-content .row .col-lg-3:hidden').slice(0, 8).show();
+        $('.pd-top-content .row .col-lg-3:hidden').slice(0, recruiter_per_page).show();
         if ($('.pd-top-content .row .col-lg-3').length == $('.pd-top-content .row .col-lg-3:visible').length) {
             $('.btn-block.m-t').hide();
         }

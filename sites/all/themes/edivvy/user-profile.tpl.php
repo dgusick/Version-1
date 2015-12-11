@@ -22,12 +22,28 @@
     
   //explode array field_approved_recruiter_uid
   $field_approved_recruiter_uid_explode = explode(",",$field_approved_recruiter_uid);
-  if($field_approved_recruiter_uid!=""){
-        $total_connection = count($field_approved_recruiter_uid_explode);
-  }
-  else{
-        $total_connection = 0;
-  }
+  
+  
+  //get count connection without own profile
+if($field_approved_recruiter_uid!="")
+    {
+        $count_connection = 0;
+        for($i=0;$i<count($field_approved_recruiter_uid_explode);$i++)
+            {
+                $recruiter_uid = $field_approved_recruiter_uid_explode[$i];
+
+                //check if list contains user own account
+                if($recruiter_uid!=$user_load->uid)
+                    {
+                        $count_connection++;
+                    }
+            }
+        $total_connection = $count_connection;
+    }
+ else{
+    $total_connection = 0;
+ }
+
   
   if(in_array($user->uid, $field_approved_recruiter_uid_explode) or $user_load->uid==$user_get->uid) { 
   	$contact_display = true; //this recruiter is in candidates connection__ 
@@ -470,16 +486,19 @@
                                                             
                                                             //print_r($user_role);
                                                             
-                                                            if(array_key_exists(5, $user_role))
+                                                            if(array_key_exists(6, $user_role))
                                                             {
                                                                 //echo "candidate";
                                                             }
                                                         	
                                                         	if($field_recruiter_status=="Inactive" and !array_key_exists(5, $user_role))
                                                         	{
-                                                        		?>
-                                                        			Note: This candidate has not permitted to see his/her info, you can see the info by inviting through 'Add Profile' or 'Request Access' from search.
-                                                        		<?php
+                                                        		if($user_load->uid != $user_get->uid)
+                                                        		{
+                                                            		?>
+                                                            			Note: This candidate has not permitted to see his/her info, you can see the info by inviting through 'Add Profile' or 'Request Access' from search.
+                                                            		<?php
+                                                        		}
                                                         	}
                                                         	?>
                                                     </p>

@@ -91,6 +91,8 @@
                                                     $recruiter_id = "";
                                                     if (isset($results['node'])) {
                                                       $nodes = node_load_multiple(array_keys($results['node']));
+                                                      
+                                                      //print_r($nodes);
                                                     
                                                       foreach ($nodes as $node) {
                                                         $field_user_id = field_get_items('node', $node, 'field_recruiter_id');

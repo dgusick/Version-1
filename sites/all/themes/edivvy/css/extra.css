@@ -158,3 +158,38 @@ input.form-submit {
 .page-user-edit label {
 	display: block;
 }
+
+.page-user-edit #user-profile-form .field-name-field-approved-recruiter-uid,
+.page-user-edit #user-profile-form .field-name-field-recruiter-status
+{
+	display: none;
+}
+.page-user-edit #user-profile-form  .field-type-list-text  select{
+	    -webkit-appearance: menulist;
+}
+.page-user-edit .form-item-field-recruiter-status-und label, 
+.page-user-edit .option {
+	    display: inline-block;
+	    margin-right: 10px;
+}
+.page-user-edit .field-type-taxonomy-term-reference input {
+	border: 1px solid #ccc;
+    border-top-color: #999; 
+}
+
+.page-user-edit  #user-profile-form .field-name-field-user-about .filter-wrapper,
+.page-user-edit.admin-menu #user-profile-form .field-name-field-user-about .filter-wrapper {
+    display: none;
+}
+
+.page-invite-add-invite-by-email .description {
+    padding-left: 43px;
+}
+
+.page-invite-add-invite-by-email input#edit-submit {
+	margin-left: 43px;
+}
+
+.page-user p.pending_ractivation {
+	color: red;
+}

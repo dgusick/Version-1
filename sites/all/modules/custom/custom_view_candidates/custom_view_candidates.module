@@ -92,6 +92,9 @@
 		// Loading account
 		$account = user_load($user_request_uid); 
 		
+		//loading candidate account
+		$candidate = user_load($user_candidate_uid);
+		
 		//get current field_user_candidate_uid
 		if(isset($account->field_user_candidate_uid['und']['0']['value']))
             {
@@ -147,6 +150,34 @@
         {
         	$user_approved_recruiter_id_string = $user_approve_uid;
         }
+        
+        //get current field_approved_recruiter_uid
+		if(isset($account->field_approved_recruiter_uid['und']['0']['value']))
+            {
+                $field_approved_recruiter_uid = $account->field_approved_recruiter_uid['und']['0']['value'];
+            }
+        
+        //store field_can_approved_recruiter_uid for candidate
+        if($field_can_approved_recruiter_uid!="")
+        {
+        	//check existed value
+        	$check_user_can_approved_recruiter = explode(",",$field_can_approved_recruiter_uid);
+        	
+        	if (in_array($user_request_uid, $check_user_can_approved_recruiter))
+			{
+			  	//not storing anything, keep the old value
+			  	$user_can_approved_recruiter_id_string = $field_can_approved_recruiter_uid;
+			}
+			else
+			{
+			  	//store new value
+        		$user_can_approved_recruiter_id_string = $field_can_approved_recruiter_uid.",".$user_request_uid;
+			}
+        }
+        else if($field_can_approved_recruiter_uid=="")
+        {
+        	$user_can_approved_recruiter_id_string = $user_request_uid;
+        }
 				
 		//save user_candidate_id_string into recruiter's field
 		$edit = array(
@@ -166,6 +197,18 @@
 		  ),
 		);
 		user_save($account, $edit);
+		
+		//save user_can_approved_recruiter_id_string into field_can_approved_recruiter_uid's field for candidate later use
+		$edit2 = array(
+		  'field_can_approved_recruiter_uid' => array(
+		    'und' => array(
+		      0 => array(
+		        'value' => $user_can_approved_recruiter_id_string,
+		      ),
+		    ),
+		  ),
+		);
+		user_save($candidate, $edit2);
 		
 		drupal_set_message("Your request is approved! You now can start interviewing with the candidate and create Evaluation form");
 	    drupal_goto('candidate-search');
@@ -588,6 +631,45 @@
         drupal_goto('candidate-search');
     }
     
+    function custom_view_candidates_node_presave($node) {
+        global $user;
+        $idgetcan = arg(3);
+        $type = is_string($node) ? $node : $node->type;
+        if ($type == 'evaluation')
+        {
+            //$form['field_recruiter_id']['und'][0]['value']['#default_value'] = $user->uid;
+            $node->field_recruiter_id['und'][0]['value'] = $user->uid;
+            $node->field_user_id['und'][0]['value'] = $idgetcan;
+        }
+    }
+    
+    function custom_view_candidates_node_access($node, $op, $account) {
+      global $user;
+      $idgetcan = arg(3);
+      
+      $type = is_string($node) ? $node : $node->type;
+      
+      $user_data = user_load($user->uid);
+      //print_r($user_data);
+      if(isset($user_data->field_user_candidate_uid['und']['0']['value']))
+            {
+                $field_user_candidate_uid = $user_data->field_user_candidate_uid['und']['0']['value'];
+                $explode_field_user_candidate_uid = explode(",",$field_user_candidate_uid);
+            }
+    
+      if ($type == 'evaluation' && ($op == 'create' || $op == 'update')) {
+        if (in_array($idgetcan, $explode_field_user_candidate_uid) and array_key_exists(5, $user->roles)) { // allow access
+          return NODE_ACCESS_ALLOW;
+        }
+        else {
+          return NODE_ACCESS_DENY;
+        }
+      }
+    
+      // Return the default ignore value if your module doesn't need to get involved in this decision
+      return NODE_ACCESS_IGNORE;
+    }
+    
     function custom_view_candidates_form_alter(&$form, &$form_state, $form_id) {
     	global $user;
     	
@@ -612,21 +694,22 @@
 									LIMIT 10 OFFSET 0");
 			$view_result = $result->fetchAssoc();
 			//print_r($view_result);
-
-			for($i=1;$i<=100;$i++){
-				if(isset($form['field_skill_rating']['und'][0]['field_skill_'.$i])){
-					$arr = $form['field_skill_rating']['und'][0]['field_skill_'.$i]['und'][0]['#prefix']='<input id="checkvote" class="checkvote" type="checkbox" name="chooserat'.$i.'"/>';
-				}	
-			}
-			
-			
-			$form['title']['#type'] = "hidden";
+            
+            $form['title']['#type'] = "hidden";
 			$form['field_user_id']['#type'] = "hidden";
 			$form['field_recruiter_id']['#type'] = "hidden";
 			
-		    $form['field_user_id']['und'][0]['value']['#default_value'] = $idgetcan;
-		    $form['field_recruiter_id']['und'][0]['value']['#default_value'] = $user->uid;
-			
+		    //$form['field_user_id']['und'][0]['value']['#default_value'] = $idgetcan;
+		    //$form['field_recruiter_id']['und'][0]['value']['#default_value'] = $user->uid;
+            
+			/*
+			for($i=1;$i<=100;$i++){
+				if(isset($form['field_skill_rating']['und'][0]['field_skill_'.$i])){
+				 	$arr = $form['field_skill_rating']['und'][0]['field_skill_'.$i]['und'][0]['#prefix']='<input id="checkvote" class="checkvote" type="checkbox" name="chooserat'.$i.'"/>';
+				}	
+			}*/
+
+		    //echo $user->uid;
 			
     		$form['evaluation_form_title'] = array(
 			 '#type' => 'markup',
@@ -658,38 +741,6 @@
     		} 
     		
     		$form['actions']['submit']['#submit'][] = 'custom_candidate_redirect_handler';
-    		
-    		$user_data = user_load($user->uid);
-    		//print_r($user_data);
-            if(isset($user_data->field_user_candidate_uid['und']['0']['value']))
-            {
-                $field_user_candidate_uid = $user_data->field_user_candidate_uid['und']['0']['value'];
-            }
-            
-            if(isset($user_data->field_user_candidate_uid['und']['0']['value']))
-            {
-                //explode $field_user_candidate_uid
-                $explode_field_user_candidate_uid = explode(",",$field_user_candidate_uid);
-                
-                //print_r($explode_field_user_candidate_uid);
-                //echo $idgetcan;
-                //echo $user->roles;
-                //print_r($user->roles);
-              	
-              	//check with $idgetcan for each array value
-                if (in_array($idgetcan, $explode_field_user_candidate_uid) and array_key_exists(5, $user->roles))
-                //if($field_user_candidate_uid==$idgetcan)
-                {
-                    //load Evaluation form. 
-                }
-                //access denied config
-                else{
-                    drupal_access_denied();
-    		    	module_invoke_all('exit');
-    				drupal_exit();
-                }
-            }
-        		
     	}
     	
     }

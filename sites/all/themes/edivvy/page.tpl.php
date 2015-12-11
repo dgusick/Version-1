@@ -1,5 +1,17 @@
 <?php
-
+ $user_load = user_load($user->uid); 
+ 
+  if(isset($user_load->roles[5])) {$is_rec = true; $is_rec_inactive = true;   } 
+  if(isset($user_load->roles[6])) {$is_can = true;    } 
+ 
+ if($is_rec && !empty($user_load->field_recruiter_status)){
+    $field_recruiter_status =  $user_load->field_recruiter_status['und'][0]['value'];
+   	
+   	if($field_recruiter_status=="Active" )
+   	{
+   	 $is_rec_inactive = false; 	
+   	} 
+ }
 /**
  * @file
  * Default theme implementation to display a single Drupal page.
@@ -117,6 +129,7 @@
                                 <li><a href="<?php echo url('user'); ?>">Profile</a></li>
                                 
                                 <?php if(isset($user->roles[5])) { //rec. menu  ?>
+                                <li><a href="<?php echo url('user/'.$user->uid.'/invites'); ?>">My Invites</a></li>
                                 <li><a href="<?php echo url('user/'.$user->uid.'/wishlist'); ?>">My Wishlist</a></li>
                                 <li><a href="<?php echo url('user/'.$user->uid.'/my_following'); ?>">Im Following</a></li>
                                 <li><a href="<?php echo url('user/'.$user->uid.'/my_followers'); ?>">My Followers</a></li>
@@ -151,11 +164,17 @@
                     <a href="<?php echo url('invite/add/invite_by_email'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Add Profile</span></a>
                 </li>
                 <li>
-                    <a href="<?php echo url('user'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Add Requirement</span></a>
+                    <a href="<?php echo url('node/add/requirement'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Add Requirement</span></a>
                 </li>
                 <?php } ?>
                                 
                 <?php if(isset($user->roles[6])) { //candidate menu ?>
+                <li>
+                    <!--<a href="<?php echo url('user/'.$user->uid.'/approved'); ?>#tab-2"><i class="fa fa-user-plus"></i> <span class="nav-label">Approved recruiter</span></a>-->
+                    <a href="<?php echo url('approved-recruiter-list'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Approved recruiter</span></a>
+                </li>
+                
+                
                 <?php } ?>
                 
                 
@@ -229,7 +248,7 @@
 		      <div id="content" class="column"><div class="section">
 		        <?php if ($page['highlighted']): ?><div id="highlighted"><?php print render($page['highlighted']); ?></div><?php endif; ?>
 		        <a id="main-content"></a>
-		         
+		         <?php if($is_rec && $is_rec_inactive )  {  ?><p class="pending_ractivation">Your profile is pending Activation. Once approved you will be able to use all features.</p><?php } ?>
 		        <?php if ($tabs): ?><div class="tabs"><?php print render($tabs); ?></div><?php endif; ?>
 		        <?php print render($page['help']); ?>
 		        <?php if ($action_links): ?><ul class="action-links"><?php print render($action_links); ?></ul><?php endif; ?>

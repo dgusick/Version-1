@@ -1,8 +1,7 @@
 <?php
     $base_theme_url = drupal_get_path('theme',$GLOBALS['theme']);
     global $user;
-    
-    
+    $current_user_load = user_load($user->uid);
 ?>
         
         <!--
@@ -41,7 +40,16 @@
                         
                         //$url_pic = $base_theme_url.'/img/default-avatar.png';
                     }
-                    if($user->uid!=$item['uid'])
+                    
+                    //get field_can_approved_recruiter_uid
+                    if($current_user_load->field_can_approved_recruiter_uid!="")
+                    {
+                        $field_can_approved_recruiter_uid = $current_user_load->field_can_approved_recruiter_uid['und'][0]['value'];
+                        //echo $field_can_approved_recruiter_uid;
+                        $field_can_approved_recruiter_uid_explode = explode(",",$field_can_approved_recruiter_uid);
+                    }
+                    
+                    if($user->uid!=$item['uid'] and in_array($item['uid'], $field_can_approved_recruiter_uid_explode))
                     {
                 
                 $user_load = user_load($item['uid']);
@@ -98,9 +106,11 @@
                                     <h5><strong><?php echo $flag->get_count($item['uid']);  ?></strong> Followers</h5> 
                                 </div>
                             </div>
+                            <!--
                             <div class="col-sm-12">
                                 <div class="div-btn-follow btn btn-block btn-outline btn-primary follow-btn"><?php print $item['ops']; ?></div>
                             </div>
+                            -->
                             <div class="clearfix"></div>
                         </a>
                     </div>
