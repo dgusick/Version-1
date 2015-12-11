@@ -48,6 +48,14 @@ function edivvy_theme() {
       'edivvy_preprocess_user_pass'
     ),
   );
+  
+  $items['user_profile_form'] = array(
+      'render element' => 'form',
+      'template' => 'user-profile-form',
+      'path' => drupal_get_path('theme', 'edivvy') . '', 
+      //add '/templates' only if you store template files in an additional folder
+    );  
+    
   return $items;
 }
 function edivvy_form_user_register_form_alter(&$form, &$form_state, $form_id) {

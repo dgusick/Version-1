@@ -2,6 +2,10 @@
     $base_theme_url = drupal_get_path('theme',$GLOBALS['theme']);
     global $user;
     $current_user_load = user_load($user->uid);
+    
+       
+    $my_inviter = db_query("select uid from {invite} where invitee =  ".$user->uid)->fetchField();
+    
 ?>
         
         <!--
@@ -47,7 +51,12 @@
                         $field_can_approved_recruiter_uid = $current_user_load->field_can_approved_recruiter_uid['und'][0]['value'];
                         //echo $field_can_approved_recruiter_uid;
                         $field_can_approved_recruiter_uid_explode = explode(",",$field_can_approved_recruiter_uid);
-                    }
+                    } 
+                    
+                    //inviter of this user .. 
+                    if($my_inviter) { 
+                    	$field_can_approved_recruiter_uid_explode[] = $my_inviter; 
+                    } 
                     
                     if($user->uid!=$item['uid'] and in_array($item['uid'], $field_can_approved_recruiter_uid_explode))
                     {

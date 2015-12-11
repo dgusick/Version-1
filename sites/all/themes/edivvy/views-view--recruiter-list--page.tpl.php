@@ -1,8 +1,7 @@
 <?php
     $base_theme_url = drupal_get_path('theme',$GLOBALS['theme']);
     global $user;
-    
-    
+ 
 ?>
         
         <!--

@@ -3,25 +3,39 @@
   $user_load = user_load($user->uid);
   //print_r($user->uid); 
   //get current uid from url
-  $uid_get = arg(1);
-  $user_get = user_load($uid_get);
+  if(arg(1)!= '') { 
+  $uid_get = arg(1); 
+  
+  $user_get = user_load($uid_get); 
+  } else {
+  	$user_get = $user_load; 
+  }
+  
   //print_r($user_get);
   $is_rec = false; 
   $is_can = false; 
   $contact_display = true; 
   
  if(isset($user_get->roles[5])) {$is_rec = true;  } 
- if(isset($user_get->roles[6])) {$is_can = true; $contact_display = false;  } 
+ if(isset($user_get->roles[6])) {$is_can = true; $contact_display = false; 
+ 
+ 	$my_inviter = db_query("select uid from {invite} where invitee =  ".$user->uid)->fetchField();
+ 	
+ } 
  
  //check if connected -- 
+ $field_approved_recruiter_uid = ''; 
  //print_r($field_approved_recruiter_uid); 
  //get field_approved_recruiter_uid
   if(!empty($user_get->field_approved_recruiter_uid)){
     $field_approved_recruiter_uid =  $user_get->field_approved_recruiter_uid['und'][0]['value'];
   }
+  
+  if(isset($my_inviter) && $my_inviter) 
+   $field_approved_recruiter_uid = $my_inviter.','.$field_approved_recruiter_uid; 
     
   //explode array field_approved_recruiter_uid
-  $field_approved_recruiter_uid_explode = explode(",",$field_approved_recruiter_uid);
+  $field_approved_recruiter_uid_explode = array_filter (explode(",",$field_approved_recruiter_uid));
   
   
   //get count connection without own profile
@@ -45,7 +59,7 @@ if($field_approved_recruiter_uid!="")
  }
 
   
-  if(in_array($user->uid, $field_approved_recruiter_uid_explode) or $user_load->uid==$user_get->uid) { 
+  if(in_array($user->uid, $field_approved_recruiter_uid_explode) or $user_load->uid == $user_get->uid) { 
   	$contact_display = true; //this recruiter is in candidates connection__ 
   }  
   
@@ -67,7 +81,7 @@ if($field_approved_recruiter_uid!="")
  
   //get full_name
   $full_name = $user_get->name; 
-  if (!empty($user_get->field_first_name) && !empty($user_get->field_last_name)) {
+  if (!empty($user_get->field_first_name) ) { //&& !empty($user_get->field_last_name) 
     $full_name = $user_get->field_first_name['und'][0]['value'] . ' ' . $user_get->field_last_name['und'][0]['value'];
   }
   
@@ -138,18 +152,18 @@ if($field_approved_recruiter_uid!="")
   if(!empty($user_load->field_recruiter_status)){
     $field_recruiter_status =  $user_load->field_recruiter_status['und'][0]['value'];
    	
-   	if($field_recruiter_status=="Inactive" and $user_load->uid!=$user_get->uid)
+   	if($field_recruiter_status=="Inactive" and $user_load->uid != $user_get->uid)
    	{
-   		$full_name = "hidden";
-   		$field_gender = "hidden";
-   		$field_birthday = "hidden";
-   		$field_marital_status = "hidden";
-   		$field_phone = "hidden";
-   		$field_corporate_email = "hidden";
-   		$field_private_email = "hidden";
-   		$field_linkedin_user_id = "hidden";
-   		$field_twitter_account = "hidden";
-   		$field_skype = "hidden";
+   		$full_name = "Hidden";
+   		$field_gender = "Hidden";
+   		$field_birthday = "Hidden";
+   		$field_marital_status = "Hidden";
+   		$field_phone = "Hidden";
+   		$field_corporate_email = "Hidden";
+   		$field_private_email = "Hidden";
+   		$field_linkedin_user_id = "Hidden";
+   		$field_twitter_account = "Hidden";
+   		$field_skype = "Hidden";
    	}
 
   }
@@ -390,7 +404,7 @@ if($field_approved_recruiter_uid!="")
 						                        ?>
                                                 <dl class="dl-horizontal">
                                                     <dt>Corporate Email </dt>
-                                                    <dd><?php echo $field_corporate_email ?> |&nbsp;<small class="text-muted">Last validated 18 days ago </small></dd>
+                                                    <dd><?php echo $field_corporate_email ?> <!-- |&nbsp;<small class="text-muted">Last validated 18 days ago </small>--></dd>
                                                 </dl>
                                                 <?php
 						                        	}
@@ -468,7 +482,7 @@ if($field_approved_recruiter_uid!="")
                                                             }
                                                         ?>
                                                         <label>
-                                                            <input type="checkbox" <?php echo $check ?> value=""> <i></i> &nbsp; I agree to the <a class="text-info"
+                                                            <input disabled type="checkbox" <?php echo $check ?> value=""> <i></i> &nbsp; I agree to the <a class="text-info"
                                                             href="#">Terms and conditions</a>. 
                                                         </label>
                                                         
@@ -615,9 +629,13 @@ if($field_approved_recruiter_uid!="")
 	                                                                        </div>
 	                                                                        -->
 	                                                                        <div class="col-sm-12">
+	                                                                         <?php $follow_link = flag_create_link('follow', $load_recruiter->uid);
+	                                                                         
+	                                                                         if($follow_link  != '' ) { ?>
 	                                                                            <div class="div-btn-follow btn btn-block btn-outline btn-primary follow-btn">
-	                                                                                <?php print flag_create_link('follow', $load_recruiter->uid); ?>
+	                                                                               <?php echo $follow_link; ?>
 	                                                                            </div>
+	                                                                            <?php } ?>
 	                                                                        </div>
 	                                                                        <div class="clearfix"></div>
 	                                                                    </a>
