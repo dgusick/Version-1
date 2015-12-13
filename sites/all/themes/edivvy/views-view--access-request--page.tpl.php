@@ -28,9 +28,11 @@
               </tr>
     </thead>
     <?php
-                            $i = 1;
-                            $field_approve_link = $current_user->field_approve_link['und']['0']['value'];
+                        $i = 1;
+                        $field_approve_link = $current_user->field_approve_link['und']['0']['value'];
 
+                        if($field_approve_link!="")
+                        {
                             if($user_role=="recruiter" or $user_role=="candidate")
                             {    
                                 $field_approve_link_explode = explode(",",$field_approve_link);
@@ -74,6 +76,11 @@
                                     
                                 }
                             }
+                        }
+                        else
+                        {
+                        	echo "You don't have any access request	";
+                        }
 
                         ?>
 

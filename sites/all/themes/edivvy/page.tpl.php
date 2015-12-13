@@ -128,18 +128,17 @@
                             <ul class="dropdown-menu animated fadeInRight m-t-xs">
                                 <li><a href="<?php echo url('user'); ?>">Profile</a></li>
                                 
-                                <?php if(isset($user->roles[5])) { //rec. menu  ?>
+                                <?php if(isset($user->roles[5]) && !$is_rec_inactive ) { //rec. menu  ?>
                                 <li><a href="<?php echo url('user/'.$user->uid.'/wishlist'); ?>">My Wishlist</a></li>
                                 <li><a href="<?php echo url('user/'.$user->uid.'/my_following'); ?>">Im Following</a></li>
                                 <li><a href="<?php echo url('user/'.$user->uid.'/my_followers'); ?>">My Followers</a></li>
+                                <li><a href="<?php echo url('messages'); ?>">Mailbox</a></li>
                                 <?php } ?>
                                 
                                 <?php if(isset($user->roles[6])) { //candidate menu ?>
+                                <li><a href="<?php echo url('messages'); ?>">Mailbox</a></li>
                                 <?php } ?>
                                 
-								<li><a href="<?php echo url('messages'); ?>">Mailbox</a></li>
-								
-								
 								
                                 <li><a href="<?php echo url('user/logout'); ?>">Logout</a></li>
                             </ul>
@@ -152,17 +151,24 @@
                     <a href="<?php echo url('user'); ?>"><i class="fa fa-home"></i> <span class="nav-label">Home</span></a>
                 </li>
                 
-                <?php if(isset($user->roles[5])) { //rec. menu  ?>
+                <?php if(isset($user->roles[5])  && !$is_rec_inactive ) { //rec. menu  ?>
                 <li>
                     <a href="<?php echo url('candidate-search'); ?>"><i class="fa fa-search"></i> <span class="nav-label">Search</span></a>
                 </li>
                 
                 <li>
                     <a href="<?php echo url('user/'.$user->uid.'/invites'); ?>"><i class="fa fa-search"></i> <span class="nav-label">My Candidates</span></a>
-                </li>    
-                <li>
+                 <ul>
+                 
+                 <li>
                     <a href="<?php echo url('invite/add/invite_by_email'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Invite Candidate</span></a>
                 </li>
+                <li>
+                    <a href="<?php echo url('user/'.$user->uid.'/invites'); ?>"><i class="fa fa-search"></i> <span class="nav-label">Candidates List</span></a>
+                </li>
+                </ul>
+                </li>    
+                
                 <li class="active1">
                     <a href="<?php echo url('recruiter-list'); ?>"><i class="fa fa-group"></i> <span class="nav-label">Recruiters</span></a>
                 </li>

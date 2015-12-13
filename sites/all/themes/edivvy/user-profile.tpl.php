@@ -37,6 +37,8 @@
   //explode array field_approved_recruiter_uid
   $field_approved_recruiter_uid_explode = array_filter (explode(",",$field_approved_recruiter_uid));
   
+  //explode array field_approved_recruiter_uid
+  $field_user_candidate_uid_explode = array_filter (explode(",",$user_load->field_user_candidate_uid['und'][0]['value']));
   
   //get count connection without own profile
 if($field_approved_recruiter_uid!="")
@@ -57,9 +59,12 @@ if($field_approved_recruiter_uid!="")
  else{
     $total_connection = 0;
  }
-
+	
+  //echo $user_get->uid;
+  //field_user_candidate_uid_explode
+  //print_r($field_user_candidate_uid_explode);
   
-  if(in_array($user->uid, $field_approved_recruiter_uid_explode) or $user_load->uid == $user_get->uid) { 
+  if(in_array($user->uid, $field_approved_recruiter_uid_explode) or $user_load->uid == $user_get->uid or in_array($user_get->uid, $field_user_candidate_uid_explode)) { 
   	$contact_display = true; //this recruiter is in candidates connection__ 
   }  
   
@@ -84,7 +89,9 @@ if($field_approved_recruiter_uid!="")
   if (!empty($user_get->field_first_name) ) { //&& !empty($user_get->field_last_name) 
     $full_name = $user_get->field_first_name['und'][0]['value'] . ' ' . $user_get->field_last_name['und'][0]['value'];
   }
-  
+  if( !$contact_display ) { 
+  	$full_name = substr($full_name , 0, 3) .'..'; 
+  }
   //get field_user_about
   if(!empty($user_get->field_user_about)){
     $field_user_about =  $user_get->field_user_about['und'][0]['value'];
@@ -152,7 +159,7 @@ if($field_approved_recruiter_uid!="")
   if(!empty($user_load->field_recruiter_status)){
     $field_recruiter_status =  $user_load->field_recruiter_status['und'][0]['value'];
    	
-   	if($field_recruiter_status=="Inactive" and ($user_load->uid != $user_get->uid) and $my_inviter != $user_load->uid )
+   	if($field_recruiter_status=="Inactive" and ($user_load->uid != $user_get->uid) and $my_inviter != $user_load->uid)
    	{
    		$full_name = "Hidden";
    		$field_gender = "Hidden";
@@ -165,7 +172,6 @@ if($field_approved_recruiter_uid!="")
    		$field_twitter_account = "Hidden";
    		$field_skype = "Hidden";
    	}
-
   }
     
 ?>
