@@ -166,10 +166,7 @@ input.form-submit {
  .node-evaluation-form .field-name-field-skills-rating table.field-multiple-table {
    width: 100%;
 }
-.node-evaluation-form .field-name-field-skills-rating table.field-multiple-table #edit-field-skills-rating-und-0-remove-button {
-   float: right;
-   margin-right: 0px;
-}
+
 .btn-danger.btn-outline,
 .btn-success.btn-outline,
 .btn-green.btn-outline{
@@ -220,4 +217,21 @@ input.form-submit {
 
 .page-user p.pending_ractivation {
 	color: red;
+}
+
+.page-node-add-evaluation .field-name-field-skills-rating table.field-multiple-table input[type='submit'] {
+   float: right;
+   margin-right: 0px;
+}
+.page-node-add-evaluation table tbody tr td .ds-2col > .group-right  {
+	float: left;
+    width: 41%;
+}
+.page-node-add-evaluation table tbody tr td .ds-2col > .group-right .field-type-fivestar label {
+	display: none;
+}
+.page-node-add-evaluation table tbody tr td .ds-2col > .group-left {
+    float: left;
+    width: 56%;
+    margin-right: 20px;
 }
