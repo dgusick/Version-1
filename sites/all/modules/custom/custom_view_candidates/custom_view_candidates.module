@@ -727,17 +727,7 @@
         drupal_goto('candidate-search');
     }
     
-    function custom_view_candidates_node_presave($node) {
-        global $user;
-        $idgetcan = arg(3);
-        $type = is_string($node) ? $node : $node->type;
-        if ($type == 'evaluation')
-        {
-            //$form['field_recruiter_id']['und'][0]['value']['#default_value'] = $user->uid;
-            $node->field_recruiter_id['und'][0]['value'] = $user->uid;
-            $node->field_user_id['und'][0]['value'] = $idgetcan;
-        }
-    }
+   
     
     function custom_view_candidates_node_access($node, $op, $account) {
       global $user;

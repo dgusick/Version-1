@@ -85,21 +85,18 @@
                                                     $query = new EntityFieldQuery;
                                                     $query->entityCondition('entity_type', 'node')
                                                       ->entityCondition('bundle', 'evaluation')
-                                                      ->fieldCondition('field_user_id', 'value', $item['uid']);
+                                                      ->fieldCondition('field_user_id', 'value', $item['uid'])
+                                                      ->fieldCondition('field_recruiter_id', 'value', $user->uid);
                                                     
                                                     $results = $query->execute();
                                                     
-                                                    $recruiter_id = "";
-                                                    if (isset($results['node'])) {
-                                                      $nodes = node_load_multiple(array_keys($results['node']));
-                                                      
-                                                      //print_r($nodes);
-                                                    
-                                                      foreach ($nodes as $node) {
-                                                        $field_user_id = field_get_items('node', $node, 'field_recruiter_id');
-                                                        $recruiter_id = $field_user_id[0]['value'];
-                                                        $node_id = $node->nid;
-                                                      }
+                                                    $recruiter_id = ""; $evaluated_node_id = ''; 
+                                                    $is_evaluated = false; 
+                                                    if (isset($results['node']) && count($results['node'])) {
+                                                       $is_evaluated = true;
+                                                       $list_evaluated_nodes =array_keys($results['node']); 
+                                                       $evaluated_node_id = $list_evaluated_nodes[0]; 
+                                                       
                                                     }
 
                                                     //echo $node_id;
@@ -154,13 +151,15 @@
                                                                          }
                                                                      } 
 	        															?>
-	        														<!--	<a href="<?php echo url('node/'.$node_id.'') ?>" type="button"  class="btn btn-xs btn-outline  btn-success " style="width: 140px;"> View Evaluation </a> -->
-	        													 
+	        														
 	        															<?php 
 	        															//check if evaluation exist for this user by this recruiter __ 
 	        															 
 	        															//if current user is the recruiter that invited the candidate
-	        														  if( $has_access )
+	        														  if( $has_access && $is_evaluated )
+	        															{
+	        																?> <a href="<?php echo url('node/'.$evaluated_node_id.'') ?>" type="button"  class="btn btn-xs btn-outline  btn-success " style="width: 140px;"> View Evaluation </a>  <?php	
+	        															} else if( $has_access )
 	        															{
 	        																?> <a href="<?php echo url('node/add/evaluation/'.$uid.'') ?>" type="button"  class="btn btn-xs btn-outline  btn-success " style="width: 140px;"> Create New Evaluation </a> <?php	
 	        															} else if( $pending_access )

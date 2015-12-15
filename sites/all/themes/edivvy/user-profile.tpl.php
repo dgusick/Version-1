@@ -12,10 +12,15 @@
   }
   
   //print_r($user_get);
-  $is_rec = false; 
-  $is_can = false; 
+  $is_rec = false; $logged_is_rec = false; 
+  $is_can = false; $logged_is_can = false; 
+  $is_my_profile = false; 
+  if( $user_load->uid == $user_get->uid ) { $is_my_profile = true;  } 
   $contact_display = true; 
-  
+ 
+ if(isset($user_load->roles[5])) {$logged_is_rec = true;  } 
+ if(isset($user_load->roles[6])) {$logged_is_can = true;  } 
+ 
  if(isset($user_get->roles[5])) {$is_rec = true;  } 
  if(isset($user_get->roles[6])) {$is_can = true; $contact_display = false; 
  
@@ -69,9 +74,10 @@ if($field_approved_recruiter_uid!="")
   }  
   
   $has_access = false; $pending_access = false; 
-    $relationships = user_relationships_load(array('requester_id' => $user->uid, 'requestee_id' => $user_get->uid )); 
+  //logged in requester -- means recruiter logged in __ 
+    $relationships_logged_in_rec = user_relationships_load(array('requester_id' => $user->uid, 'requestee_id' => $user_get->uid )); 
      //print_r($relationships); 
-     foreach($relationships as $relation) { 
+     foreach($relationships_logged_in_rec as $relation) { 
          
          if($relation->approved) { 
              $has_access = true;  
@@ -192,7 +198,18 @@ if($field_approved_recruiter_uid!="")
    	
    	}
   }
-     
+  
+  
+  $relationships_profile_conn_list = false;  
+                            
+    if($is_rec) { 
+      $relationships_profile_conn_list = user_relationships_load(array('requester_id' => $user_get->uid )); 
+      //'requestee_id' => $user_get->uid requester_id
+    } else { 
+      $relationships_profile_conn_list = user_relationships_load(array('requestee_id' => $user_get->uid )); 
+      
+    } 
+    
 ?>
 <div class="col-md-3">
 
@@ -275,24 +292,28 @@ if($field_approved_recruiter_uid!="")
 	                        	}
                             ?>
                         <br/>
+                        <?php if((!$logged_is_can) || $is_my_profile) { ?>
                         <h4 class="media-heading">Connections</h4>
                         <div class="team-members">
                             
-                            <?php
+                            <?php 
+                            //check if re or candidate 
+                            //requestee_id' => $user_get->uid requester_id
+                            
                                 //get list connection
-                                if($field_approved_recruiter_uid!="")
+                                if($relationships_profile_conn_list != ""  )
                                 {
-                                    for($i=0;$i<count($field_approved_recruiter_uid_explode);$i++)
+                                    foreach($relationships_profile_conn_list as $req_data) 
                                     {
-                                        $recruiter_uid = $field_approved_recruiter_uid_explode[$i];
+                                       if($is_rec) {
+                                       	   $recruiter_uid = $req_data->requestee_id; 
+                             
+                                       } else {
+                                       	$recruiter_uid = $req_data->requester_id;  
+                                       	}
+                                       
                                         
-                                        //echo $recruiter_uid;
-                                        //echo $user_load->uid;
-                                        
-                                        //check if list contains user own account
-                                        if($recruiter_uid!=$user_load->uid)
-                                        {
-                                        
+                                         
 	                                        //load recruiter user
 	                                        $load_recruiter = user_load($recruiter_uid);
 	                                        //print_r($load_recruiter);
@@ -321,7 +342,7 @@ if($field_approved_recruiter_uid!="")
 	                                        ?>
 	                                         <a href="<?php echo url("user/".$load_recruiter->uid) ?>"><?php echo $pic_recruiter ?></a>
 	                                        <?php
-                                        }
+                                         
                                     }
                                 }
                                 else{
@@ -330,19 +351,24 @@ if($field_approved_recruiter_uid!="")
                             ?>
 
                         </div>
+                        <?php } ?>
                     </div>
                 </div> <!-- --> 
                 
                 <div class="col-md-9">
                     <div class="ibox">
                         <div class="ibox-content">
+                          <?php if($is_my_profile) {  ?>
                             <a  class="btn btn-white btn-xs pull-right m-l-sm" href="<?php echo url('user/'.$user_get->uid.'/edit'); ?>"  >Edit profile</a><!-- onclick="edit()" -->
+                            <?php }  ?>
                             <!-- <a  class="btn btn-white btn-xs pull-right" onclick="save()">Save</a> -->
                             <div>
                                 <ul class="nav nav-tabs">
                                     <li class="active"><a data-toggle="tab" href="#tab-1"><i class="fa fa-user"></i> About</a></li>
+                                    <?php if(!$logged_is_can || $is_my_profile) { ?>
                                     <li class=""><a data-toggle="tab" href="#tab-2"><i class="fa fa-connectdevelop"></i> Connections</a></li>
-                                    <li class=""><a data-toggle="tab" href="#tab-3"><i class="fa fa-clock-o "></i> Timeline</a></li>
+                                    <?php } ?>
+                                    <li class="" style="display:none;"><a data-toggle="tab" href="#tab-3"><i class="fa fa-clock-o "></i> Timeline</a></li>
                                 </ul>
                                 <div class="tab-content">
                                     <div id="tab-1" class="tab-pane active">
@@ -512,7 +538,7 @@ if($field_approved_recruiter_uid!="")
                                                         </label>
                                                         
                                                         <br/><br/>
-                                                         <?php if(isset($user_profile['user_relationships_ui']))  { 
+                                                         <?php if(isset($user_profile['user_relationships_ui']) && $is_can && $logged_is_rec )  { 
                                                          	$user_profile['user_relationships_ui']['#title'] = '';
                                                          		$user_profile['user_relationships_ui']['actions']['#title'] = '';
                                                          print render($user_profile['user_relationships_ui']);
@@ -552,29 +578,35 @@ if($field_approved_recruiter_uid!="")
                                             </div>
                                         </div>
                                     </div>
+                                    
                                     <div id="tab-2" class="tab-pane contact-box-content">
                                         <br/>
                                         <div class="row">
                                             
                                             <?php
                                                 //get list connection
-                                                if($field_approved_recruiter_uid != "")
-                                                {
-                                                    for($i=0;$i<count($field_approved_recruiter_uid_explode);$i++)
-                                                    {
-                                                        $recruiter_uid = $field_approved_recruiter_uid_explode[$i];
+                                                 if($relationships_profile_conn_list != "")
+                                {
+                                    foreach($relationships_profile_conn_list as $req_data) 
+                                    {
+                                       if($is_rec) {
+                                       	   $recruiter_uid = $req_data->requestee_id; 
+                             
+                                       } else {
+                                       	$recruiter_uid = $req_data->requester_id;  
+                                       	}
+                                       
+                                             
                                                         //load recruiter user
                                                         $load_recruiter = user_load($recruiter_uid);
                                                         //print_r($load_recruiter);
                                                         
                                                         //check if list contains user own account
-				                                        if($recruiter_uid!=$user_load->uid)
-				                                        {
-                                                        
+				                                          
 	                                                        //get all fields
 	                                                        //full_name
 	                                                        $full_name_connection = $load_recruiter->name; 
-	                                                        if (!empty($load_recruiter->field_first_name) && !empty($load_recruiter->field_last_name)) {
+	                                                        if (!empty($load_recruiter->field_first_name) ) { //&& !empty($load_recruiter->field_last_name)
 	                                                            $full_name_connection = $load_recruiter->field_first_name['und'][0]['value'] . ' ' . $load_recruiter->field_last_name['und'][0]['value'];
 	                                                        }
 	                                                        
@@ -614,15 +646,20 @@ if($field_approved_recruiter_uid!="")
 	                                                                            <div class="col-sm-4 col-sm-push-4">
 	                                                                                <div class="text-center">
 	                                                                                    <?php echo $pic_recruiter ?>
-	                                                                                    <div class="m-t-xs font-bold">Recruiter, Veritas</div>
+	                                                                                    <div class="m-t-xs font-bold"><?php if($is_rec)  { echo 'Candidate'; } else { echo 'Recruiter'; } ?><!-- , Veritas --></div>
 	                                                                                </div>
 	                                                                            </div>
 	                                                                        </div>
 	                                                                        <div class="row">
 	                                                                            <div class="col-sm-12">
 	                                                                                <h3><strong><?php echo $full_name_connection ?></strong></h3>
-	                                                                                <p><i class="fa fa-linkedin-square"></i> <?php echo $load_recruiter->field_first_name['und'][0]['value'].".".$load_recruiter->field_last_name['und'][0]['value'] ?></p>
+	                                                                               <!-- <p><i class="fa "></i> <?php echo $load_recruiter->field_first_name['und'][0]['value'].".".$load_recruiter->field_last_name['und'][0]['value'] ?></p> -->
+	                                                                                <?php if( $is_my_profile && $req_data->approved ) { //fa-linkedin-square  ?>
 	                                                                                <p><i class="fa fa-inbox"></i> <a href="mailto:<?php echo $load_recruiter->mail ?>"> <?php echo $load_recruiter->mail ?></a></p>
+	                                                                                <?php }
+	                                                                                
+	                                                                                if( !$req_data->approved && $is_my_profile) { echo 'Approval pending'; } ?>
+	                                                                                
 	                                                                                <!--
 	                                                                                <div>
 	                                                                                    <div>
@@ -661,20 +698,23 @@ if($field_approved_recruiter_uid!="")
 	                                                                        </div>
 	                                                                        -->
 	                                                                        <div class="col-sm-12">
-	                                                                         <?php $follow_link = flag_create_link('follow', $load_recruiter->uid);
+	                                                                         <?php 
+	                                                                         if( $logged_is_rec && $is_can  ) { 
+	                                                                         $follow_link = flag_create_link('follow', $load_recruiter->uid);
 	                                                                         
 	                                                                         if($follow_link  != '' ) { ?>
 	                                                                            <div class="div-btn-follow btn btn-block btn-outline btn-primary follow-btn">
 	                                                                               <?php echo $follow_link; ?>
 	                                                                            </div>
-	                                                                            <?php } ?>
+	                                                                            <?php } 
+	                                                                            } ?>
 	                                                                        </div>
 	                                                                        <div class="clearfix"></div>
 	                                                                    </a>
 	                                                                </div>
 	                                                            </div>
 	                                                          <?php
-				                                        }
+				                                        
                                                     }
                                                 }
                                             ?>

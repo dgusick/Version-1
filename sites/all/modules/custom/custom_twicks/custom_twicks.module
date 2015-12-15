@@ -20,6 +20,57 @@ $items['user/edit'] = array(
   return $items; 
 }
 
+ function custom_twicks_form_alter(&$form, &$form_state, $form_id) {
+    	global $user;
+    	
+    	$idgetcan = arg(3);
+    	
+    	if($form_id == "evaluation_node_form"){
+    	    //validate this user id __ 
+    	    
+				
+    	     $relationships = user_relationships_load(array('requester_id' => $user->uid, 'requestee_id' => $idgetcan, 'approved' => 1 )); 
+          if(count($relationships) == 0 && $user->uid != 1) { //pending_  
+              drupal_set_message("You do not have permission to create evaluation for selected candidate"); 
+              drupal_goto('candidate-search');
+          }
+ 
+           $user_can = user_load($idgetcan);
+				$username_candidate = $user_can->name;
+				
+    	    $form['title']['#type'] = "hidden";
+    	    if($user->uid != 1) { 
+			$form['field_user_id']['#type'] = "hidden";
+			$form['field_recruiter_id']['#type'] = "hidden";
+    	    }
+			$form['evaluation_form_title'] = array(
+			 '#type' => 'markup',
+			 '#markup' => '<h1 class="content-title">EVALUATION FORM</h1>',
+			 '#weight' => -15
+			);
+			
+			$form['title']['#default_value'] = ''.$user->name.'-'.$username_candidate;
+			
+    	}
+ }
+ 
+ function custom_twicks_node_presave($node) {
+        global $user;
+        //make sure it works only on add case ___ node/add/evaluation/226   node/id/edit 
+        $idgetcan = arg(3);  //check if this user has relation ___
+        
+        
+        $type = is_string($node) ? $node : $node->type;
+        if ($type == 'evaluation')
+        {  
+            $relationships = user_relationships_load(array('requester_id' => $user->uid, 'requestee_id' => $idgetcan, 'approved' => 1 )); 
+  //print_r($relationships); 
+            //$form['field_recruiter_id']['und'][0]['value']['#default_value'] = $user->uid;
+            $node->field_recruiter_id['und'][0]['value'] = $user->uid;
+            $node->field_user_id['und'][0]['value'] = $idgetcan;
+        }
+    }
+    
 function custom_twicks_info() { 
 	global $user; 
 	
