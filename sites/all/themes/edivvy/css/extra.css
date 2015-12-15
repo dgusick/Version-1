@@ -235,3 +235,27 @@ input.form-submit {
     width: 56%;
     margin-right: 20px;
 }
+
+
+.page-user .tabs { display:block; }
+.page-user .tabs.primary { display:none; }
+.page-user .tabs.secondary { display:block;}
+
+
+.page-profile-main .ds-2col .group-left {
+	margin-top: 20px;
+}
+
+.page-profile-main .ds-2col .group-left input[type="text"] {
+	width: 80%;
+}
+
+.page-profile-main .ds-2col .group-right div.fivestar-widget {
+	margin-top: 20px;
+}
+
+.page-profile-main table tbody tr td input[type="submit"] {
+	position: relative;
+	bottom: 30px;
+	right: 10px;
+}

@@ -174,7 +174,7 @@
                 </li>
                 
                 <li>
-                    <a href="<?php echo url('access-request'); ?>"><i class="fa fa-group"></i> <span class="nav-label">Access Requests</span></a>
+                    <a href="<?php echo url('relationships'); ?>"><i class="fa fa-group"></i> <span class="nav-label">Access Requests</span></a>
                 </li>
                 
                 <li>
@@ -186,8 +186,8 @@
                 <li>
                     <!--<a href="<?php echo url('user/'.$user->uid.'/approved'); ?>#tab-2"><i class="fa fa-user-plus"></i> <span class="nav-label">Approved recruiter</span></a>-->
                     <a href="<?php echo url('profile-main/'.$user->uid.'/edit'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Edit My Skills</span></a>
-                    <a href="<?php echo url('approved-recruiter-list'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Approved recruiters</span></a>
-                    <a href="<?php echo url('access-request'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Access Requests</span></a>
+                    <!-- <a href="<?php echo url('approved-recruiter-list'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Approved recruiters</span></a>-->
+                    <a href="<?php echo url('relationships'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Access Requests</span></a>
                     
                 </li>
                 

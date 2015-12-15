@@ -68,6 +68,19 @@ if($field_approved_recruiter_uid!="")
   	$contact_display = true; //this recruiter is in candidates connection__ 
   }  
   
+  $has_access = false; $pending_access = false; 
+    $relationships = user_relationships_load(array('requester_id' => $user->uid, 'requestee_id' => $user_get->uid )); 
+     //print_r($relationships); 
+     foreach($relationships as $relation) { 
+         
+         if($relation->approved) { 
+             $has_access = true;  
+             $contact_display = true; 
+         } else { 
+              $pending_access = true;
+         }
+     }
+     
  //get user fields  
  if($user_get->field_picture_url)
  {
@@ -156,11 +169,15 @@ if($field_approved_recruiter_uid!="")
   $field_private_email = $contact_display ? $user_get->mail : 'Hidden';
   
   //setting hidden to Basic Information fields
-  if(!empty($user_load->field_recruiter_status)){
+  
+    
+    
+     
+     if(!empty($user_load->field_recruiter_status)){
     $field_recruiter_status =  $user_load->field_recruiter_status['und'][0]['value'];
    	
-   	if($field_recruiter_status=="Inactive" and ($user_load->uid != $user_get->uid) and $my_inviter != $user_load->uid)
-   	{
+   	if($field_recruiter_status=="Inactive" and ($user_load->uid != $user_get->uid) and ($contact_display == false) )
+   	{ //$my_inviter != $user_load->uid 
    		$full_name = "Hidden";
    		$field_gender = "Hidden";
    		$field_birthday = "Hidden";
@@ -171,14 +188,16 @@ if($field_approved_recruiter_uid!="")
    		$field_linkedin_user_id = "Hidden";
    		$field_twitter_account = "Hidden";
    		$field_skype = "Hidden";
+   		
+   	
    	}
   }
-    
+     
 ?>
 <div class="col-md-3">
 
                 <div class="ibox-content navy-bg text-center">
-                    <h1><?php echo $full_name; ?></h1>
+                    <h1><?php echo $contact_display ? $full_name : 'Hidden'; ?></h1>
                     <div class="m-b-sm">
                        <!--  <img alt="image" class="img-circle" src="img/a8.jpg"> -->
                        <?php echo $pic; ?>
@@ -492,6 +511,13 @@ if($field_approved_recruiter_uid!="")
                                                             href="#">Terms and conditions</a>. 
                                                         </label>
                                                         
+                                                        <br/><br/>
+                                                         <?php if(isset($user_profile['user_relationships_ui']))  { 
+                                                         	$user_profile['user_relationships_ui']['#title'] = '';
+                                                         		$user_profile['user_relationships_ui']['actions']['#title'] = '';
+                                                         print render($user_profile['user_relationships_ui']);
+                                                         } ?>
+                                                         
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-12">	
@@ -672,5 +698,8 @@ if($field_approved_recruiter_uid!="")
                 </div>
            
  <div class="profile"<?php //print $attributes; ?>>
-  <?php //print render($user_profile); ?>
+  <?php //print_r( array_keys($user_profile)); Array ( [0] => user_picture [1] => links [2] => field_first_name [3] => flags [4] => user_relationships_ui [5] => flag_follow [6] => field_agree_term [7] => field_recruiter_status [8] => field_user_picture [9] => privatemsg_send_new_message [10] => summary [11] => field_birthday ) 
+  ?>
+  <?php //print render($user_profile);    ?>
+    <?php //print_r($user_profile['user_relationships_ui']); ?>
 </div>

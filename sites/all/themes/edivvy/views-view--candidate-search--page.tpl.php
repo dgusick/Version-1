@@ -2,7 +2,8 @@
     $base_theme_url = drupal_get_path('theme',$GLOBALS['theme']);
     global $user;
     $user_load = user_load($user->uid);
-    $search_value = $_GET['top-search'];
+    $search_value = $_GET['top-search']; 
+    
 ?>
 		<!--
 		<div class="row wrapper  white-bg page-heading">
@@ -134,42 +135,49 @@
 	                                                        <td class="client-status">
 	                                                            <span> <?php print $item['ops']; ?>  
 	                                                                <?php
-	                                                                	$field_user_candidate_uid = $user_load->field_user_candidate_uid['und'][0]['value'];
-	                                                                	$field_user_candidate_uid_explode = explode(',',$field_user_candidate_uid);
-
+	                                                                	 
 	        															//echo $field_user_candidate_uid;
 	        															//echo $item['uid'];
 	        															//print_r($field_user_candidate_uid_explode);
 	        															
 	        															//echo $item['inviter'];
 	        															//echo $user->uid;
-	        															
-	        															
-	        															if(in_array($item['uid'], $field_user_candidate_uid_explode)){
-	        																if($recruiter_id==$user->uid)
-	                                                                			{
-	                                                                				?> <a href="<?php echo url('node/'.$node_id.'') ?>" type="button"  class="btn btn-xs btn-outline  btn-success " style="width: 140px;"> View Evaluation </a> <?php
-	                                                                			}
-	                                                                		else
-	                                                                			{
-	                                                                				?> <a href="<?php echo url('node/add/evaluation/'.$uid.'') ?>" type="button"  class="btn btn-xs btn-outline  btn-success " style="width: 140px;"> Create New Evaluation </a> <?php
-	                                                                			}
-	        															}
+	        															$has_access = false; $pending_access = false; 
+	                                                                $relationships = user_relationships_load(array('requester_id' => $user->uid, 'requestee_id' => $item['uid']));
+                                                                     //print_r($relationships); 
+                                                                     foreach($relationships as $relation) { 
+                                                                         
+                                                                         if($relation->approved) { 
+                                                                             $has_access = true;  
+                                                                         } else { 
+                                                                              $pending_access = true;
+                                                                         }
+                                                                     } 
+	        															?>
+	        														<!--	<a href="<?php echo url('node/'.$node_id.'') ?>" type="button"  class="btn btn-xs btn-outline  btn-success " style="width: 140px;"> View Evaluation </a> -->
+	        													 
+	        															<?php 
+	        															//check if evaluation exist for this user by this recruiter __ 
+	        															 
 	        															//if current user is the recruiter that invited the candidate
-	        															else if($item['inviter']==$user->uid)
+	        														  if( $has_access )
 	        															{
 	        																?> <a href="<?php echo url('node/add/evaluation/'.$uid.'') ?>" type="button"  class="btn btn-xs btn-outline  btn-success " style="width: 140px;"> Create New Evaluation </a> <?php	
-	        															}
-	        															else
+	        															} else if( $pending_access )
 	        															{
-	                                                                		?> <a href="<?php echo url('request-access/'.$uid.'') ?>" type="button" class="btn btn-xs btn-outline btn-danger" style="width: 140px;"> Request Access </a> <?php 
+	        																?> <a href="#" type="button"  class="btn btn-xs btn-outline  btn-success " style="width: 140px;"> Request Pending </a> <?php	
+	        															} 
+	        															else
+	        															{ //request-access/'.$uid.''  relationship/204/request/2?destination=user/204 
+	                                                                		?> <a href="<?php echo url('relationship/'.$uid.'/request/2', array('query'=>array('destination'=>'candidate-search'))) ?>" type="button" class="btn btn-xs btn-outline btn-danger" style="width: 140px;"> Request Access </a> <?php 
 	                                                                	}
 	        															
 	                                                                ?>
 	                                                                
 	                                                                
 	                                                                
-	                                                                <?php
+	                                                                <?php 
+	                                                                
 	                                                                //echo $recruiter_id;
 	                                                                //echo $user->uid;
 	                                                                
