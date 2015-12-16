@@ -259,3 +259,28 @@ input.form-submit {
 	bottom: 30px;
 	right: 10px;
 }
+
+.page-relationships table.sticky-enabled {
+	width: 100%;
+}
+
+.page-relationships table.sticky-enabled tbody tr td {
+	padding: 10px;
+	background-color: #FFF;
+	border: 1px solid #e7eaec;
+}
+
+.page-relationships table.sticky-enabled thead tr th {
+	padding: 10px;
+	border: 1px solid #e7eaec;
+	background-color: #F3F3F4;
+}
+
+.page-access-request .item-list {
+	text-align: justify;
+}
+
+.page-access-request .item-list ul li {
+	list-style-type: none;
+	float: left;
+}

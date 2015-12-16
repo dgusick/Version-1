@@ -157,6 +157,13 @@
                 </li>
                 
                 <li>
+                    <a href="<?php echo url('searchapi-candidate'); ?>"><i class="fa fa-search"></i> <span class="nav-label">New Search</span></a>
+                </li>
+                <li>
+                    <a href="<?php echo url('user/'.$user->uid.'/saved-searches'); ?>"><i class="fa fa-search"></i> <span class="nav-label">My Saved Search</span></a>
+                </li>
+                
+                <li>
                     <a href="<?php echo url('user/'.$user->uid.'/invites'); ?>"><i class="fa fa-search"></i> <span class="nav-label">My Candidates</span></a>
                  <ul>
                  
