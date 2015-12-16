@@ -14,6 +14,7 @@
   //print_r($user_get);
   $is_rec = false; $logged_is_rec = false; 
   $is_can = false; $logged_is_can = false; 
+  
   $is_my_profile = false; 
   if( $user_load->uid == $user_get->uid ) { $is_my_profile = true;  } 
   $contact_display = true; 
@@ -21,11 +22,21 @@
  if(isset($user_load->roles[5])) {$logged_is_rec = true;  } 
  if(isset($user_load->roles[6])) {$logged_is_can = true;  } 
  
+ $can_evaluations = array(); 
  if(isset($user_get->roles[5])) {$is_rec = true;  } 
  if(isset($user_get->roles[6])) {$is_can = true; $contact_display = false; 
  
  	$my_inviter = db_query("select uid from {invite} where invitee =  ".$user_get->uid)->fetchField(); //logged in user 
  	
+ 	
+ 	$query = new EntityFieldQuery;
+        $query->entityCondition('entity_type', 'node')
+          ->entityCondition('bundle', 'evaluation')
+          ->fieldCondition('field_user_id', 'value', $user_get->uid); // 
+        $results = $query->execute(); 
+        if($results && $results['node'] ) {  
+          $can_evaluations = array_keys($results['node']); 
+        } 
  } 
  
  //check if connected -- 
@@ -213,14 +224,18 @@ if($field_approved_recruiter_uid!="")
 ?>
 <div class="col-md-3">
 
-                <div class="ibox-content navy-bg text-center">
+                <div class="ibox-content <?php  if($is_rec) echo 'navy-bg'; 
+                else echo 'red-bg';  ?> text-center">
                     <h1><?php echo $contact_display ? $full_name : 'Hidden'; ?></h1>
                     <div class="m-b-sm">
                        <!--  <img alt="image" class="img-circle" src="img/a8.jpg"> -->
                        <?php echo $pic; ?>
                     </div>
+                    <?php if($is_rec) {  ?>
                     <p class="font-bold"><?php echo $total_connection ?> Total connections</p>
-
+                     <?php } else{  ?>
+                     <p class="font-bold"><?php if(isset($user_get->field_headline['und']) && $user_get->field_headline['und']) echo $user_get->field_headline['und'][0]['value']; ?></p>
+                     <?php } ?>
                 </div>
                     <div class="ibox-content ">
                         <?php
@@ -292,7 +307,7 @@ if($field_approved_recruiter_uid!="")
 	                        	}
                             ?>
                         <br/>
-                        <?php if((!$logged_is_can) || $is_my_profile) { ?>
+                        <?php if( (!$is_can) || $is_my_profile ) { ?>
                         <h4 class="media-heading">Connections</h4>
                         <div class="team-members">
                             
@@ -373,6 +388,50 @@ if($field_approved_recruiter_uid!="")
                                 <div class="tab-content">
                                     <div id="tab-1" class="tab-pane active">
                                         <div class="full-height-scroll">
+                                        
+                                        
+                                          <?php if($is_can):  ?>
+                                         <h2 class="media-heading"><i class="fa fa-bar-chart"></i>&nbsp;Feedback</h2>
+                                       
+                                         <?php if($can_evaluations):
+                                         
+                                         foreach($can_evaluations as $evnid) {
+                                           $evnode = node_load($evnid); 
+                                          // print_r($evnode);
+                                         ?>
+                                         <div class=" wrapper p-md">
+                                                <?php echo $evnode->field_notes_feedback['und'][0]['value'];
+                                                
+                                                ?>
+                                                 
+                                            </div>
+                                            
+                                            <div>
+                                             <h2 class="media-heading"><i class="fa fa-user"></i>&nbsp;Skills</h2><br/>
+                                              <?php foreach($evnode->field_skills_rating['und'] as $scids) { 
+                                                	$fcid = $scids['value']; 
+                                                 $scid_Data = entity_load('field_collection_item', array($fcid));
+                                                 //print_r($scid_Data); 
+                                                 $scid_object = $scid_Data[$fcid]; 
+                                                  $skil_term = taxonomy_term_load($scid_object->field_skills['und'][0]['tid']);
+                                                ?>
+                                               
+                                                <div>
+                                                    <span><?php echo $skil_term->name; ?></span>
+                                                    <small class="pull-right"><?php echo ($scid_object->field_skill_1['und'][0]['rating'] / 20) ?>/5</small>
+                                                </div>
+                                                <div class="progress progress-small">
+                                                    <div style="width: <?php echo $scid_object->field_skill_1['und'][0]['rating']; ?>%;" class="progress-bar"></div>
+                                                </div>
+                                                <?php   }  ?>
+ 
+                                            </div>
+                                            
+                                            <?php }
+                                            endif; ?>
+                                            
+                                          
+                                          <?php endif; ?>
                                             <?php
 				                        	if($field_summary!="")
 					                        	{
