@@ -12,6 +12,9 @@
    	 $is_rec_inactive = false; 	
    	} 
  }
+ 
+
+
 /**
  * @file
  * Default theme implementation to display a single Drupal page.
@@ -109,8 +112,8 @@
     $full_name = $user->field_first_name['und'][0]['value'] . ' ' . $user->field_last_name['und'][0]['value'];
   }
   
+  
 ?>
- 
   <div id="wrapper">
   <div id="page">
     <?php if($user->uid) { ?>
@@ -130,7 +133,7 @@
                                 
                                 <?php if(isset($user->roles[5]) && !$is_rec_inactive ) { //rec. menu  ?>
                                 <li><a href="<?php echo url('user/'.$user->uid.'/wishlist'); ?>">My Wishlist</a></li>
-                                <li><a href="<?php echo url('user/'.$user->uid.'/my_following'); ?>">Im Following</a></li>
+                                <li><a href="<?php echo url('user/'.$user->uid.'/my_following'); ?>">I'm Following</a></li>
                                 <li><a href="<?php echo url('user/'.$user->uid.'/my_followers'); ?>">My Followers</a></li>
                                 <li><a href="<?php echo url('messages'); ?>">Mailbox</a></li>
                                 <?php } ?>
@@ -184,7 +187,7 @@
                     <a href="<?php echo url('relationships/sent'); ?>"><i class="fa fa-group"></i> <span class="nav-label">Pending Requests</span></a>
                 </li>
                 <li>
-                    <a href="<?php echo url('access-request'); ?>"><i class="fa fa-group"></i> <span class="nav-label">Approved Requests</span></a>
+                    <a href="<?php echo url('candidates-access-request'); ?>"><i class="fa fa-group"></i> <span class="nav-label">Approved Requests</span></a>
                 </li>
                 
                 
@@ -199,7 +202,7 @@
                     <a href="<?php echo url('profile-main/'.$user->uid.'/edit'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Edit My Skills</span></a>
                     <!-- <a href="<?php echo url('approved-recruiter-list'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Approved recruiters</span></a>-->
                     <a href="<?php echo url('relationships/received'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">New Requests</span></a>
-                    <a href="<?php echo url('all-access'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Approved Requests</span></a>
+                    <a href="<?php echo url('recruiter-access-request'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Approved Requests</span></a>
                     
                 </li>
                 
@@ -311,7 +314,7 @@
 		    <?php print render($page['footer']); ?>
 		    
             <div class="pull-right">
-                10GB of <strong>250GB</strong> Free.
+               <!-- 10GB of <strong>250GB</strong> Free. -->
             </div>
             
             <div>

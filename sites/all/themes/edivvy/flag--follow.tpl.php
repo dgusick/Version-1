@@ -51,7 +51,7 @@
  	$link_text = 'Follow'; 
  }
  if( substr($link_text, 0, 11) == 'Stop follow') { 
- 	$link_text = 'Stop following'; 
+ 	$link_text = 'Following'; 
  }
 ?>
 <?php if ($needs_wrapping_element): ?>

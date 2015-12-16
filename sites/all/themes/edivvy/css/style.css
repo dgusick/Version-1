@@ -48,6 +48,7 @@ h5 {
 .nav > li.active > a {
   color: #ffffff;
 }
+
 .navbar-default .nav > li > a:hover,
 .navbar-default .nav > li > a:focus {
   background-color: #293846;
@@ -4137,7 +4138,7 @@ body.modal-open {
 .contact-box {
   background-color: #ffffff;
   border: 1px solid #e7eaec;
-  padding: 20px;
+  padding: 10px;
   margin-bottom: 20px;
 }
 .contact-box a {
@@ -7549,6 +7550,7 @@ select {
 .contact-box .img-circle{
     width:61px;   
     height:61px;
+    margin: auto;
 }
 
 .page-user #block-block-5 a{
@@ -7570,5 +7572,8 @@ select {
 .btn-green{
     border: solid 1px green;
     color: green;
+}
+.page-relationships table.sticky-enabled .message {
+	    display: table-cell;
 }
 

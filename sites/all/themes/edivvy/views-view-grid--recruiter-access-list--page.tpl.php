@@ -286,7 +286,7 @@ if($field_approved_recruiter_uid!="")
 	                                                                <div class="contact-box">
 	                                                                    <a href="<?php echo url("user/".$load_recruiter->uid) ?>">
 	                                                                        <div class="row">
-	                                                                            <div class="col-sm-4 col-sm-push-4">
+	                                                                            <div class="col-sm-4 col-sm-push-4 text-center">
 	                                                                                <div class="text-center">
 	                                                                                    <?php echo $pic_recruiter ?>
 	                                                                                    <div class="m-t-xs font-bold"><?php if($is_rec)  { echo 'Candidate'; } else { echo 'Recruiter'; } ?><!-- , Veritas --></div>

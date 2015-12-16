@@ -84,7 +84,7 @@
                                 </div>
                             </div>
                             <?php $flag = flag_get_flag('follow'); ?>
-                            <div class=" m-t-lg" style="">
+                            <div class="col-sm-12 mtlg" style="">
                                 <div class="col-md-4">
                                    <!-- <span class="line">5,3,9,6,5,9,7,3,5,2,5,6,7,7,2,2</span>-->
                                     <h5><strong><?php echo $count_post; ?></strong> Posts</h5> 
