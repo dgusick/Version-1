@@ -286,7 +286,7 @@ input.form-submit {
 
 .page-relationships table.sticky-enabled {
 	width: 100%;
-	border: 1px solid #bebfb9;;
+	border: 1px solid #bebfb9;
 }
 
 .page-relationships table.sticky-enabled tr td {
@@ -332,4 +332,25 @@ input.form-submit {
 .mtlg .col-md-4 {
      padding-right: 0;
         padding-left: 0;
+}
+
+.page-searchapi-candidate .view-saved-search table.views-table,
+.page-searchapi-candidate .view-searchapi-candidate table.views-table {
+	width: 100%;
+	border: 1px solid #bebfb9;
+}
+
+.page-searchapi-candidate .view-saved-search table.views-table th,
+.page-searchapi-candidate .view-searchapi-candidate table.views-table th {
+	border: 1px solid #bebfb9;
+	background: #e1e2dc;
+	padding: 10px;
+}
+
+.page-searchapi-candidate .view-saved-search table.views-table tr td,
+.page-searchapi-candidate .view-searchapi-candidate table.views-table tr td {
+	padding: 10px;
+	background-color: #FFF;
+	border: 1px solid #e7eaec;
+	border-collapse: collapse;
 }
