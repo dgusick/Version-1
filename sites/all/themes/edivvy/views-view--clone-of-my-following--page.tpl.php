@@ -60,14 +60,14 @@
                                 <div class="col-sm-4 col-sm-push-4">
                                     <div class="text-center">
                                         <?php echo $url_pic ?>
-                                        <div class="m-t-xs font-bold">Im Following</div>
+                                        <div class="m-t-xs font-bold">I'm Following</div>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-sm-12">
+                                <div class="col-sm-12 text-center">
                                     <h3><strong><?php print $item['name']; ?></strong></h3>
-                                    <p><i class="fa fa-linkedin-square"></i> <?php print $item['field_first_name']; ?>.<?php print $item['field_last_name']; ?></p>
+                             <!--       <p><i class="fa fa-linkedin-square"></i> <?php print $item['field_first_name']; ?>.<?php print $item['field_last_name']; ?></p> -->
                                     <p class="email_row"><i class="fa fa-inbox"></i> <a href="mailto:john.smith@something.com"> <?php print $item['mail']; ?></a></p>
                   
                                     <!--<div>
