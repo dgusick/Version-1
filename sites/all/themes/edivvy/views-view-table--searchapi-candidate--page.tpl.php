@@ -18,6 +18,8 @@
  *   field id, then row number. This matches the index in $rows.
  * @ingroup views_templates
  */
+ $base_theme_url = drupal_get_path('theme',$GLOBALS['theme']);
+    
 ?>
 <div class="clients-list">
                                 <ul class="nav nav-tabs">
@@ -59,7 +61,7 @@
                                                     $query = new EntityFieldQuery;
                                                     $query->entityCondition('entity_type', 'node')
                                                       ->entityCondition('bundle', 'evaluation')
-                                                      ->fieldCondition('field_user_id', 'value', $item['uid'])
+                                                      ->fieldCondition('field_user_id', 'target_id', $item['uid'])
                                                       ->fieldCondition('field_recruiter_id', 'value', $user->uid);
                                                     
                                                     $results = $query->execute();
@@ -74,17 +76,22 @@
                                                     }
 
                                                     //echo $node_id;
-                                                    
+                                                    if($item['field_user_picture'] != ''){
+                                                        	$url_pic = $item['field_picture_url'];
+                                                        }else{ 
+                                                        	$url_pic = '<img src="'. $base_theme_url.'/img/default-avatar.png'.'" />';
+                                                        }
+                                                        
                                                     $compare = strtolower($item['field_skills']);
                                                     $keyword = strtolower($search_value);
                                                     
-                                                   	//echo $compare;	?>
+                                                   	//echo $compare;#contact-1	?>
                                                     
                                                     
 	                                                    	<tr style="">
 	                                                    
-	                                                        <td class="client-avatar"> <?php $row['field_user_picture']; ?>  </td>
-	                                                        <td><a data-toggle="tab" href="#contact-1" class="client-link"><?php print $item['name']; ?></a></td>
+	                                                        <td class="client-avatar"> <?php echo $url_pic; ?>  </td>
+	                                                        <td><a   href="<?php echo url('user/'.$item['uid']); ?>" class="client-link"><?php print $item['name']; ?></a></td>
 	                                                        <td> <?php print $item['field_job_level']; ?> </td>
 	                                                        <td> <?php print $item['field_role_department']; ?> </td>
 	                                                        
@@ -139,11 +146,20 @@
 	                                                                //echo $recruiter_id;
 	                                                                //echo $user->uid;
 	                                                                
+	                                                               
+	                                                                         $wishlist_link = flag_create_link('wishlist', $uid);
+	                                                                         
+	                                                                         if($wishlist_link  != '' ) { ?>
+	                                                                           <div data-toggle="button" type="button" class="btn btn-xs btn-outline btn-danger wishlist"><i class="fa fa-heart-o"></i>
+	                                                                               <?php echo $wishlist_link; ?>
+	                                                                            </div>
+	                                                                            <?php } 
+	                                                                  
 	                                                                ?>
 	                                                                
 	                                                                
-	                                                                <a data-toggle="button" type="button" class="btn btn-xs btn-outline btn-danger save-btn"><i class="fa fa-heart-o"></i> Save </a>
-	                                                                <a data-toggle="button" type="button"  class="btn btn-xs btn-outline  btn-success contact-btn "><i class="fa fa-envelope-o"></i> Contact </a>
+	                                                               <!-- <a data-toggle="button" type="button" class="btn btn-xs btn-outline btn-danger save-btn"><i class="fa fa-heart-o"></i> Save </a> -->
+	                                                               <!-- <a data-toggle="button" type="button"  class="btn btn-xs btn-outline  btn-success contact-btn "><i class="fa fa-envelope-o"></i> Contact </a> -->
 	                                                            </span>
 	                                                        </td>
                                                     	</tr>

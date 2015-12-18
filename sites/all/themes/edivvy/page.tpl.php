@@ -155,33 +155,31 @@
                 </li>
                 
                 <?php if(isset($user->roles[5])  && !$is_rec_inactive ) { //rec. menu  ?>
-                <li>
+                <!-- <li>
                     <a href="<?php echo url('candidate-search'); ?>"><i class="fa fa-search"></i> <span class="nav-label">Search</span></a>
-                </li>
+                </li>-->
                 
                 <li>
-                    <a href="<?php echo url('searchapi-candidate'); ?>"><i class="fa fa-search"></i> <span class="nav-label">New Search</span></a>
+                    <a href="<?php echo url('searchapi-candidate'); ?>"><i class="fa fa-search"></i> <span class="nav-label">Search</span></a>
                 </li>
                 <li>
                     <a href="<?php echo url('user/'.$user->uid.'/saved-searches'); ?>"><i class="fa fa-search"></i> <span class="nav-label">My Saved Search</span></a>
                 </li>
                 
                 <li>
-                    <a href="<?php echo url('user/'.$user->uid.'/invites'); ?>"><i class="fa fa-search"></i> <span class="nav-label">My Candidates</span></a>
+                    <a href="<?php echo url('user/'.$user->uid.'/invites'); ?>"><i class="fa fa-search"></i> <span class="nav-label">New Candidates</span></a>
                  <ul>
                  
                  <li>
                     <a href="<?php echo url('invite/add/invite_by_email'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Invite Candidate</span></a>
                 </li>
                 <li>
-                    <a href="<?php echo url('user/'.$user->uid.'/invites'); ?>"><i class="fa fa-search"></i> <span class="nav-label">Candidates List</span></a>
+                    <a href="<?php echo url('user/'.$user->uid.'/invites'); ?>"><i class="fa fa-search"></i> <span class="nav-label">Invited List</span></a>
                 </li>
                 </ul>
                 </li>    
                 
-                <li class="active1">
-                    <a href="<?php echo url('recruiter-list'); ?>"><i class="fa fa-group"></i> <span class="nav-label">Recruiters</span></a>
-                </li>
+                
                 
                 <li>
                     <a href="<?php echo url('relationships/sent'); ?>"><i class="fa fa-group"></i> <span class="nav-label">Pending Requests</span></a>
@@ -190,7 +188,9 @@
                     <a href="<?php echo url('candidates-access-request'); ?>"><i class="fa fa-group"></i> <span class="nav-label">Approved Requests</span></a>
                 </li>
                 
-                
+                <li class="active1">
+                    <a href="<?php echo url('recruiter-list'); ?>"><i class="fa fa-group"></i> <span class="nav-label">Recruiters</span></a>
+                </li>
                 <li>
                     <a href="<?php echo url('node/add/requirement'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Add Requirement</span></a>
                 </li>

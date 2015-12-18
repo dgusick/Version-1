@@ -85,7 +85,7 @@
                                                     $query = new EntityFieldQuery;
                                                     $query->entityCondition('entity_type', 'node')
                                                       ->entityCondition('bundle', 'evaluation')
-                                                      ->fieldCondition('field_user_id', 'value', $item['uid'])
+                                                      ->fieldCondition('field_user_id', 'target_id', $item['uid'])
                                                       ->fieldCondition('field_recruiter_id', 'value', $user->uid);
                                                     
                                                     $results = $query->execute();

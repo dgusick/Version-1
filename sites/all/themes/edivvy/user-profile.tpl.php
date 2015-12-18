@@ -28,11 +28,11 @@
  
  	$my_inviter = db_query("select uid from {invite} where invitee =  ".$user_get->uid)->fetchField(); //logged in user 
  	
- 	
+ 	//my all evaluation 
  	$query = new EntityFieldQuery;
         $query->entityCondition('entity_type', 'node')
           ->entityCondition('bundle', 'evaluation')
-          ->fieldCondition('field_user_id', 'value', $user_get->uid); // 
+          ->fieldCondition('field_user_id', 'target_id', $user_get->uid); // 
         $results = $query->execute(); 
         if($results && $results['node'] ) {  
           $can_evaluations = array_keys($results['node']); 

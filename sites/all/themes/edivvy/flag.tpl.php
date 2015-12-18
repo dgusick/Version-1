@@ -58,7 +58,7 @@
     <span class="<?php print $flag_classes ?>"><?php print $link_text; ?></span>
   <?php endif; ?>
   <?php if ($after_flagging): ?>
-    <span class="<?php print $message_classes; ?>">
+   <span class="<?php print $message_classes; ?>">
       <?php print $message_text; ?>
     </span>
   <?php endif; ?>
