@@ -20,6 +20,98 @@ $items['user/edit'] = array(
   return $items; 
 }
 
+function custom_twicks_node_insert($node) {
+  if($node->type=='evaluation')  {
+    
+  }
+}
+
+function custom_twicks_node_update($node) {
+  // save evaluation latest to user profile2 
+  if($node->type=='evaluation')  {
+    $canid = $node->field_user_id['und'][0]['target_id']; 
+    // load this candidates profile2 - type - evaluation 
+    $c_user = user_load($canid); 
+    
+	//print_r($profile_evaluation); exit; 
+	
+	//loop through nodes data __ 
+	//print_r($node); exit;
+    if($node->field_skills_rating['und']) { 
+    	$profile_evaluation = profile2_load_by_user($c_user, 'evaluation');  
+    	
+	    if($profile_evaluation) {
+	    } else {
+		   $profile_evaluation = profile2_create(array('type' => 'evaluation', 'uid' => $c_user->uid));
+		}
+		
+    	foreach($node->field_skills_rating['und'] as $ck => $skill_col) {
+    		//value
+    		$i =$ck; 
+    		$nfcid =  $skill_col['value'];  
+    		if($nfcid) { 
+	            $nsp_fc_item = entity_load('field_collection_item', array($nfcid)); 
+	           // $nfc_wrapper = entity_metadata_wrapper('field_collection_item', $nsp_fc_item[$nfcid]);
+	           $skill_data = $nsp_fc_item[$nfcid]; 
+	           $term_id = $skill_data->field_skills['und'][0]['tid']; 
+	           $rating  = $skill_data->field_skill_1['und'][0]['rating']; 
+		       
+		     // print_r($nsp_fc_item); exit; 
+		      
+		      //check if user evaluation has any existing data for this key 
+		      if( $profile_evaluation->field_skills_rating && isset($profile_evaluation->field_skills_rating['und'][$i]) &&  $profile_evaluation->field_skills_rating['und'][$i]['value'] != '' ) { 
+		      	$fcid =  $profile_evaluation->field_skills_rating['und'][$i]['value']; 
+			      if($fcid) { 
+		            $sp_fc_item = entity_load('field_collection_item', array($fcid)); 
+		          
+		            $fc_wrapper = entity_metadata_wrapper('field_collection_item', $sp_fc_item[$fcid]);
+			      } 
+		      }else { 
+			    $sp_fc_item = entity_create('field_collection_item', array('field_name' => 'field_skills_rating'));
+		    	
+		    	$sp_fc_item->setHostEntity('profile2', $profile_evaluation); 
+	
+				$fc_wrapper = entity_metadata_wrapper('field_collection_item', $sp_fc_item); 
+	          }  
+	         // print_r($fc_wrapper); exit;
+	          $term_data = taxonomy_term_load($term_id); // print_r($term_data); exit;
+ 	          //$fc_wrapper->field_skills['und'][0]['tid'] = $term_id; 
+	          //$fc_wrapper->field_skill_1['und'][0]['rating'] = $term_id;  
+	          
+		      if($term_id)
+		        $fc_wrapper->field_skills->set($term_id);  
+		        
+		      if($rating)
+		        $fc_wrapper->field_skill_1->set(array($rating));  
+		      
+		      $fc_wrapper->save(TRUE); 
+		      
+		      $profile_evaluation->field_skills_rating['und'][$i]['value'] = $fc_wrapper->getIdentifier();  
+		      
+    		}
+		      
+    		
+    	}//end for 
+    	
+    	//check for other  remove extra 
+        $has_total =	count($profile_evaluation->field_skills_rating['und']); 
+        $new_total = count($node->field_skills_rating['und']); 
+    	 if($new_total < $has_total) {
+    	 	//need to delete some.. 
+    	 	$diff = $has_total - $new_total; 
+    	 	//0-.. todo 
+    	 	
+    	 }
+    	 profile2_save($profile_evaluation);
+    	 
+    	// print_r($profile_evaluation);exit;
+    	
+    }
+    
+  }
+}
+
+
  function custom_twicks_form_alter(&$form, &$form_state, $form_id) {
     	global $user;
     	

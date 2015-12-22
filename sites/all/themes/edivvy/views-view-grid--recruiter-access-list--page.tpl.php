@@ -3,7 +3,7 @@
   $user_load = user_load($user->uid); 
   //print_r($user->uid); 
   //get current uid from url
-  if(arg(1)!= '') { 
+ if(arg(1)!= '') { 
   $uid_get = arg(1); 
   
   $user_get = user_load($uid_get); 
@@ -32,13 +32,14 @@
  	$query = new EntityFieldQuery;
         $query->entityCondition('entity_type', 'node')
           ->entityCondition('bundle', 'evaluation')
-          ->fieldCondition('field_user_id', 'value', $user_get->uid); // 
+          ->fieldCondition('field_user_id', 'target_id', $user_get->uid); // 
         $results = $query->execute(); 
         if($results && $results['node'] ) {  
           $can_evaluations = array_keys($results['node']); 
         } 
  } 
  
+   /* 
  //check if connected -- 
  $field_approved_recruiter_uid = ''; 
  //print_r($field_approved_recruiter_uid); 
@@ -97,7 +98,7 @@ if($field_approved_recruiter_uid!="")
               $pending_access = true;
          }
      }
-     
+   
  //get user fields  
  if($user_get->field_picture_url)
  {
@@ -208,7 +209,7 @@ if($field_approved_recruiter_uid!="")
    		
    	
    	}
-  }
+  }  */
   
   
   $relationships_profile_conn_list = false;  
@@ -303,43 +304,10 @@ if($field_approved_recruiter_uid!="")
 	                                                                                
 	                                                                                if( !$req_data->approved && $is_my_profile) { echo 'Approval pending'; } ?>
 	                                                                                
-	                                                                                <!--
-	                                                                                <div>
-	                                                                                    <div>
-	                                                                                        <span>Quality of candidates</span>
-	                                                                                        <small class="pull-right">4.5 / 5</small>
-	                                                                                    </div>
-	                                                                                    <div class="progress progress-mini">
-	                                                                                        <div style="width: 90%;" class="progress-bar"></div>
-	                                                                                    </div>
-	                
-	                                                                                    <div>
-	                                                                                        <span>Quality of feedback</span>
-	                                                                                        <small class="pull-right">2.5 / 5</small>
-	                                                                                    </div>
-	                                                                                    <div class="progress progress-mini">
-	                                                                                        <div style="width: 50%;" class="progress-bar progress-bar-danger"></div>
-	                                                                                    </div>
-	                                                                                </div>
-	                                                                                -->
+	                                                                               
 	                                                                            </div>
 	                                                                        </div>
-	                                                                        <!--
-	                                                                        <div class=" m-t-lg">
-	                                                                            <div class="col-md-4">
-	                                                                                <span class="line">5,3,9,6,5,9,7,3,5,2,5,6,7,7,2,2</span>
-	                                                                                <h5><strong>169</strong> Posts</h5>
-	                                                                            </div>
-	                                                                            <div class="col-md-4">
-	                                                                                <span class="line">5,3,9,6,5,9,7,3,5,2</span>
-	                                                                                <h5><strong>28</strong> Following</h5>
-	                                                                            </div>
-	                                                                            <div class="col-md-4">
-	                                                                                <span class="line">5,3,2,-1,-3,-2,2,3,5,2</span>
-	                                                                                <h5><strong>24</strong> Followers</h5>
-	                                                                            </div>
-	                                                                        </div>
-	                                                                        -->
+	                                                                     
 	                                                                        <div class="col-sm-12">
 	                                                                         <?php 
 	                                                                         if( $logged_is_rec && $is_can  ) { 

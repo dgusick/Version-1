@@ -271,7 +271,7 @@ input.form-submit {
 }
 
 .page-profile-main .ds-2col .group-left input[type="text"] {
-	width: 80%;
+	width: 87%;
 }
 
 .page-profile-main .ds-2col .group-right div.fivestar-widget {
@@ -281,9 +281,13 @@ input.form-submit {
 .page-profile-main table tbody tr td input[type="submit"] {
 	position: relative;
 	bottom: 30px;
-	right: 100px;
+    right: 285px;
 }
 
+.page-profile-main #edit-actions input.form-submit {
+top: 24px;
+position: relative;	
+}
 .page-relationships table.sticky-enabled {
 	width: 100%;
 	border: 1px solid #bebfb9;
@@ -376,4 +380,17 @@ input.form-submit {
 
 #block-views-saved-search-block-1 h2 {
 	clear: both;
+}
+
+.page-searchapi-candidate .view-searchapi-candidate span.flag-wishlist a {
+	color: #ed5565;
+}
+
+.page-searchapi-candidate .view-searchapi-candidate span.flag-wishlist a:hover {
+	color: #FFF;
+}
+
+.page-searchapi-candidate .views-widget-filter-field_job_level input,
+.page-searchapi-candidate .views-widget-filter-field_role_department input {
+	border: 1px solid #A9A9A9;
 }

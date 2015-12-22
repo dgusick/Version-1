@@ -162,12 +162,12 @@
                 <li>
                     <a href="<?php echo url('searchapi-candidate'); ?>"><i class="fa fa-search"></i> <span class="nav-label">Search</span></a>
                 </li>
-                <li>
+             <!--   <li>
                     <a href="<?php echo url('user/'.$user->uid.'/saved-searches'); ?>"><i class="fa fa-search"></i> <span class="nav-label">My Saved Search</span></a>
-                </li>
+                </li> -->
                 
                 <li>
-                    <a href="<?php echo url('user/'.$user->uid.'/invites'); ?>"><i class="fa fa-search"></i> <span class="nav-label">New Candidates</span></a>
+                    <a href="<?php echo url('user/'.$user->uid.'/invites'); ?>"><i class="fa fa-search"></i> <span class="nav-label">Invite Candidate</span></a>
                  <ul>
                  
                  <li>
@@ -181,12 +181,15 @@
                 
                 
                 
-                <li>
+            <!--    <li>
                     <a href="<?php echo url('relationships/sent'); ?>"><i class="fa fa-group"></i> <span class="nav-label">Pending Requests</span></a>
-                </li>
+                </li> -->
                 <li>
-                    <a href="<?php echo url('candidates-access-request'); ?>"><i class="fa fa-group"></i> <span class="nav-label">Approved Requests</span></a>
+                    <a href="<?php echo url('candidates-access-request'); ?>"><i class="fa fa-group"></i> <span class="nav-label">Access Requests</span></a>
                 </li>
+          <!--  <li>
+                    <a href="<?php echo url('access-request'); ?>"><i class="fa fa-group"></i> <span class="nav-label">Access Requests</span></a>
+                </li> -->
                 
                 <li class="active1">
                     <a href="<?php echo url('recruiter-list'); ?>"><i class="fa fa-group"></i> <span class="nav-label">Recruiters</span></a>
@@ -203,6 +206,7 @@
                     <!-- <a href="<?php echo url('approved-recruiter-list'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Approved recruiters</span></a>-->
                     <a href="<?php echo url('relationships/received'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">New Requests</span></a>
                     <a href="<?php echo url('recruiter-access-request'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Approved Requests</span></a>
+                    <!--  <a href="<?php echo url('all-access'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Approved Requests</span></a> -->
                     
                 </li>
                 

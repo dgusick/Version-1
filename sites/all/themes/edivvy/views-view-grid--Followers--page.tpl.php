@@ -1,4 +1,15 @@
 <?php
+
+/**
+ * @file
+ * Default simple view template to display a rows in a grid.
+ *
+ * - $rows contains a nested array of rows. Each row contains an array of
+ *   columns.
+ *
+ * @ingroup views_templates
+ */
+
     $base_theme_url = drupal_get_path('theme',$GLOBALS['theme']);
     global $user;
 ?>
@@ -70,39 +81,9 @@
                             <!--        <p><i class="fa fa-linkedin-square"></i> <?php print $item['field_first_name']; ?>.<?php print $item['field_last_name']; ?></p> -->
                                     <p class="email_row"><i class="fa fa-inbox"></i> <a href="mailto:john.smith@something.com"> <?php print $item['mail']; ?></a></p>
                   
-                                    <!--<div>
-                                        <div>
-                                            <span>Quality of candidates</span>
-                                            <small class="pull-right">4.5 / 5</small>
-                                        </div>
-                                        <div class="progress progress-mini">
-                                            <div style="width: 90%;" class="progress-bar"></div>
-                                        </div>
-
-                                        <div>
-                                            <span>Quality of feedback</span>
-                                            <small class="pull-right">2.5 / 5</small>
-                                        </div>
-                                        <div class="progress progress-mini">
-                                            <div style="width: 50%;" class="progress-bar progress-bar-danger"></div>
-                                        </div>
-                                    </div> -->
                                 </div>
                             </div>
-                            <div class=" m-t-lg" style="display:none;">
-                                <div class="col-md-4">
-                                    <!--<span class="line">5,3,9,6,5,9,7,3,5,2,5,6,7,7,2,2</span>
-                                    <h5><strong>16Image9</strong> Posts</h5> -->
-                                </div>
-                                <div class="col-md-4">
-                                    <!--<span class="line">5,3,9,6,5,9,7,3,5,2</span>
-                                    <h5><strong>28</strong> Following</h5>-->
-                                </div>
-                                <div class="col-md-4">
-                                    <!--<span class="line">5,3,2,-1,-3,-2,2,3,5,2</span>
-                                    <h5><strong>30</strong> Followers</h5>-->
-                                </div>
-                            </div>
+                          
                             <div class="col-sm-12">
                                 <div class="div-btn-follow btn btn-block btn-outline btn-primary follow-btn"><?php print $item['ops']; ?></div>
                             </div>

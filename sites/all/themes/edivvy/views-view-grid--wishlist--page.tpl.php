@@ -2,38 +2,23 @@
 
 /**
  * @file
- * Main view template.
+ * Default simple view template to display a rows in a grid.
  *
- * Variables available:
- * - $classes_array: An array of classes determined in
- *   template_preprocess_views_view(). Default classes are:
- *     .view
- *     .view-[css_name]
- *     .view-id-[view_name]
- *     .view-display-id-[display_name]
- *     .view-dom-id-[dom_id]
- * - $classes: A string version of $classes_array for use in the class attribute
- * - $css_name: A css-safe version of the view name.
- * - $css_class: The user-specified classes names, if any
- * - $header: The view header
- * - $footer: The view footer
- * - $rows: The results of the view query, if any
- * - $empty: The empty text to display if the view is empty
- * - $pager: The pager next/prev links to display, if any
- * - $exposed: Exposed widget form/info to display
- * - $feed_icon: Feed icon to display, if any
- * - $more: A link to view more, if any
+ * - $rows contains a nested array of rows. Each row contains an array of
+ *   columns.
  *
  * @ingroup views_templates
  */
 
     $base_theme_url = drupal_get_path('theme',$GLOBALS['theme']);
     global $user;
+    
 ?>
 <div class="wrapper wrapper-content animated fadeInRight pd-top-content">
             <div class="row">
                 
                 <?php  foreach ($view->style_plugin->rendered_fields as $delta => $item): ?>
+       
                 
                 <?php 
                     
@@ -75,6 +60,8 @@
                         //$url_pic = $base_theme_url.'/img/default-avatar.png';
                     }
                     if($user->uid!=$item['uid'])
+                    
+        
                     {
                 
                 $user_load = user_load($item['uid']);
@@ -88,19 +75,32 @@
                                 <div class="col-sm-4 col-sm-push-4">
                                     <div class="text-center">
                                         <?php echo $url_pic ?>
-                                        <div class="m-t-xs font-bold">I'm Following</div>
+                                        <div class="m-t-xs font-bold">My Wishlist</div>
                                     </div>
                                 </div>
                             </div>
                             <div class="row">
                                 <div class="col-sm-12 text-center">
                                     <h3><strong><?php print $item['name']; ?></strong></h3>
-                             <!--       <p><i class="fa fa-linkedin-square"></i> <?php print $item['field_first_name']; ?>.<?php print $item['field_last_name']; ?></p> -->
+                            <!--        <p><i class="fa fa-linkedin-square"></i> <?php print $item['field_first_name']; ?>.<?php print $item['field_last_name']; ?></p> -->
                                     <p class="email_row"><i class="fa fa-inbox"></i> <a href="mailto:john.smith@something.com"> <?php print $item['mail']; ?></a></p>
 
                                 </div>
                             </div>
-
+                            <div class=" m-t-lg" style="display:none;">
+                                <div class="col-md-4">
+                                    <!--<span class="line">5,3,9,6,5,9,7,3,5,2,5,6,7,7,2,2</span>
+                                    <h5><strong>16Image9</strong> Posts</h5> -->
+                                </div>
+                                <div class="col-md-4">
+                                    <!--<span class="line">5,3,9,6,5,9,7,3,5,2</span>
+                                    <h5><strong>28</strong> Following</h5>-->
+                                </div>
+                                <div class="col-md-4">
+                                    <!--<span class="line">5,3,2,-1,-3,-2,2,3,5,2</span>
+                                    <h5><strong>30</strong> Followers</h5>-->
+                                </div>
+                            </div>
                             <div class="col-sm-12">
                                 <div class="div-btn-follow btn btn-block btn-outline btn-primary follow-btn"><?php print $item['ops']; ?></div>
                             </div>

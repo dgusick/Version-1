@@ -39,6 +39,7 @@
         } 
  } 
  
+    /* 
  //check if connected -- 
  $field_approved_recruiter_uid = ''; 
  //print_r($field_approved_recruiter_uid); 
@@ -209,7 +210,7 @@ if($field_approved_recruiter_uid!="")
    	
    	}
   }
-  
+   */
   
   $relationships_profile_conn_list = false;  
                             
@@ -303,55 +304,47 @@ if($field_approved_recruiter_uid!="")
 	                                                                                
 	                                                                                if( !$req_data->approved && $is_my_profile) { echo 'Approval pending'; } ?>
 	                                                                                
-	                                                                                <!--
-	                                                                                <div>
-	                                                                                    <div>
-	                                                                                        <span>Quality of candidates</span>
-	                                                                                        <small class="pull-right">4.5 / 5</small>
-	                                                                                    </div>
-	                                                                                    <div class="progress progress-mini">
-	                                                                                        <div style="width: 90%;" class="progress-bar"></div>
-	                                                                                    </div>
-	                
-	                                                                                    <div>
-	                                                                                        <span>Quality of feedback</span>
-	                                                                                        <small class="pull-right">2.5 / 5</small>
-	                                                                                    </div>
-	                                                                                    <div class="progress progress-mini">
-	                                                                                        <div style="width: 50%;" class="progress-bar progress-bar-danger"></div>
-	                                                                                    </div>
-	                                                                                </div>
-	                                                                                -->
+	                                                                                 <?php
+	                                                                                  $has_access = false; $pending_access = false; 
+	                                                                                 if($req_data->approved) { 
+                                                                             $has_access = true;  
+                                                                         } else { 
+                                                                              $pending_access = true;
+                                                                         }
+                                                                         
+                                                                         
+	                                                                                
+	                                                                                  $query = new EntityFieldQuery;
+                                                    $query->entityCondition('entity_type', 'node')
+                                                      ->entityCondition('bundle', 'evaluation')
+                                                      ->fieldCondition('field_user_id', 'target_id', $load_recruiter->uid)
+                                                      ->fieldCondition('field_recruiter_id', 'value', $user->uid);
+                                                    
+                                                    $results = $query->execute();
+                                                    
+                                                    $recruiter_id = ""; $evaluated_node_id = ''; 
+                                                    $is_evaluated = false; 
+                                                    if (isset($results['node']) && count($results['node'])) {
+                                                       $is_evaluated = true;
+                                                       $list_evaluated_nodes =array_keys($results['node']); 
+                                                       $evaluated_node_id = $list_evaluated_nodes[0]; 
+                                                       
+                                                    }
+                                                    
+                                                    if( $has_access && $is_evaluated )
+	        															{
+	        																?> <a href="<?php echo url('node/'.$evaluated_node_id.'') ?>" type="button"  class="btn btn-xs btn-outline  btn-success " style="width: 140px;"> View Evaluation </a>  <?php	
+	        															} else if( $has_access )
+	        															{
+	        																?> <a href="<?php echo url('node/add/evaluation/'.$load_recruiter->uid.'') ?>" type="button"  class="btn btn-xs btn-outline  btn-success " style="width: 140px;"> Create New Evaluation </a> <?php	
+	        															}  
+	        															
+                                                    
+	                                                                                 ?>
 	                                                                            </div>
 	                                                                        </div>
-	                                                                        <!--
-	                                                                        <div class=" m-t-lg">
-	                                                                            <div class="col-md-4">
-	                                                                                <span class="line">5,3,9,6,5,9,7,3,5,2,5,6,7,7,2,2</span>
-	                                                                                <h5><strong>169</strong> Posts</h5>
-	                                                                            </div>
-	                                                                            <div class="col-md-4">
-	                                                                                <span class="line">5,3,9,6,5,9,7,3,5,2</span>
-	                                                                                <h5><strong>28</strong> Following</h5>
-	                                                                            </div>
-	                                                                            <div class="col-md-4">
-	                                                                                <span class="line">5,3,2,-1,-3,-2,2,3,5,2</span>
-	                                                                                <h5><strong>24</strong> Followers</h5>
-	                                                                            </div>
-	                                                                        </div>
-	                                                                        -->
-	                                                                        <div class="col-sm-12">
-	                                                                         <?php 
-	                                                                         if( $logged_is_rec && $is_can  ) { 
-	                                                                         $follow_link = flag_create_link('follow', $load_recruiter->uid);
 	                                                                         
-	                                                                         if($follow_link  != '' ) { ?>
-	                                                                            <div class="div-btn-follow btn btn-block btn-outline btn-primary follow-btn">
-	                                                                               <?php echo $follow_link; ?>
-	                                                                            </div>
-	                                                                            <?php } 
-	                                                                            } ?>
-	                                                                        </div>
+	                                                                         
 	                                                                        <div class="clearfix"></div>
 	                                                                    </a>
 	                                                                </div>
@@ -379,10 +372,4 @@ if($field_approved_recruiter_uid!="")
                     </div>
 
                 </div>
-           
- <div class="profile"<?php //print $attributes; ?>>
-  <?php //print_r( array_keys($user_profile)); Array ( [0] => user_picture [1] => links [2] => field_first_name [3] => flags [4] => user_relationships_ui [5] => flag_follow [6] => field_agree_term [7] => field_recruiter_status [8] => field_user_picture [9] => privatemsg_send_new_message [10] => summary [11] => field_birthday ) 
-  ?>
-  <?php //print render($user_profile);    ?>
-    <?php //print_r($user_profile['user_relationships_ui']); ?>
-</div>
+

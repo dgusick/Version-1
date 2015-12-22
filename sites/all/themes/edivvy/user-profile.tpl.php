@@ -391,9 +391,11 @@ if($field_approved_recruiter_uid!="")
                                         
                                         
                                           <?php if($is_can):  ?>
-                                         <h2 class="media-heading"><i class="fa fa-bar-chart"></i>&nbsp;Feedback</h2>
+                                        
+                                         <?php if($can_evaluations): ?>
+                                          <h2 class="media-heading"><i class="fa fa-bar-chart"></i>&nbsp;Feedback</h2>
                                        
-                                         <?php if($can_evaluations):
+                                         <?php 
                                          
                                          foreach($can_evaluations as $evnid) {
                                            $evnode = node_load($evnid); 
@@ -578,7 +580,8 @@ if($field_approved_recruiter_uid!="")
                                                 <?php  endif; ?>
                                             </div>
                                             <hr class="hr-line-solid"/>
-                                            <div class="form-group">
+                                            
+                                            <div class="form-group" style="<?php if(!$is_my_profile)  { echo 'display:none;'; }?>">
                                                 <div class="col-lg-9">
                                                     <div class="i-checks">
                                                         <?php 
@@ -710,7 +713,7 @@ if($field_approved_recruiter_uid!="")
 	                                                                            </div>
 	                                                                        </div>
 	                                                                        <div class="row">
-	                                                                            <div class="col-sm-12">
+	                                                                            <div class="col-sm-12 text-center">
 	                                                                                <h3><strong><?php echo $full_name_connection ?></strong></h3>
 	                                                                               <!-- <p><i class="fa "></i> <?php echo $load_recruiter->field_first_name['und'][0]['value'].".".$load_recruiter->field_last_name['und'][0]['value'] ?></p> -->
 	                                                                                <?php if( $is_my_profile && $req_data->approved ) { //fa-linkedin-square  ?>

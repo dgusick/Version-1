@@ -183,7 +183,7 @@
 	                                                                ?>
 	                                                                
 	                                                                
-	                                                                <a data-toggle="button" type="button" class="btn btn-xs btn-outline btn-danger save-btn"><i class="fa fa-heart-o"></i> Save </a>
+	                                                         <!       <a data-toggle="button" type="button" class="btn btn-xs btn-outline btn-danger save-btn" style="width: 51.4666px;"><i class="fa fa-heart-o"></i> Save </a>
 	                                                                <a data-toggle="button" type="button"  class="btn btn-xs btn-outline  btn-success contact-btn "><i class="fa fa-envelope-o"></i> Contact </a>
 	                                                            </span>
 	                                                        </td>

@@ -150,7 +150,7 @@
 	                                                                         $wishlist_link = flag_create_link('wishlist', $uid);
 	                                                                         
 	                                                                         if($wishlist_link  != '' ) { ?>
-	                                                                           <div data-toggle="button" type="button" class="btn btn-xs btn-outline btn-danger wishlist"><i class="fa fa-heart-o"></i>
+	                                                                           <div data-toggle="button" type="button" class="btn btn-xs btn-outline btn-danger wishlist" style="width: 76px;"><i class="fa fa-heart-o"></i>
 	                                                                               <?php echo $wishlist_link; ?>
 	                                                                            </div>
 	                                                                            <?php } 
