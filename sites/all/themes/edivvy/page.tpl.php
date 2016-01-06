@@ -107,9 +107,9 @@
         }
      }
          
-  $full_name = $user->name; 
-  if (!empty($user->field_first_name) && !empty($user->field_last_name)) {
-    $full_name = $user->field_first_name['und'][0]['value'] . ' ' . $user->field_last_name['und'][0]['value'];
+  $full_name = $users->name; 
+  if (!empty($users->field_first_name) ) {//&& !empty($users->field_last_name)
+    $full_name = $users->field_first_name['und'][0]['value'] . ' ' . $users->field_last_name['und'][0]['value'];
   }
   
   
@@ -194,9 +194,9 @@
                 <li class="active1">
                     <a href="<?php echo url('recruiter-list'); ?>"><i class="fa fa-group"></i> <span class="nav-label">Recruiters</span></a>
                 </li>
-                <li>
+                <!-- <li>
                     <a href="<?php echo url('node/add/requirement'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Add Requirement</span></a>
-                </li>
+                </li> -->
                 <?php } ?>
                                 
                 <?php if(isset($user->roles[6])) { //candidate menu ?>

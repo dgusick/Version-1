@@ -389,8 +389,52 @@ position: relative;
 .page-searchapi-candidate .view-searchapi-candidate span.flag-wishlist a:hover {
 	color: #FFF;
 }
-
-.page-searchapi-candidate .views-widget-filter-field_job_level input,
-.page-searchapi-candidate .views-widget-filter-field_role_department input {
+.page-searchapi-candidate .views-exposed-widget select ,
+.page-searchapi-candidate .views-exposed-widget input {
 	border: 1px solid #A9A9A9;
+/*	width: 210px;
+	height: 25px;  */
+}
+.page-searchapi-candidate .views-submit-button {
+    position: absolute;
+    right: 0px;
+    top: 15px;
+}
+.page-searchapi-candidate .views-widget-filter-profile_evaluation_field_skills_rating_field_skills {
+   margin-right: 1px;
+}
+.page-searchapi-candidate .views-submit-button input {
+    width: auto;
+    height: auto;
+    margin-top: 1em !important;
+    margin-right: 6px;
+}
+.page-searchapi-candidate  .views-exposed-form .views-exposed-widget {
+    padding: .5em 2em 0 0;
+    width: 25%;
+}
+.page-searchapi-candidate  .views-exposed-form .views-exposed-widget label {
+  /*  display: none;  */
+}
+.page-searchapi-candidate  .views-exposed-form .views-exposed-widget.views-submit-button {
+    padding: 0;
+}
+.page-searchapi-candidate .views-submit-button a {
+    color: #1ab394;
+    margin-top: 0px;
+    padding-top: 7px;
+}
+.page-searchapi-candidate .views-widget-filter-field_city input {
+    width: 210px;
+    height: 34px;
+}
+.page-searchapi-candidate  #edit-profile-evaluation-field-skills-rating-field-skills-wrapper {
+    margin-bottom: 40px;
+}
+.page-relationships .tabs {
+	display: none; 
+}
+.page-searchapi-candidate #block-views-exp-searchapi-candidate-page,
+.page-searchapi-candidate #block-search-api-saved-searches-default-candidate {
+    margin-bottom: 30px;
 }

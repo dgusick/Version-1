@@ -39,7 +39,7 @@
         } 
  } 
  
-   /* 
+   
  //check if connected -- 
  $field_approved_recruiter_uid = ''; 
  //print_r($field_approved_recruiter_uid); 
@@ -100,7 +100,7 @@ if($field_approved_recruiter_uid!="")
      }
    
  //get user fields  
- if($user_get->field_picture_url)
+/* if($user_get->field_picture_url)
  {
     $pic = '<img class="img-circle" src="'.$user_get->field_picture_url['und'][0]['value'].'" />';  
  }
@@ -114,7 +114,7 @@ if($field_approved_recruiter_uid!="")
         $pic = '<img class="img-circle" src="'.base_path().'/'.$base_theme_url.'/img/default-avatar.png" />';
       }
  }
- 
+ /*
   //get full_name
   $full_name = $user_get->name; 
   if (!empty($user_get->field_first_name) ) { //&& !empty($user_get->field_last_name) 
@@ -190,7 +190,7 @@ if($field_approved_recruiter_uid!="")
   
     
     
-     
+ /*    
      if(!empty($user_load->field_recruiter_status)){
     $field_recruiter_status =  $user_load->field_recruiter_status['und'][0]['value'];
    	
@@ -224,72 +224,62 @@ if($field_approved_recruiter_uid!="")
     
 ?>
 
-                                        <br/>
-                                        <div class="row">
-                                            
-                                            <?php
-                                                //get list connection
-                                                 if($relationships_profile_conn_list != "")
-                                {
-                                    foreach($relationships_profile_conn_list as $req_data) 
-                                    {
-                                       if($is_rec) {
-                                       	   $recruiter_uid = $req_data->requestee_id; 
-                             
-                                       } else {
-                                       	$recruiter_uid = $req_data->requester_id;  
-                                       	}
+<div class="wrapper wrapper-content animated fadeInRight pd-top-content">
+        <div class="row">
+            <?php
+            //get list connection
+             if($relationships_profile_conn_list != "")
+              {
+               foreach($relationships_profile_conn_list as $req_data) 
+               {
+                 if($is_rec) {
+                 $recruiter_uid = $req_data->requestee_id; 
+                  } else {
+                  	$recruiter_uid = $req_data->requester_id;  
+               }
                                        
                                              
-                                                        //load recruiter user
-                                                        $load_recruiter = user_load($recruiter_uid);
-                                                        //print_r($load_recruiter);
-                                                        
-                                                        //check if list contains user own account
-				                                          
-	                                                        //get all fields
-	                                                        //full_name
-	                                                        $full_name_connection = $load_recruiter->name; 
-	                                                        if (!empty($load_recruiter->field_first_name) ) { //&& !empty($load_recruiter->field_last_name)
-	                                                            $full_name_connection = $load_recruiter->field_first_name['und'][0]['value'] . ' ' . $load_recruiter->field_last_name['und'][0]['value'];
-	                                                        }
-	                                                        
-	                                                        //linkedin
-	                                                        //get field_linkedin_user_id
-	                                                        if(!empty($load_recruiter->field_linkedin_user_id)){
-	                                                            $field_linkedin_user_id_connection =  $load_recruiter->field_linkedin_user_id['und'][0]['value'];
-	                                                        }
-	                                                        
-	                                                        if($load_recruiter->field_picture_url)
-	                                                        {
-	                                                            $pic_recruiter = '<img class="img-circle m-t-xs img-responsive" src="'.$load_recruiter->field_picture_url['und'][0]['value'].'" />';  
-	                                                        }
-	                                                        else
-	                                                        {
-	                                                            if($load_recruiter->picture->uri){
-	                                                              	    $pic_recruiter = theme_image_style(
-	                                                                    array(
-	                                                                    'style_name' => 'thumbnail',
-	                                                                    'path' => $load_recruiter->picture->uri,
-	                                                                    'attributes' => array(
-	                                                                                        'class' => 'img-circle m-t-xs img-responsive'
-	                                                                                    )            
-	                                                                    )
-	                                                                ); 
-	                                                            }else{ 
-	                                                              	 $base_theme_url = drupal_get_path('theme',$GLOBALS['theme']);
-	                                                              	 $pic_recruiter = '<img class="img-circle m-t-xs img-responsive" src="'.base_path().'/'.$base_theme_url.'/img/default-avatar.png" />';
-	                                                            }
-	                                                        }
+                 //load recruiter user
+                 $load_recruiter = user_load($recruiter_uid);
+                  //print_r($load_recruiter);
+                  //check if list contains user own account
+				   //get all fields
+	                //full_name
+	                 $full_name_connection = $load_recruiter->name; 
+	                 if (!empty($load_recruiter->field_first_name) ) { //&& !empty($load_recruiter->field_last_name)
+	                $full_name_connection = $load_recruiter->field_first_name['und'][0]['value'] . ' ' . $load_recruiter->field_last_name['und'][0]['value'];
+	                }
+	                //linkedin
+	                //get field_linkedin_user_id
+	                 if(!empty($load_recruiter->field_linkedin_user_id)){
+	                  $field_linkedin_user_id_connection =  $load_recruiter->field_linkedin_user_id['und'][0]['value'];
+	                  }
+	                  if($load_recruiter->field_picture_url)
+	                    {
+	                      $pic_recruiter = '<img class="img-circle m-t-xs img-responsive" src="'.$load_recruiter->field_picture_url['und'][0]['value'].'" />';  
+	                        }
+	                       else
+	                         {
+	                          if($load_recruiter->field_user_picture){
+	                          $field_user_picture = file_create_url($load_recruiter->field_user_picture[LANGUAGE_NONE][0]['uri']);
+                               $pic_recruiter = '<img class="img-circle" src="'.$field_user_picture.'" />'; 
+	                           }
+	                                                            
+	                          else{ 
+	                            $base_theme_url = drupal_get_path('theme',$GLOBALS['theme']);
+	                           $pic_recruiter = '<img class="img-circle m-t-xs img-responsive" src="'.base_path().'/'.$base_theme_url.'/img/default-avatar.png" />';
+	                                                            } 
+	                                                        } 
 	                                                          
 	                                                          ?>
+	                                                          
 	                                                            <div class="col-lg-4">
-	                                                                <div class="contact-box">
+	                                                                <div class="contact-box" style="min-height: 170px;">
 	                                                                    <a href="<?php echo url("user/".$load_recruiter->uid) ?>">
 	                                                                        <div class="row">
 	                                                                            <div class="col-sm-4 col-sm-push-4 text-center">
 	                                                                                <div class="text-center">
-	                                                                                    <?php echo $pic_recruiter ?>
+	                                                                                   <?php echo $pic_recruiter ?> 
 	                                                                                    <div class="m-t-xs font-bold"><?php if($is_rec)  { echo 'Candidate'; } else { echo 'Recruiter'; } ?><!-- , Veritas --></div>
 	                                                                                </div>
 	                                                                            </div>
@@ -337,20 +327,7 @@ if($field_approved_recruiter_uid!="")
                                             </div>
                                         </div>
                                     </div>
-                                    <div id="tab-3" class="tab-pane"></div>
-                                </div>
 
-                         
+                  
 
-
-                        </div>
-                    </div>
-
-                </div>
-           
- <div class="profile"<?php //print $attributes; ?>>
-  <?php //print_r( array_keys($user_profile)); Array ( [0] => user_picture [1] => links [2] => field_first_name [3] => flags [4] => user_relationships_ui [5] => flag_follow [6] => field_agree_term [7] => field_recruiter_status [8] => field_user_picture [9] => privatemsg_send_new_message [10] => summary [11] => field_birthday ) 
-  ?>
-  <?php //print render($user_profile);    ?>
-    <?php //print_r($user_profile['user_relationships_ui']); ?>
-</div>
+ 

@@ -224,10 +224,9 @@ if($field_approved_recruiter_uid!="")
     
 ?>
 
-                                        <br/>
-                                        <div class="row">
-                                            
-                                            <?php
+    <div class="wrapper wrapper-content animated fadeInRight pd-top-content">
+       <div class="row">
+              <?php
                                                 //get list connection
                                                  if($relationships_profile_conn_list != "")
                                 {
@@ -266,16 +265,9 @@ if($field_approved_recruiter_uid!="")
 	                                                        }
 	                                                        else
 	                                                        {
-	                                                            if($load_recruiter->picture->uri){
-	                                                              	    $pic_recruiter = theme_image_style(
-	                                                                    array(
-	                                                                    'style_name' => 'thumbnail',
-	                                                                    'path' => $load_recruiter->picture->uri,
-	                                                                    'attributes' => array(
-	                                                                                        'class' => 'img-circle m-t-xs img-responsive'
-	                                                                                    )            
-	                                                                    )
-	                                                                ); 
+	                                                            if($load_recruiter->field_user_picture){
+	                                                              	   $field_user_picture = file_create_url($load_recruiter->field_user_picture[LANGUAGE_NONE][0]['uri']);
+                                                                       $pic_recruiter = '<img class="img-circle" src="'.$field_user_picture.'" />'; 
 	                                                            }else{ 
 	                                                              	 $base_theme_url = drupal_get_path('theme',$GLOBALS['theme']);
 	                                                              	 $pic_recruiter = '<img class="img-circle m-t-xs img-responsive" src="'.base_path().'/'.$base_theme_url.'/img/default-avatar.png" />';
@@ -284,7 +276,7 @@ if($field_approved_recruiter_uid!="")
 	                                                          
 	                                                          ?>
 	                                                            <div class="col-lg-4">
-	                                                                <div class="contact-box">
+	                                                                <div class="contact-box" style="min-height: 195px;">
 	                                                                    <a href="<?php echo url("user/".$load_recruiter->uid) ?>">
 	                                                                        <div class="row">
 	                                                                            <div class="col-sm-4 col-sm-push-4">
@@ -360,16 +352,5 @@ if($field_approved_recruiter_uid!="")
                                             <div class="col-sm-12">
                                                 <button class="btn btn-primary btn-block m-t btn-read-more"><i class="fa fa-arrow-down"></i> Show More</button>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div id="tab-3" class="tab-pane"></div>
-                                </div>
-
-                         
-
-
-                        </div>
-                    </div>
-
-                </div>
-
+                                 </div>
+                                   

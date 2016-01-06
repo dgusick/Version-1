@@ -21,7 +21,14 @@
  $base_theme_url = drupal_get_path('theme',$GLOBALS['theme']);
     
 ?>
-<div class="clients-list">
+
+
+
+ <div class="ibox-content">
+ <h2 class="pull-left">Search results</h2>
+ <br>
+ <br>
+                       <div class="clients-list">
                                 <ul class="nav nav-tabs">
                                     <span class="pull-right small text-muted"><?php echo $view->total_rows; ?> results</span>
                                     <li class="active"><a data-toggle="tab" href="#tab-1"><i class="fa fa-user"></i> Profiles</a></li>
@@ -134,7 +141,7 @@
 	        															} 
 	        															else
 	        															{ //request-access/'.$uid.''  relationship/204/request/2?destination=user/204 
-	                                                                		?> <a href="<?php echo url('relationship/'.$uid.'/request/2', array('query'=>array('destination'=>'candidate-search'))) ?>" type="button" class="btn btn-xs btn-outline btn-danger" style="width: 140px;"> Request Access </a> <?php 
+	                                                                		?> <a href="<?php echo url('relationship/'.$uid.'/request/2', array('query'=>array('destination'=>'searchapi-candidate'))) ?>" type="button" class="btn btn-xs btn-outline btn-danger" style="width: 140px;"> Request Access </a> <?php 
 	                                                                	}
 	        															
 	                                                                ?>
@@ -172,7 +179,7 @@
                                         </div>
                                     </div>
                                 </div>
-
+                             </div>
                             </div>
                             
  

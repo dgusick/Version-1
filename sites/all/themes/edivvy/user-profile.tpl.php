@@ -339,16 +339,9 @@ if($field_approved_recruiter_uid!="")
 	                                        }
 	                                        else
 	                                        {
-	                                            if($load_recruiter->picture->uri){
-	                                              	    $pic_recruiter = theme_image_style(
-	                                                    array(
-	                                                    'style_name' => 'thumbnail',
-	                                                    'path' => $load_recruiter->picture->uri,
-	                                                    'attributes' => array(
-	                                                                        'class' => 'img-circle'
-	                                                                    )            
-	                                                    )
-	                                                ); 
+	                                            if($load_recruiter->field_user_picture){
+	                                                              	   $field_user_picture = file_create_url($load_recruiter->field_user_picture[LANGUAGE_NONE][0]['uri']);
+                                                                       $pic_recruiter = '<img class="img-circle" src="'.$field_user_picture.'" />';  
 	                                            }else{ 
 	                                              	 $base_theme_url = drupal_get_path('theme',$GLOBALS['theme']);
 	                                              	 $pic_recruiter = '<img class="img-circle" src="'.base_path().'/'.$base_theme_url.'/img/default-avatar.png" />';
@@ -684,16 +677,9 @@ if($field_approved_recruiter_uid!="")
 	                                                        }
 	                                                        else
 	                                                        {
-	                                                            if($load_recruiter->picture->uri){
-	                                                              	    $pic_recruiter = theme_image_style(
-	                                                                    array(
-	                                                                    'style_name' => 'thumbnail',
-	                                                                    'path' => $load_recruiter->picture->uri,
-	                                                                    'attributes' => array(
-	                                                                                        'class' => 'img-circle m-t-xs img-responsive'
-	                                                                                    )            
-	                                                                    )
-	                                                                ); 
+	                                                            if($load_recruiter->field_user_picture){
+	                                                              	   $field_user_picture = file_create_url($load_recruiter->field_user_picture[LANGUAGE_NONE][0]['uri']);
+                                                                       $pic_recruiter = '<img class="img-circle" src="'.$field_user_picture.'" />'; 
 	                                                            }else{ 
 	                                                              	 $base_theme_url = drupal_get_path('theme',$GLOBALS['theme']);
 	                                                              	 $pic_recruiter = '<img class="img-circle m-t-xs img-responsive" src="'.base_path().'/'.$base_theme_url.'/img/default-avatar.png" />';

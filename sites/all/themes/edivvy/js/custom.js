@@ -47,13 +47,17 @@ $(document).ready(function () {
     $('#edit-field-role-department-tid').attr("tabindex","4");
     $('#edit-field-role-department-tid').attr("data-placeholder","Role / Department");
     
-    $('#edit-field-skills-tid').addClass('chosen-select form-control');
+    
+    $('#edit-field-skills-tid').addClass('chosen-select form-autocomplete');
     $('#edit-field-skills-tid').attr("tabindex","4");
     $('#edit-field-skills-tid').attr("data-placeholder","Choose a skill...");
     
     $('#edit-submit-candidate-search').addClass('btn  btn-primary');
     $('#edit-submit-candidate-search').attr("value",'Search');
+    
     $('<a class="btn btn-link  " data-toggle="button" type="button" id="adv-search-btn"><i class="fa fa-plus"></i>&nbsp;Advance Search</a>').insertAfter("#edit-submit-candidate-search");
+    
+     $('<a class="btn btn-link  " data-toggle="button" type="button" id="adv-search-btn"><i class="fa fa-plus"></i>&nbsp;Advance Search</a>').insertAfter("#edit-submit-searchapi-candidate");
     
     $('#edit-submit-candidate-search-top').addClass('btn  btn-primary');
     $('#edit-submit-candidate-search-top').attr("value",'Search');
@@ -79,6 +83,41 @@ $(document).ready(function () {
     $('#edit-field-expertise-tid').addClass('form-control');
     $("#edit-field-expertise-tid option:first").text("Expertise");
     
+    $('#edit-field-role-department').addClass('chosen-select form-control');
+    $('#edit-field-role-department').attr("tabindex","4");
+    $('#edit-field-role-department').attr("data-placeholder","Role / Department"); 
+    
+     $('#edit-field-job-level').addClass('chosen-select form-control');
+    $('#edit-field-job-level').attr("tabindex","4");
+    $('#edit-field-job-level').attr("data-placeholder","Choose a Job level..."); 
+    
+    $('#edit-profile-evaluation-field-skills-rating-field-skills').addClass('chosen-select form-control');
+    $('#edit-profile-evaluation-field-skills-rating-field-skills').attr("tabindex","4");
+    $('#edit-profile-evaluation-field-skills-rating-field-skills').attr("data-placeholder","Choose a skill...");
+    
+    $('#edit-field-city').attr("placeholder","City"); 
+    
+    $('#edit-field-job-title').addClass('form-control');
+    $("#edit-field-job-title option:first").text("Job title");
+    
+    $('#edit-field-specialization').addClass('form-control');
+    $("#edit-field-specialization option:first").text("Specialization");
+    
+    $('#edit-field-certification').addClass('form-control');
+    $("#edit-field-certification option:first").text("Certification");
+    
+    $('#edit-field-expertise').addClass('form-control');
+    $("#edit-field-expertise option:first").text("Expertise");
+    
+    $('#edit-field-technology').addClass('form-control');
+    $("#edit-field-technology option:first").text("Technology");
+    
+    $('#edit-field-experience').addClass('form-control');
+    $("#edit-field-experience option:first").text("Experience");
+    
+    $('#edit-submit-searchapi-candidate').addClass('btn  btn-primary');
+    $('#edit-submit-searchapi-candidate').attr("value",'Search');
+    
     //style paging
     $('.pager').replaceWith('<div class="pager1 btn-group">' + $('.pager').html() +'</div>');
     $('.pager1 li').wrap('<div class="btn btn-white"></div>');
@@ -90,7 +129,7 @@ $(document).ready(function () {
     $('.grid-5').addClass("hide");
     $('.grid-6').addClass("hide");
     $('.grid-7').addClass("hide");
-    $('.grid-8').addClass("hide");
+    $('.grid-8').addClass("hide"); 
     
     $('#adv-search-btn').click(function(){
         //$('#adv-search').toggleClass('hide');
@@ -100,6 +139,26 @@ $(document).ready(function () {
         $('.grid-6').toggleClass("hide");
         $('.grid-7').toggleClass("hide");
         $('.grid-8').toggleClass("hide");
+    });
+
+    $('.views-widget-filter-field_city').addClass("hide");
+    $('.views-widget-filter-field_job_title').addClass("hide");
+    $('.views-widget-filter-field_specialization').addClass("hide");
+    $('.views-widget-filter-field_certification').addClass("hide");
+    $('.views-widget-filter-field_expertise').addClass("hide");
+    $('.views-widget-filter-field_technology').addClass("hide");
+    $('.views-widget-filter-field_experience').addClass("hide"); 
+  
+    
+    $('#adv-search-btn').click(function(){
+        //$('#adv-search').toggleClass('hide');
+        $('.views-widget-filter-field_city').toggleClass("hide");
+        $('.views-widget-filter-field_job_title').toggleClass("hide");
+        $('.views-widget-filter-field_specialization').toggleClass("hide");
+        $('.views-widget-filter-field_certification').toggleClass("hide");
+        $('.views-widget-filter-field_expertise').toggleClass("hide");
+        $('.views-widget-filter-field_technology').toggleClass("hide");
+	$('.views-widget-filter-field_experience').toggleClass("hide");
     });
 
     var config = {
@@ -199,6 +258,9 @@ $(document).ready(function () {
     $(".page-recruiter-list #page-title").after('<span class="text-muted">You can follow recruiters to be notified of new profiles</span>');
     $(".page-candidate-search #page-title").after('<span class="text-muted">Choose a Title, A Skill, and Location</span>');
     $(".page-candidate-search-top #page-title").after('<span class="text-muted">Choose a Title, A Skill, and Location</span>');
+    
+    $(".page-searchapi-candidate #page-title").after('<span class="text-muted">Choose a Title, A Skill, and Location</span>');
+
     
     //Fix layout candidate register page
     $(".page-candidate-register").addClass("gray-bg");

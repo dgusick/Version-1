@@ -2,7 +2,7 @@
 
 function custom_twicks_menu() { //views - cash-inflow-chart 
 
-$items['user/edit'] = array(
+  $items['user/edit'] = array(
       'type' => MENU_CALLBACK,
       'page callback' => 'custom_twicks_user_edit_redirect',
       'access callback' => 'user_is_logged_in',
@@ -19,6 +19,7 @@ $items['user/edit'] = array(
   */
   return $items; 
 }
+
 
 function custom_twicks_node_insert($node) {
   if($node->type=='evaluation')  {
@@ -115,20 +116,46 @@ function custom_twicks_node_update($node) {
  function custom_twicks_form_alter(&$form, &$form_state, $form_id) {
     	global $user;
     	
-    	$idgetcan = arg(3);
+    	if ($form_id == "views_exposed_form" && $form['#id'] == "views-exposed-form-searchapi-candidate-page") {
+    	   // print_r($form);
+    	   $options = array(); 
+    	   
+    	       $parents = taxonomy_get_tree($vid = 8, $parent = 0, $max_depth = 1); 
+    	       foreach ($parents as $term) {
+                  $options[$term->name] = array();
+                  $children = taxonomy_get_tree($term->vid, $term->tid);
+            
+                  foreach ($children as $child) {
+                    $options[$term->name][$child->tid] = $child->name;
+                  }
+                }
+                
+    	   
+    	   $form['field_role_department']['#options'] = $options; 
+    	} 
     	
     	if($form_id == "evaluation_node_form"){
     	    //validate this user id __ 
-    	    
-				
+    	    $idgetcan = arg(3);
+    	    if(arg(2) == 'edit' && $idgetcan == '') { 
+    	    	$node = $form['#node']; //print_r($form); 
+				$idgetcan = $node->field_user_id['und'][0]['target_id']; 
+    	    }
     	     $relationships = user_relationships_load(array('requester_id' => $user->uid, 'requestee_id' => $idgetcan, 'approved' => 1 )); 
           if(count($relationships) == 0 && $user->uid != 1) { //pending_  
               drupal_set_message("You do not have permission to create evaluation for selected candidate"); 
-              drupal_goto('candidate-search');
+              drupal_goto('searchapi-candidate');
           }
  
            $user_can = user_load($idgetcan);
 				$username_candidate = $user_can->name;
+			    $full_name_candidate = $username_candidate; 
+				  if (!empty($user_can->field_first_name) ) {//&& !empty($users->field_last_name)
+				    $full_name_candidate = $user_can->field_first_name['und'][0]['value'] . ' ' . $user_can->field_last_name['und'][0]['value'];
+				  }
+				
+				if(arg(1) == 'add') 
+				  $form['title']['#default_value'] = ''.$user->name.'-'.$username_candidate;
 				
     	    $form['title']['#type'] = "hidden";
     	    if($user->uid != 1) { 
@@ -140,9 +167,15 @@ function custom_twicks_node_update($node) {
 			 '#type' => 'markup',
 			 '#markup' => '<h1 class="content-title">EVALUATION FORM</h1>',
 			 '#weight' => -15
+			); 
+			
+			$form['can_title'] =  array(
+			 '#type' => 'markup',
+			 '#markup' =>  '<h3>Candidate - '.l( $full_name_candidate, 'user/'.$idgetcan, array(  'attributes'=>array( 'target'=>'_blank'))  ).'</h3>', 
+			 '#weight' => -10
 			);
 			
-			$form['title']['#default_value'] = ''.$user->name.'-'.$username_candidate;
+			
 			
     	}
  }
@@ -249,7 +282,7 @@ function _cz_connector_create_account($connector_name, $cid = NULL, $consumer = 
           ->fields('u')
           ->condition($field['sync'], $field['value'])
           ->execute()
-          ->rowCount();
+          ->rowCount();   //list for validation 
         if ($exists < 1) {
           $userinfo[$field['sync']] = $field['value'];
         }
