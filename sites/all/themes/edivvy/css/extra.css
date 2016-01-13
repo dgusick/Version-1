@@ -367,6 +367,11 @@ position: relative;
 #search-api-saved-searches-save-form .form-item-name {
 	float: left;
 	padding: .5em 1em 0 0;
+	
+}
+
+#search-api-saved-searches-save-form .form-item {
+	margin-right: 16px;
 }
 
 #search-api-saved-searches-save-form .form-item-notify-interval {
@@ -375,7 +380,7 @@ position: relative;
 }
 
 #search-api-saved-searches-save-form input.form-submit {
-	margin-top:14px;
+	margin-top:42px;
 }
 
 #block-views-saved-search-block-1 h2 {
@@ -398,7 +403,7 @@ position: relative;
 .page-searchapi-candidate .views-submit-button {
     position: absolute;
     right: 0px;
-    top: 15px;
+    top: 0px;
 }
 .page-searchapi-candidate .views-widget-filter-profile_evaluation_field_skills_rating_field_skills {
    margin-right: 1px;
@@ -414,7 +419,7 @@ position: relative;
     width: 25%;
 }
 .page-searchapi-candidate  .views-exposed-form .views-exposed-widget label {
-  /*  display: none;  */
+   display: none;  
 }
 .page-searchapi-candidate  .views-exposed-form .views-exposed-widget.views-submit-button {
     padding: 0;
@@ -425,8 +430,9 @@ position: relative;
     padding-top: 7px;
 }
 .page-searchapi-candidate .views-widget-filter-field_city input {
-    width: 210px;
+    width: 175px;
     height: 34px;
+    padding: 6px 12px;
 }
 .page-searchapi-candidate  #edit-profile-evaluation-field-skills-rating-field-skills-wrapper {
     margin-bottom: 40px;
@@ -437,4 +443,14 @@ position: relative;
 .page-searchapi-candidate #block-views-exp-searchapi-candidate-page,
 .page-searchapi-candidate #block-search-api-saved-searches-default-candidate {
     margin-bottom: 30px;
+}
+
+#search-api-saved-searches-save-form .form-item label {
+	display: block;
+}
+
+#search-api-saved-searches-save-form .form-item input,select {
+	width: 175px;
+	height: 34px;
+	padding: 6px 12px;
 }

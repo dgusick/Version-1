@@ -23,11 +23,14 @@ function custom_twicks_menu() { //views - cash-inflow-chart
 
 function custom_twicks_node_insert($node) {
   if($node->type=='evaluation')  {
-    
-  }
+     update_user_latest_eval($node); 
+  } 
 }
 
 function custom_twicks_node_update($node) {
+    update_user_latest_eval($node); 
+}
+function update_user_latest_eval($node) { 
   // save evaluation latest to user profile2 
   if($node->type=='evaluation')  {
     $canid = $node->field_user_id['und'][0]['target_id']; 
@@ -41,7 +44,7 @@ function custom_twicks_node_update($node) {
     if($node->field_skills_rating['und']) { 
     	$profile_evaluation = profile2_load_by_user($c_user, 'evaluation');  
     	
-	    if($profile_evaluation) {
+	    if($profile_evaluation) { //create if not exist 
 	    } else {
 		   $profile_evaluation = profile2_create(array('type' => 'evaluation', 'uid' => $c_user->uid));
 		}
