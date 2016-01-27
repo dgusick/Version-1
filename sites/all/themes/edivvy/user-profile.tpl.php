@@ -35,7 +35,8 @@
           ->fieldCondition('field_user_id', 'target_id', $user_get->uid); // 
         $results = $query->execute(); 
         if($results && $results['node'] ) {  
-          $can_evaluations = array_keys($results['node']); 
+          $all_can_evaluations = array_keys($results['node']); 
+          $can_evaluations = array($all_can_evaluations[0]); 
         } 
  } 
  
