@@ -40,7 +40,7 @@
                 <div class="col-sm-12">
                     <div class="ibox">
                         <div class="ibox-content">
-                            <h2 class="pull-left">Search results</h2>
+                            <h2 class="pull-left">Search results1</h2>
                             <span class="pull-right"><a type="button" class="btn btn-w-m btn-xs btn-white save-search-btn"><i class="fa fa-save"></i>&nbsp; Save search</a></span>
                             <br/>
                             <br/>

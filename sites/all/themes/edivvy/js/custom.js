@@ -39,6 +39,16 @@ $(document).ready(function () {
     $('#side-menu .user-picture img').addClass('img-circle');
     
     //fix custom exposed filter
+   
+  //  $('#edit-field-zip-code').addClass('chosen-select form-control');
+  //  $('#edit-field-zip-code').attr("tabindex","4");
+    $('#edit-field-zip-code').attr("placeholder","Zip Code");
+    
+   
+    $('#edit-field-city').addClass('chosen-select form-control');
+    $('#edit-field-city').attr("tabindex","4");
+    $('#edit-field-city').attr("data-placeholder","City");
+    
     $('#edit-field-job-level-tid').addClass('chosen-select form-control');
     $('#edit-field-job-level-tid').attr("tabindex","4");
     $('#edit-field-job-level-tid').attr("data-placeholder","Choose a Job level...");
@@ -85,17 +95,31 @@ $(document).ready(function () {
     
     $('#edit-field-role-department').addClass('chosen-select form-control');
     $('#edit-field-role-department').attr("tabindex","4");
-    $('#edit-field-role-department').attr("data-placeholder","Role / Department"); 
+    $('#edit-field-role-department').attr("data-placeholder","Role / Department");
     
-     $('#edit-field-job-level').addClass('chosen-select form-control');
+    $('#edit-field-experience').addClass('chosen-select form-control');
+    $('#edit-field-experience').attr("tabindex","4");
+    $('#edit-field-experience').attr("data-placeholder","Years of Experience"); 
+    
+    $('#edit-field-job-level').addClass('chosen-select form-control');
     $('#edit-field-job-level').attr("tabindex","4");
     $('#edit-field-job-level').attr("data-placeholder","Choose a Job level..."); 
+    
+    $('#edit-field-degree-type').addClass('chosen-select form-control');
+    $('#edit-field-degree-type').attr("tabindex","4");
+    $('#edit-field-degree-type').attr("data-placeholder","Degree Type"); 
+    
+    $('#edit-field-company-size').addClass('chosen-select form-control');
+    $('#edit-field-company-size').attr("tabindex","4");
+    $('#edit-field-company-size').attr("data-placeholder","Company size");
+    
+    $('#edit-field-industry').addClass('chosen-select form-control');
+    $('#edit-field-industry').attr("tabindex","4");
+    $('#edit-field-industry').attr("data-placeholder","Industry ");
     
     $('#edit-profile-evaluation-field-skills-rating-field-skills').addClass('chosen-select form-control');
     $('#edit-profile-evaluation-field-skills-rating-field-skills').attr("tabindex","4");
     $('#edit-profile-evaluation-field-skills-rating-field-skills').attr("data-placeholder","Choose a skill...");
-    
-    $('#edit-field-city').attr("placeholder","City"); 
     
     $('#edit-field-job-title').addClass('form-control');
     $("#edit-field-job-title option:first").text("Job title");
@@ -141,24 +165,47 @@ $(document).ready(function () {
         $('.grid-8').toggleClass("hide");
     });
 
-    $('.views-widget-filter-field_city').addClass("hide");
     $('.views-widget-filter-field_job_title').addClass("hide");
     $('.views-widget-filter-field_specialization').addClass("hide");
     $('.views-widget-filter-field_certification').addClass("hide");
     $('.views-widget-filter-field_expertise').addClass("hide");
     $('.views-widget-filter-field_technology').addClass("hide");
-    $('.views-widget-filter-field_experience').addClass("hide"); 
-  
+    $('.views-widget-filter-field_company_size').addClass("hide");
+    $('.views-widget-filter-field_college_university').addClass("hide");
+    $('.views-widget-filter-field_degree_type').addClass("hide");
+    $('.views-widget-filter-field_company_past').addClass("hide");
+    $('.views-widget-filter-field_company_present').addClass("hide"); 
+    $('.views-widget-filter-field_interests').addClass("hide");        
+    $('.views-widget-filter-field_city').addClass("hide"); 
+    $('.views-widget-filter-field_industry').addClass("hide"); 
+  //  $('.views-widget-filter-field_experience').addClass("hide"); 
+    $('.views-widget-sort-by').addClass("hide");
+    $('.views-widget-sort-order').addClass("hide");
+    $('.views-widget-filter-profile_main').addClass("hide"); 
+    $('.views-widget-filter-profile_main_field_skills_rating').addClass("hide"); 
+    $('.views-widget-filter-field_role_department').addClass("hide"); 
+    $('.views-widget-filter-field_certification').addClass("hide");
+    $('.views-widget-filter-field_specialization').addClass("hide");
+    $('.views-widget-filter-field_job_level').addClass("hide");
+    
     
     $('#adv-search-btn').click(function(){
         //$('#adv-search').toggleClass('hide');
-        $('.views-widget-filter-field_city').toggleClass("hide");
+     //   $('.views-widget-filter-field_city').toggleClass("hide");
         $('.views-widget-filter-field_job_title').toggleClass("hide");
-        $('.views-widget-filter-field_specialization').toggleClass("hide");
-        $('.views-widget-filter-field_certification').toggleClass("hide");
         $('.views-widget-filter-field_expertise').toggleClass("hide");
-        $('.views-widget-filter-field_technology').toggleClass("hide");
-	$('.views-widget-filter-field_experience').toggleClass("hide");
+        $('.views-widget-filter-field_technology').toggleClass("hide");  
+        $('.views-widget-filter-field_company_size').toggleClass("hide");
+    	$('.views-widget-filter-field_college_university').toggleClass("hide");
+        $('.views-widget-filter-field_degree_type').toggleClass("hide");
+        $('.views-widget-filter-field_company_past').toggleClass("hide");
+        $('.views-widget-filter-field_company_present').toggleClass("hide"); 
+        $('.views-widget-filter-field_interests').toggleClass("hide");
+        $('.views-widget-filter-field_city').toggleClass("hide");
+         $('.views-widget-filter-field_industry').toggleClass("hide");
+     //   $('.views-widget-filter-field_specialization').toggleClass("hide");
+     //   $('.views-widget-filter-field_certification').toggleClass("hide");
+     //	$('.views-widget-filter-field_experience').toggleClass("hide");
     });
 
     var config = {
