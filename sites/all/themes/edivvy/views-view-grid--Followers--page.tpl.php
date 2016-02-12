@@ -37,7 +37,7 @@
                     
                     $user_load = user_load($item['uid']);
                     if($item['field_picture_url'] != ''){
-                    	$url_pic = '<img class="img-circle m-t-xs img-responsive" src="'.$item['field_picture_url'].'" />';  
+                    	$url_pic = '<img class="img-thumbnail img-circle img-responsive thumb96" src="'.$item['field_picture_url'].'" />';  
                     }else{
                         
                         if($user_load->picture->uri){
@@ -46,13 +46,13 @@
                                 'style_name' => 'thumbnail',
                                 'path' => $user_load->picture->uri,
                                 'attributes' => array(
-                                 'class' => 'img-circle m-t-xs img-responsive'
+                                 'class' => 'img-thumbnail img-circle img-responsive thumb96'
                                  )            
                             )
                         ); 
                       }else{ 
                         $base_theme_url = drupal_get_path('theme',$GLOBALS['theme']);
-                        $url_pic = '<img class="img-circle m-t-xs img-responsive" src="'.base_path().'/'.$base_theme_url.'/img/default-avatar.png" />';
+                        $url_pic = '<img class="img-thumbnail img-circle img-responsive thumb96" src="'.base_path().'/'.$base_theme_url.'/img/default-avatar.png" />';
                       }
                         
                         //$url_pic = $base_theme_url.'/img/default-avatar.png';
@@ -64,31 +64,27 @@
                 $user_link = drupal_get_path_alias('user/' . $item['uid']);
                 ?>
                 
-                <div class="col-lg-3">
-                    <div class="contact-box">
-                        <a href="<?php echo $user_link ?>">
-                            <div class="row">
-                                <div class="col-sm-4 col-sm-push-4">
-                                    <div class="text-center">
-                                        <?php echo $url_pic ?>
-                                        <div class="m-t-xs font-bold">My Followers</div>
-                                    </div>
-                                </div>
+                <div class="col-lg-4">
+                    <div class="contact-box panel widget">
+                     <div class="panel-body">
+                         <div class="row row-table">
+                           <div class="col-xs-5 text-center">
+                             <a href="<?php echo $user_link ?>">
+                                <?php echo $url_pic ?></a>
+                                <div class="m-t-xs font-bold">My Followers</div>
                             </div>
-                            <div class="row">
-                                <div class="col-sm-12 text-center">
-                                    <h3><strong><?php print $item['name']; ?></strong></h3>
-                            <!--        <p><i class="fa fa-linkedin-square"></i> <?php print $item['field_first_name']; ?>.<?php print $item['field_last_name']; ?></p> -->
-                                    <p class="email_row"><i class="fa fa-inbox"></i> <a href="mailto:john.smith@something.com"> <?php print $item['mail']; ?></a></p>
-                  
-                                </div>
+                            <div class="col-xs-7">
+                                 <div class="pull-right"><?php print $item['ops']; ?></div>
+                                 <h3 class="mt0"><?php print $item['name']; ?></h3>
+                                <!--  <p class="mb-sm"><i class="fa fa-linkedin-square"></i> <?php print $item['field_first_name']; ?>.<?php print $item['field_last_name']; ?></p> -->
+                                    <p class="mb-sm"><i class="fa fa-inbox"></i> <a href="mailto:john.smith@something.com"> <?php print $item['mail']; ?></a></p>
                             </div>
-                          
-                            <div class="col-sm-12">
-                                <div class="div-btn-follow btn btn-block btn-outline btn-primary follow-btn"><?php print $item['ops']; ?></div>
-                            </div>
-                            <div class="clearfix"></div>
-                        </a>
+                           
+                        </div>
+                         
+                        
+                        </div>
+                           <div class="clearfix"></div>
                     </div>
                 </div>
                 <?php } ?>

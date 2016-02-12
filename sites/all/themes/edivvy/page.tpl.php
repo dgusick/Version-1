@@ -1,5 +1,9 @@
 <?php
+
+if($user->uid)
  $user_load = user_load($user->uid); 
+else
+ $user_load = $user; 
  
   if(isset($user_load->roles[5])) {$is_rec = true; $is_rec_inactive = true;   } 
   if(isset($user_load->roles[6])) {$is_can = true;    } 
@@ -94,105 +98,315 @@
   
   if($users->field_picture_url)
      {
-        $pic = '<img class="img-circle" src="'.$users->field_picture_url['und'][0]['value'].'" />';  
+        $pic = '<img class="img-thumbnail img-circle" src="'.$users->field_picture_url['und'][0]['value'].'" />';  
      }
   else
      {
         if($users->field_user_picture){
             $field_user_picture = file_create_url($users->field_user_picture[LANGUAGE_NONE][0]['uri']);
-            $pic = '<img class="img-circle" src="'.$field_user_picture.'" />'; 
+            $pic = '<img class="img-thumbnail img-circle" src="'.$field_user_picture.'" />'; 
         }else{ 
             $base_theme_url = drupal_get_path('theme',$GLOBALS['theme']);
-            $pic = '<img class="img-circle" src="'.base_path().'/'.$base_theme_url.'/img/default-avatar.png" />';
+            $pic = '<img class="img-thumbnail img-circle" src="'.base_path().'/'.$base_theme_url.'/img/default-avatar.png" />';
         }
      }
          
   $full_name = $users->name; 
+   $first_name = $users->name; 
   if (!empty($users->field_first_name) ) {//&& !empty($users->field_last_name)
     $full_name = $users->field_first_name['und'][0]['value'] . ' ' . $users->field_last_name['und'][0]['value'];
+    $first_name = $users->field_first_name['und'][0]['value']; 
   }
   
   
 ?>
-  <div id="wrapper">
-  <div id="page">
-    <?php if($user->uid) { ?>
-     <nav class="navbar-default navbar-static-side" role="navigation">
-        <div class="sidebar-collapse">
-            <ul class="nav metismenu skin-2" id="side-menu">
-                <li class="nav-header">
-                    <div class="dropdown profile-element">
-                        <span>
-                           <?php echo $pic; ?>  
-                             </span>
-                            <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                            <span class="clear"> <span class="block m-t-xs"> <strong class="font-bold"><?php echo $full_name; ?></strong>
-                             </span> <span class="text-muted text-xs block"><?php if(isset($user->roles[5])) { echo 'Recruiter'; } else if(isset($user->roles[6])) { echo 'Candidate'; } else { echo 'LoggedIn'; } ?> <b class="caret"></b></span> </span> </a>
-                            <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                                <li><a href="<?php echo url('user'); ?>">Profile</a></li>
-                                
-                                <?php if(isset($user->roles[5]) && !$is_rec_inactive ) { //rec. menu  ?>
-                                <li><a href="<?php echo url('user/'.$user->uid.'/wishlist'); ?>">My Wishlist</a></li>
-                                <li><a href="<?php echo url('user/'.$user->uid.'/my_following'); ?>">I'm Following</a></li>
-                                <li><a href="<?php echo url('user/'.$user->uid.'/my_followers'); ?>">My Followers</a></li>
-                                <li><a href="<?php echo url('messages'); ?>">Mailbox</a></li>
-                                <?php } ?>
-                                
-                                <?php if(isset($user->roles[6])) { //candidate menu ?>
-                                <li><a href="<?php echo url('messages'); ?>">Mailbox</a></li>
-                                <?php } ?>
-                                
-								
-                                <li><a href="<?php echo url('user/logout'); ?>">Logout</a></li>
-                            </ul>
+  <div class="wrapper">
+  <!-- top navbar-->
+      <header class="topnavbar-wrapper">
+         <!-- START Top Navbar-->
+         
+         <nav role="navigation" class="navbar topnavbar">
+            <!-- START navbar header-->
+            <div class="navbar-header">
+               <a href="<?php echo $front_page; ?>" class="navbar-brand"> 
+                  <div class="brand-logo">
+                  
+                      <img style="display:none;" src="<?php echo $logo; ?>" alt="App Logo" class="img-responsive">  
+                   <h4 class="" style="color: #FFF; font-size: 22px; margin-top: 5px;"> Edivvy</h4>
+                  </div>
+                  <div class="brand-logo-collapsed">
+                     <h4 class="" style="color: #FFF; font-size: 22px; margin-top: 5px;">EDV</h4>
+                     <img style="display:none;" src="img/logo-single.png" alt="App Logo" class="img-responsive">
+                  </div>
+               </a>
+            </div>
+            <!-- END navbar header-->
+            
+            <!-- START Nav wrapper-->
+            <div class="nav-wrapper"  >
+               <!-- START Left navbar-->
+               <ul class="nav navbar-nav" style="<?php if(!$user->uid) echo 'display:none;';  ?>">
+                  <li>
+                     <!-- Button used to collapse the left sidebar. Only visible on tablet and desktops-->
+                     <a href="#" data-toggle-state="aside-collapsed" class="hidden-xs">
+                        <em class="fa fa-navicon"></em>
+                     </a>
+                     <!-- Button to show/hide the sidebar on mobile. Visible on mobile only.-->
+                     <a href="#" data-toggle-state="aside-toggled" data-no-persist="true" class="visible-xs sidebar-toggle">
+                        <em class="fa fa-navicon"></em>
+                     </a>
+                  </li>
+                  
+                  <!-- START User avatar toggle-->
+                  <li>
+                     <!-- Button used to collapse the left sidebar. Only visible on tablet and desktops-->
+                     <a id="user-block-toggle" href="#user-block" data-toggle="collapse">
+                        <em class="icon-user"></em>
+                     </a>
+                  </li>
+                  <!-- END User avatar toggle-->
+                  
+               </ul>
+               
+               <!-- END Left navbar-->
+               <ul class="nav navbar-nav navbar-right" style="<?php if($user->uid) echo 'display:none;';  ?>">
+                  <!-- Search icon-->
+                  
+                  <li>
+                     <a href="<?php echo url('paid-membership'); ?>" >
+                         Membership Plans
+                     </a>
+                  </li>
+                  <li>
+                     <a href="<?php echo url('cart'); ?>" >
+                        <em class="fa fa-shopping-cart"></em> Checkout
+                     </a>
+                  </li>
+                  
+               </ul>
+               <!-- START Right Navbar-->
+               <ul class="nav navbar-nav navbar-right" style="<?php if(!$user->uid) echo 'display:none;';  ?>">
+                  <!-- Search icon-->
+                  <li>
+                     <a href="#" data-search-open="">
+                        <em class="icon-magnifier"></em>
+                     </a>
+                  </li>
+                   <!-- Fullscreen (only desktops)-->
+                  <li class="visible-lg">
+                     <a href="#" data-toggle-fullscreen="">
+                        <em class="fa fa-expand"></em>
+                     </a>
+                  </li>
+                 <!-- START Alert menu-->
+                  <li class="dropdown dropdown-list">
+                     <a href="#" data-toggle="dropdown">
+                        <em class="icon-bell"></em>
+                        <div class="label label-danger">11</div>
+                     </a>
+                     <!-- START Dropdown menu-->
+                     <ul class="dropdown-menu animated flipInX">
+                        <li>
+                           <!-- START list group-->
+                           <div class="list-group">
+                              <!-- list item-->
+                              <a href="#" class="list-group-item">
+                                 <div class="media-box">
+                                    <div class="pull-left">
+                                       <em class="fa fa-twitter fa-2x text-info"></em>
+                                    </div>
+                                    <div class="media-box-body clearfix">
+                                       <p class="m0">New followers</p>
+                                       <p class="m0 text-muted">
+                                          <small>1 new follower</small>
+                                       </p>
+                                    </div>
+                                 </div>
+                              </a>
+                              <!-- list item-->
+                              <a href="#" class="list-group-item">
+                                 <div class="media-box">
+                                    <div class="pull-left">
+                                       <em class="fa fa-envelope fa-2x text-warning"></em>
+                                    </div>
+                                    <div class="media-box-body clearfix">
+                                       <p class="m0">New e-mails</p>
+                                       <p class="m0 text-muted">
+                                          <small>You have 10 new emails</small>
+                                       </p>
+                                    </div>
+                                 </div>
+                              </a>
+                              <!-- list item-->
+                              <a href="#" class="list-group-item">
+                                 <div class="media-box">
+                                    <div class="pull-left">
+                                       <em class="fa fa-tasks fa-2x text-success"></em>
+                                    </div>
+                                    <div class="media-box-body clearfix">
+                                       <p class="m0">Pending Tasks</p>
+                                       <p class="m0 text-muted">
+                                          <small>11 pending task</small>
+                                       </p>
+                                    </div>
+                                 </div>
+                              </a>
+                              <!-- last list item -->
+                              <a href="#" class="list-group-item">
+                                 <small>More notifications</small>
+                                 <span class="label label-danger pull-right">14</span>
+                              </a>
+                           </div>
+                           <!-- END list group-->
+                        </li>
+                     </ul>
+                     <!-- END Dropdown menu-->
+                  </li>
+                  <!-- END Alert menu-->
+                  <!-- START Offsidebar button-->
+                  <li>
+                     <a href="#" data-toggle-state="offsidebar-open" data-no-persist="true">
+                        <em class="icon-notebook"></em>
+                     </a>
+                  </li>
+                  <!-- END Offsidebar menu-->
+               </ul>
+               <!-- END Right Navbar-->
+            </div>
+            <!-- END Nav wrapper-->
+            
+            <!-- START Search form-->
+            <form style="<?php if(!$user->uid) echo 'display:none;';  ?>" role="search" action="search.html" class="navbar-form">
+               <div class="form-group has-feedback">
+                  <input type="text" placeholder="Type and hit enter ..." class="form-control">
+                  <div data-search-dismiss="" class="fa fa-times form-control-feedback"></div>
+               </div>
+               <button type="submit" class="hidden btn btn-default">Submit</button>
+            </form>
+            <!-- END Search form-->
+         </nav>
+         
+         <!-- END Top Navbar-->
+      </header>
+      
+      <!-- sidebar-->
+          <?php if($user->uid) { ?>
+      <aside class="aside">
+         <!-- START Sidebar (left)-->
+         <div class="aside-inner">
+            <nav data-sidebar-anyclick-close="" class="sidebar">
+               <!-- START sidebar nav-->
+               <ul class="nav metismenu skin-2" id="side-menu">
+               
+               <!-- START user info-->
+                  <li class="has-user-block">
+                    <div id="user-block" class="collapse">
+                    <div class="item user-block">
+                           
+                           <!-- User picture-->
+                           <div class="user-block-picture">
+                              <div class="user-block-status">
+                                 <!-- <img src="img/user/02.jpg" alt="Avatar" width="60" height="60" class="img-thumbnail img-circle">-->
+                                 <?php echo $pic; ?>  
+                                 <div class="circle circle-success circle-lg"></div>
+                              </div>
+                           </div>
+                           <!-- Name and Job-->
+                             
+                             
+                           <div class="user-block-info">
+                              <span class="user-block-name">Hello, <?php echo $first_name; ?></span>
+                               
+                               <span class="user-block-role"><?php if(isset($user->roles[5])) { echo 'Recruiter'; } else if(isset($user->roles[6])) { echo 'Candidate'; } else {  } ?> </span>
+                               
+                           </div>
+                           
+                        </div>
+                        
+                          
+                              
+                             
                     </div>
-                    <div class="logo-element">
-                        IN+
-                    </div>
+                     
+                  </li>
+                  <!-- END user info-->
+                  
+               <li class="nav-heading "><span data-localize="sidebar.heading.HEADER">Menu Navigation</span> </li>
+                  
+                <li <?php if(arg(0) == "") echo 'active';?>>
+                    <a href="<?php echo url('user'); ?>"><em class="icon-home"></em> <span class="nav-label">Home</span></a> <!--<em class="fa fa-home"></em>-->
                 </li>
-                <li>
-                    <a href="<?php echo url('user'); ?>"><i class="fa fa-home"></i> <span class="nav-label">Home</span></a>
+                
+                <li class="<?php if(arg(0) == "user") echo 'active';?>" ><a href="#profilesNav" data-toggle="collapse" ><em class="icon-user"></em>
+                <span data-localize="sidebar.nav.PROFILE">Profile</span></a> <!--data-toggle="collapse" -->
+                  
+                  
+               <ul id="profilesNav" class="nav sidebar-subnav collapse">
+                   <li><a class="<?php echo ($_GET['q'] == 'user' ? 'active' : ''); ?>" href="<?php echo url('user'); ?>"><em class="fa fa-user"></em>My Profile</a></li>
+                <?php if(isset($user->roles[5]) && !$is_rec_inactive ): //rec. menu <?php echo url('user');  ?>
+                <li class="<?php echo ($_GET['q'] == 'user/'.$user->uid.'/wishlist' ? 'active' : ''); ?>"><a href="<?php echo url('user/'.$user->uid.'/wishlist'); ?>" ><em class="icon-heart"></em>My Wishlist</a></li>
+                <li class="<?php echo ($_GET['q'] == 'user/'.$user->uid.'/order' ? 'active' : ''); ?>"><a href="<?php echo url('user/'.$user->uid.'/orders'); ?>" ><em class="icon-basket"></em>My Orders</a></li>
+                
+                <li class="<?php echo ($_GET['q'] == 'user/'.$user->uid.'/my_following' ? 'active' : ''); ?>"><a href="<?php echo url('user/'.$user->uid.'/my_following'); ?>"><em class="icon-user-following"></em>I'm Following</a></li>
+                <li class="<?php echo ($_GET['q'] == 'user/'.$user->uid.'/my_followers' ? 'active' : ''); ?>"><a href="<?php echo url('user/'.$user->uid.'/my_followers'); ?>"><em class="icon-user-follow"></em>My Followers</a></li>
+                <li class="<?php echo ($_GET['q'] == 'messages' ? 'active' : ''); ?>"><a href="<?php echo url('messages'); ?>"><em class="icon-envelope"></em>Mailbox</a></li>
+                <?php endif; ?>
+                
+                <?php if(isset($user->roles[6])) { //candidate menu ?>
+                <li><a href="<?php echo url('messages'); ?>"><em class="icon-envelope"></em>Mailbox</a></li>
+                <?php } ?>
+                
+				
+                <li><a href="<?php echo url('user/logout'); ?>"> <em class="icon-logout"></em>Logout</a></li>
+                </ul>
+                
+                
                 </li>
+               
+                
+                
                 
                 <?php if(isset($user->roles[5])  && !$is_rec_inactive ) { //rec. menu  ?>
                 <!-- <li>
                     <a href="<?php echo url('candidate-search'); ?>"><i class="fa fa-search"></i> <span class="nav-label">Search</span></a>
                 </li>-->
                 
-                <li>
-                    <a href="<?php echo url('searchapi-candidate'); ?>"><i class="fa fa-search"></i> <span class="nav-label">Search</span></a>
+                <li class="<?php if(arg(0) == "searchapi-candidate") echo 'active';?>">
+                    <a href="<?php echo url('searchapi-candidate'); ?>"><em class="fa fa-search"></em> <span class="nav-label">Search</span></a>
                 </li>
              <!--   <li>
                     <a href="<?php echo url('user/'.$user->uid.'/saved-searches'); ?>"><i class="fa fa-search"></i> <span class="nav-label">My Saved Search</span></a>
                 </li> -->
                 
-                <li>
-                    <a href="<?php echo url('user/'.$user->uid.'/invites'); ?>"><i class="fa fa-search"></i> <span class="nav-label">Invite Candidate</span></a>
-                 <ul>
-                 
-                 <li>
-                    <a href="<?php echo url('invite/add/invite_by_email'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Invite Candidate</span></a>
-                </li>
-                <li>
-                    <a href="<?php echo url('user/'.$user->uid.'/invites'); ?>"><i class="fa fa-search"></i> <span class="nav-label">Invited List</span></a>
-                </li>
-                </ul>
-                </li>    
+                <li class="<?php if(arg(0) == "invite") echo 'active';?>">
+                  <a href="#profilesInvite" data-toggle="collapse" ><em class="icon-people"></em>
+                	<span >Invite Candidate</span></a>
                 
+                     
+	                 <ul id="profilesInvite" class="nav sidebar-subnav collapse">
+	                 
+	                 <li>
+	                    <a href="<?php echo url('invite/add/invite_by_email'); ?>"><em class="fa fa-user-plus"></em> <span class="nav-label">Invite Candidate</span></a>
+	                </li>
+	                <li>
+	                    <a href="<?php echo url('user/'.$user->uid.'/invites'); ?>"><em class="icon-share"></em> <span class="nav-label">Invited List</span></a> <!--<em class="fa fa-search"></em>-->
+	                </li>
+	                </ul>
+                </li>    
                 
                 
             <!--    <li>
                     <a href="<?php echo url('relationships/sent'); ?>"><i class="fa fa-group"></i> <span class="nav-label">Pending Requests</span></a>
                 </li> -->
-                <li>
-                    <a href="<?php echo url('candidates-access-request'); ?>"><i class="fa fa-group"></i> <span class="nav-label">Access Requests</span></a>
+                <li class="<?php if(arg(0) == "candidates-access-request") echo 'active';?>">
+                    <a href="<?php echo url('candidates-access-request'); ?>"><em class="icon-lock-open"></em> <span class="nav-label">Access Requests</span></a>  <!--<em class="fa fa-group"></em> -->
                 </li>
           <!--  <li>
                     <a href="<?php echo url('access-request'); ?>"><i class="fa fa-group"></i> <span class="nav-label">Access Requests</span></a>
                 </li> -->
                 
-                <li class="active1">
-                    <a href="<?php echo url('recruiter-list'); ?>"><i class="fa fa-group"></i> <span class="nav-label">Recruiters</span></a>
+                <li class="<?php if(arg(0) == "recruiter-list") echo 'active';?>">
+                    <a href="<?php echo url('recruiter-list'); ?>"><em class="icon-list"></em> <span class="nav-label">Recruiters</span></a> <!--<em class="fa fa-list"></em>-->
                 </li>
                 <!-- <li>
                     <a href="<?php echo url('node/add/requirement'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Add Requirement</span></a>
@@ -202,10 +416,10 @@
                 <?php if(isset($user->roles[6])) { //candidate menu ?>
                 <li>
                     <!--<a href="<?php echo url('user/'.$user->uid.'/approved'); ?>#tab-2"><i class="fa fa-user-plus"></i> <span class="nav-label">Approved recruiter</span></a>-->
-                    <a href="<?php echo url('profile-main/'.$user->uid.'/edit'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Edit My Skills</span></a>
+                    <a href="<?php echo url('profile-main/'.$user->uid.'/edit'); ?>"><em class="fa fa-edit "></em> <span class="nav-label">Edit My Skills</span></a>
                     <!-- <a href="<?php echo url('approved-recruiter-list'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Approved recruiters</span></a>-->
-                    <a href="<?php echo url('relationships/received'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">New Requests</span></a>
-                    <a href="<?php echo url('recruiter-access-request'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Approved Requests</span></a>
+                    <a href="<?php echo url('relationships/received'); ?>"><em class="icon-user-follow"></em> <span class="nav-label">New Requests</span></a>
+                    <a href="<?php echo url('recruiter-access-request'); ?>"><em class="icon-like"></em> <span class="nav-label">Approved Requests</span></a>
                     <!--  <a href="<?php echo url('all-access'); ?>"><i class="fa fa-user-plus"></i> <span class="nav-label">Approved Requests</span></a> -->
                     
                 </li>
@@ -217,23 +431,399 @@
                 
 
                 
-            </ul>
+            </ul> 
+               <!-- END sidebar nav-->
+            </nav>
+            
+            
+      
+         </div>
+         <!-- END Sidebar (left)-->
+      </aside>
+      
+      <!-- offsidebar-->
+      <aside class="offsidebar hide">
+         <!-- START Off Sidebar (right)-->
+         <nav>
+            <div role="tabpanel">
+               <!-- Nav tabs-->
+               <ul role="tablist" class="nav nav-tabs nav-justified">
+                  <li role="presentation" class="active">
+                     <a href="#app-settings" aria-controls="app-settings" role="tab" data-toggle="tab">
+                        <em class="icon-equalizer fa-lg"></em>
+                     </a>
+                  </li>
+                  <li role="presentation">
+                     <a href="#app-chat" aria-controls="app-chat" role="tab" data-toggle="tab">
+                        <em class="icon-user fa-lg"></em>
+                     </a>
+                  </li>
+               </ul>
+               <!-- Tab panes-->
+               <div class="tab-content">
+                  <div id="app-settings" role="tabpanel" class="tab-pane fade in active">
+                     <h3 class="text-center text-thin">Settings</h3>
+                     <div class="p">
+                        <h4 class="text-muted text-thin">Themes</h4>
+                        <div class="table-grid mb">
+                           <div class="col mb">
+                              <div class="setting-color">
+                                 <label data-load-css="css/theme-a.css">
+                                    <input type="radio" name="setting-theme" checked="checked">
+                                    <span class="icon-check"></span>
+                                    <span class="split">
+                                       <span class="color bg-info"></span>
+                                       <span class="color bg-info-light"></span>
+                                    </span>
+                                    <span class="color bg-white"></span>
+                                 </label>
+                              </div>
+                           </div>
+                           <div class="col mb">
+                              <div class="setting-color">
+                                 <label data-load-css="css/theme-b.css">
+                                    <input type="radio" name="setting-theme">
+                                    <span class="icon-check"></span>
+                                    <span class="split">
+                                       <span class="color bg-green"></span>
+                                       <span class="color bg-green-light"></span>
+                                    </span>
+                                    <span class="color bg-white"></span>
+                                 </label>
+                              </div>
+                           </div>
+                           <div class="col mb">
+                              <div class="setting-color">
+                                 <label data-load-css="css/theme-c.css">
+                                    <input type="radio" name="setting-theme">
+                                    <span class="icon-check"></span>
+                                    <span class="split">
+                                       <span class="color bg-purple"></span>
+                                       <span class="color bg-purple-light"></span>
+                                    </span>
+                                    <span class="color bg-white"></span>
+                                 </label>
+                              </div>
+                           </div>
+                           <div class="col mb">
+                              <div class="setting-color">
+                                 <label data-load-css="css/theme-d.css">
+                                    <input type="radio" name="setting-theme">
+                                    <span class="icon-check"></span>
+                                    <span class="split">
+                                       <span class="color bg-danger"></span>
+                                       <span class="color bg-danger-light"></span>
+                                    </span>
+                                    <span class="color bg-white"></span>
+                                 </label>
+                              </div>
+                           </div>
+                        </div>
+                        <div class="table-grid mb">
+                           <div class="col mb">
+                              <div class="setting-color">
+                                 <label data-load-css="css/theme-e.css">
+                                    <input type="radio" name="setting-theme">
+                                    <span class="icon-check"></span>
+                                    <span class="split">
+                                       <span class="color bg-info-dark"></span>
+                                       <span class="color bg-info"></span>
+                                    </span>
+                                    <span class="color bg-gray-dark"></span>
+                                 </label>
+                              </div>
+                           </div>
+                           <div class="col mb">
+                              <div class="setting-color">
+                                 <label data-load-css="css/theme-f.css">
+                                    <input type="radio" name="setting-theme">
+                                    <span class="icon-check"></span>
+                                    <span class="split">
+                                       <span class="color bg-green-dark"></span>
+                                       <span class="color bg-green"></span>
+                                    </span>
+                                    <span class="color bg-gray-dark"></span>
+                                 </label>
+                              </div>
+                           </div>
+                           <div class="col mb">
+                              <div class="setting-color">
+                                 <label data-load-css="css/theme-g.css">
+                                    <input type="radio" name="setting-theme">
+                                    <span class="icon-check"></span>
+                                    <span class="split">
+                                       <span class="color bg-purple-dark"></span>
+                                       <span class="color bg-purple"></span>
+                                    </span>
+                                    <span class="color bg-gray-dark"></span>
+                                 </label>
+                              </div>
+                           </div>
+                           <div class="col mb">
+                              <div class="setting-color">
+                                 <label data-load-css="css/theme-h.css">
+                                    <input type="radio" name="setting-theme">
+                                    <span class="icon-check"></span>
+                                    <span class="split">
+                                       <span class="color bg-danger-dark"></span>
+                                       <span class="color bg-danger"></span>
+                                    </span>
+                                    <span class="color bg-gray-dark"></span>
+                                 </label>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="p">
+                        <h4 class="text-muted text-thin">Layout</h4>
+                        <div class="clearfix">
+                           <p class="pull-left">Fixed</p>
+                           <div class="pull-right">
+                              <label class="switch">
+                                 <input id="chk-fixed" type="checkbox" data-toggle-state="layout-fixed">
+                                 <span></span>
+                              </label>
+                           </div>
+                        </div>
+                        <div class="clearfix">
+                           <p class="pull-left">Boxed</p>
+                           <div class="pull-right">
+                              <label class="switch">
+                                 <input id="chk-boxed" type="checkbox" data-toggle-state="layout-boxed">
+                                 <span></span>
+                              </label>
+                           </div>
+                        </div>
+                        <div class="clearfix">
+                           <p class="pull-left">RTL</p>
+                           <div class="pull-right">
+                              <label class="switch">
+                                 <input id="chk-rtl" type="checkbox">
+                                 <span></span>
+                              </label>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="p">
+                        <h4 class="text-muted text-thin">Aside</h4>
+                        <div class="clearfix">
+                           <p class="pull-left">Collapsed</p>
+                           <div class="pull-right">
+                              <label class="switch">
+                                 <input id="chk-collapsed" type="checkbox" data-toggle-state="aside-collapsed">
+                                 <span></span>
+                              </label>
+                           </div>
+                        </div>
+                        <div class="clearfix">
+                           <p class="pull-left">Float</p>
+                           <div class="pull-right">
+                              <label class="switch">
+                                 <input id="chk-float" type="checkbox" data-toggle-state="aside-float">
+                                 <span></span>
+                              </label>
+                           </div>
+                        </div>
+                        <div class="clearfix">
+                           <p class="pull-left">Hover</p>
+                           <div class="pull-right">
+                              <label class="switch">
+                                 <input id="chk-hover" type="checkbox" data-toggle-state="aside-hover">
+                                 <span></span>
+                              </label>
+                           </div>
+                        </div>
+                        <div class="clearfix">
+                           <p class="pull-left">Show Scrollbar</p>
+                           <div class="pull-right">
+                              <label class="switch">
+                                 <input id="chk-hover" type="checkbox" data-toggle-state="show-scrollbar" data-target=".sidebar">
+                                 <span></span>
+                              </label>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <div id="app-chat" role="tabpanel" class="tab-pane fade">
+                     <h3 class="text-center text-thin">Connections</h3>
+                     <ul class="nav">
+                        <!-- START list title-->
+                        <li class="p">
+                           <small class="text-muted">ONLINE</small>
+                        </li>
+                        <!-- END list title-->
+                        <li>
+                           <!-- START User status-->
+                           <a href="#" class="media-box p mt0">
+                              <span class="pull-right">
+                                 <span class="circle circle-success circle-lg"></span>
+                              </span>
+                              <span class="pull-left">
+                                 <!-- Contact avatar-->
+                                 <img src="img/user/05.jpg" alt="Image" class="media-box-object img-circle thumb48">
+                              </span>
+                              <!-- Contact info-->
+                              <span class="media-box-body">
+                                 <span class="media-box-heading">
+                                    <strong>Juan Sims</strong>
+                                    <br>
+                                    <small class="text-muted">Designeer</small>
+                                 </span>
+                              </span>
+                           </a>
+                           <!-- END User status-->
+                           <!-- START User status-->
+                           <a href="#" class="media-box p mt0">
+                              <span class="pull-right">
+                                 <span class="circle circle-success circle-lg"></span>
+                              </span>
+                              <span class="pull-left">
+                                 <!-- Contact avatar-->
+                                 <img src="img/user/06.jpg" alt="Image" class="media-box-object img-circle thumb48">
+                              </span>
+                              <!-- Contact info-->
+                              <span class="media-box-body">
+                                 <span class="media-box-heading">
+                                    <strong>Maureen Jenkins</strong>
+                                    <br>
+                                    <small class="text-muted">Designeer</small>
+                                 </span>
+                              </span>
+                           </a>
+                           <!-- END User status-->
+                           <!-- START User status-->
+                           <a href="#" class="media-box p mt0">
+                              <span class="pull-right">
+                                 <span class="circle circle-danger circle-lg"></span>
+                              </span>
+                              <span class="pull-left">
+                                 <!-- Contact avatar-->
+                                 <img src="img/user/07.jpg" alt="Image" class="media-box-object img-circle thumb48">
+                              </span>
+                              <!-- Contact info-->
+                              <span class="media-box-body">
+                                 <span class="media-box-heading">
+                                    <strong>Billie Dunn</strong>
+                                    <br>
+                                    <small class="text-muted">Designeer</small>
+                                 </span>
+                              </span>
+                           </a>
+                           <!-- END User status-->
+                           <!-- START User status-->
+                           <a href="#" class="media-box p mt0">
+                              <span class="pull-right">
+                                 <span class="circle circle-warning circle-lg"></span>
+                              </span>
+                              <span class="pull-left">
+                                 <!-- Contact avatar-->
+                                 <img src="img/user/08.jpg" alt="Image" class="media-box-object img-circle thumb48">
+                              </span>
+                              <!-- Contact info-->
+                              <span class="media-box-body">
+                                 <span class="media-box-heading">
+                                    <strong>Tomothy Roberts</strong>
+                                    <br>
+                                    <small class="text-muted">Designer</small>
+                                 </span>
+                              </span>
+                           </a>
+                           <!-- END User status-->
+                        </li>
+                        <!-- START list title-->
+                        <li class="p">
+                           <small class="text-muted">OFFLINE</small>
+                        </li>
+                        <!-- END list title-->
+                        <li>
+                           <!-- START User status-->
+                           <a href="#" class="media-box p mt0">
+                              <span class="pull-right">
+                                 <span class="circle circle-lg"></span>
+                              </span>
+                              <span class="pull-left">
+                                 <!-- Contact avatar-->
+                                 <img src="img/user/09.jpg" alt="Image" class="media-box-object img-circle thumb48">
+                              </span>
+                              <!-- Contact info-->
+                              <span class="media-box-body">
+                                 <span class="media-box-heading">
+                                    <strong>Lawrence Robinson</strong>
+                                    <br>
+                                    <small class="text-muted">Developer</small>
+                                 </span>
+                              </span>
+                           </a>
+                           <!-- END User status-->
+                           <!-- START User status-->
+                           <a href="#" class="media-box p mt0">
+                              <span class="pull-right">
+                                 <span class="circle circle-lg"></span>
+                              </span>
+                              <span class="pull-left">
+                                 <!-- Contact avatar-->
+                                 <img src="img/user/10.jpg" alt="Image" class="media-box-object img-circle thumb48">
+                              </span>
+                              <!-- Contact info-->
+                              <span class="media-box-body">
+                                 <span class="media-box-heading">
+                                    <strong>Tyrone Owens</strong>
+                                    <br>
+                                    <small class="text-muted">Designer</small>
+                                 </span>
+                              </span>
+                           </a>
+                           <!-- END User status-->
+                        </li>
+                        <li>
+                           <div class="p-lg text-center">
+                              <!-- Optional link to list more users-->
+                              <a href="#" title="See more contacts" class="btn btn-purple btn-sm">
+                                 <strong>Load more..</strong>
+                              </a>
+                           </div>
+                        </li>
+                     </ul>
+                     <!-- Extra items-->
+                     <div class="p">
+                        <p>
+                           <small class="text-muted">Tasks completion</small>
+                        </p>
+                        <div class="progress progress-xs m0">
+                           <div role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-success progress-80">
+                              <span class="sr-only">80% Complete</span>
+                           </div>
+                        </div>
+                     </div>
+                     <div class="p">
+                        <p>
+                           <small class="text-muted">Upload quota</small>
+                        </p>
+                        <div class="progress progress-xs m0">
+                           <div role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" class="progress-bar progress-bar-warning progress-40">
+                              <span class="sr-only">40% Complete</span>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </nav>
+         <!-- END Off Sidebar (right)-->
+      </aside>
+      
+          <?php } ?>
+      
+  <section >
+   
 
-        </div>
-        
-        <?php if ($page['sidebar_first']): ?>
-        <div id="sidebar-first" class="column sidebar"><div class="section">
-          <?php print render($page['sidebar_first']); ?>
-        </div></div> <!-- /.section, /#sidebar-first -->
-      <?php endif; ?>
-    </nav>
-    <?php } ?>
     
     
       
-    <div id="page-wrapper" class="gray-bg" style="min-height: 490px;">
+    
+    
     <?php if($user->uid) { ?>
-       <div class="row border-bottom">
+    <!--   <div class="row border-bottom">
             <nav class="navbar navbar-static-top grey-bg" role="navigation" style="margin-bottom: 0">
                 <div class="navbar-header">
                     <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
@@ -256,19 +846,23 @@
 
             </nav>
         </div>
-         <?php } ?>
+         -->
+         <?php } ?> 
          
-         <div class="row wrapper border-bottom white-bg page-heading">
-		        <div class="col-lg-10">
-		        <?php print render($title_prefix); ?>
-		        <?php if ($title): ?><h2 class="title" id="page-title"><?php print $title; ?></h2><?php endif; ?>
-		        <?php print render($title_suffix); ?>
-		        </div>
-		        </div>
+        <!-- <div class="row wrapper border-bottom white-bg page-heading">
+		        <div class="col-lg-10"> -->
+		         <!--  </div>
+		        </div>  -->
 		        
-        <div class="wrapper wrapper-content"> 
-           <div class="row animated fadeInRight">
-            
+	<div class="content-wrapper" id="page-wrapper" class="gray-bg" style="min-height: 490px;">	        
+		        <?php print render($title_prefix); ?>
+		        <?php if ($title): ?><h3 class="title" id="page-title"><?php print $title; ?></h3><?php endif; ?>
+		        <?php print render($title_suffix); ?>
+		     
+         
+           <div class="row">
+             <div class="<?php if ($page['sidebar_first']) echo 'col-lg-9'; else echo 'col-lg-12';  ?>">
+             
             <?php if(arg(0) != 'user' || (arg(0) == 'user' && arg(1) != '' && arg(2) == 'edit' ) ) {  ?>
             <div class="col-md-12"><div class="ibox float-e-margins"><div class="ibox-content">
              <div class="content-padding">
@@ -294,18 +888,29 @@
 		        <a id="main-content"></a>
 		         <?php if($is_rec && $is_rec_inactive )  {  ?><p class="pending_ractivation">Your profile is pending Activation. Once approved you will be able to use all features.</p><?php } ?>
 		        <?php if ($tabs): ?><div class="tabs"><?php print render($tabs); ?></div><?php endif; ?>
-		        <?php print render($page['help']); ?>
-		        <?php if ($action_links): ?><ul class="action-links"><?php print render($action_links); ?></ul><?php endif; ?>
+		        <?php print render($page['help']);// print_r($action_links); ?>
+		        
+		        <?php if( count($action_links) && $action_links[0]['#link']['path'] == 'messages/new'  ) {
+		            $action_links[0]['#link']['title'] = '<em class="fa fa-pencil"></em><span>Compose</span>';
+		            $action_links[0]['#link']['localized_options']['html'] = true;
+                    $action_links[0]['#link']['localized_options']['attributes']['class'] = array('btn btn-purple btn-sm mb-compose-button');       
+		            
+		        } ?>
+		        <?php if ($action_links): ?><ul class="action-links col-md"><?php print render($action_links); ?></ul><?php endif; ?>
+		        
 		        <?php print render($page['content']); ?>
+		        
 		        <?php print $feed_icons; ?>
 		      </div></div> <!-- /.section, /#content -->
 		 
-		
-		      <?php if ($page['sidebar_second']): ?>
+				<?php if ($page['sidebar_second']): ?>
+		       
 		        <div id="sidebar-second" class="column sidebar"><div class="section">
 		          <?php print render($page['sidebar_second']); ?>
 		        </div></div> <!-- /.section, /#sidebar-second -->
+		       
 		      <?php endif; ?>
+		      
 		
 		    </div></div> <!-- /#main, /#main-wrapper -->
 		    
@@ -314,26 +919,38 @@
 		  </div></div>
 		  <?php } ?>
 		  
-		  </div>
-
-        </div>
-        <div class="footer">
-		    <?php print render($page['footer']); ?>
+		   
+          
+		    </div>  
 		    
-            <div class="pull-right">
-               <!-- 10GB of <strong>250GB</strong> Free. -->
-            </div>
-            
-            <div>
-                <strong>Copyright</strong> Edivvy &copy; 2014-2016
-            </div>
-        </div>
+		    <?php if ($page['sidebar_first']): ?>
+		   <div class="col-lg-3">
+		    <h3 class="m0 pb-lg">Filters</h3>
+		    
+            <div id="sidebar-first" class="column "><div class="section">
+              <?php print render($page['sidebar_first']); ?>
+            </div></div> <!-- /.section, /#sidebar-first -->
+             </div>
+          <?php endif; ?>
+		      
+		  </div> <!-- row -->
+
+         
+        
       </div>
     
-    
-    
-    
 
-  </div></div> <!-- /#page, /#-wrapper -->
+  </section>
+  
+  <footer >
+		    <?php print render($page['footer']); ?>
+		    
+            
+            <span>
+                <small>Edivvy &copy; <?php echo date('Y'); ?></small> 
+            </span>
+        </footer>
+  
+  </div> <!-- /#page, /#-wrapper -->
 
 

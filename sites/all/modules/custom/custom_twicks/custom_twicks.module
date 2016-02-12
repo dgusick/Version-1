@@ -135,6 +135,11 @@ function update_user_latest_eval($node) {
                 
     	   
     	   $form['field_role_department']['#options'] = $options; 
+    	   
+    	    //make muliselect 
+    	    //$form['field_experience']['#attributes']['class'][] = 'chosen-select';
+    	    
+    	    
     	} 
     	
     	if($form_id == "evaluation_node_form"){

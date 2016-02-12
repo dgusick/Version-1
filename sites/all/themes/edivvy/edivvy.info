@@ -4,16 +4,22 @@ package = Core
 version = VERSION
 core = 7.x
 
-stylesheets[screen][] = css/bootstrap.min.css
-stylesheets[screen][] = font-awesome/css/font-awesome.css
-stylesheets[screen][] = css/animate.css
-stylesheets[screen][] = css/style.css
+stylesheets[screen][] = fontawesome/css/font-awesome.min.css
+stylesheets[screen][] = simple-line-icons/css/simple-line-icons.css
+stylesheets[screen][] = animate.css/animate.min.css
+stylesheets[screen][] = whirl/dist/whirl.css
+stylesheets[screen][] = css/bootstrap-tagsinput.css
+stylesheets[screen][] = chosen_v1.2.0/chosen.min.css
+
+stylesheets[screen][] = css/select2.css
+stylesheets[screen][] = css/select2-bootstrap.css
+
+stylesheets[screen][] = css/bootstrap.css
+stylesheets[screen][] = css/app.css
+
+
 stylesheets[screen][] = css/custom.css
 stylesheets[screen][] = css/extra.css
-stylesheets[screen][] = css/plugins/chosen/chosen.css
-stylesheets[screen][] = css/plugins/sweetalert/sweetalert.css
-stylesheets[screen][] = css/plugins/toastr/toastr.min.css
-stylesheets[screen][] = css/plugins/iCheck/custom.css
 
 regions[sidebar_first]  = Left sidebar
 regions[sidebar_second] = Right sidebar
@@ -25,17 +31,29 @@ regions[help] = Help
 regions[page_top] = Page Top
 regions[page_bottom] = Page Bottom
 
+scripts[] = js/modernizr.custom.js
+scripts[] = js/matchMedia.js
 scripts[] = js/jquery-2.1.1.js
-scripts[] = js/bootstrap.min.js
-scripts[] = custom.js
-scripts[] = js/jquery.peity.min.js
-scripts[] = js/peity-demo.js
+scripts[] = js/bootstrap.js
+scripts[] = js/jquery.storageapi.js
+scripts[] = js/jquery.easing.js
+scripts[] = js/animo.js
+scripts[] = js/jquery.slimscroll.min.js
+scripts[] = js/screenfull.js
+scripts[] = js/jquery.localize.js
+
+scripts[] = chosen_v1.2.0/chosen.jquery.min.js
+scripts[] = js/select2.js
 scripts[] = js/custom.js
-scripts[] = js/plugins/chosen/chosen.jquery.js
-scripts[] = js/plugins/metisMenu/jquery.metisMenu.js
-scripts[] = js/plugins/slimscroll/jquery.slimscroll.min.js
-scripts[] = js/inspinia.js
-scripts[] = js/plugins/pace/pace.min.js
-scripts[] = js/plugins/sweetalert/sweetalert.min.js
-scripts[] = js/plugins/toastr/toastr.min.js
-scripts[] = js/plugins/iCheck/icheck.min.js
+scripts[] = js/app.js
+
+#scripts[] = js/jquery.peity.min.js
+#scripts[] = js/peity-demo.js
+#scripts[] = js/plugins/metisMenu/jquery.metisMenu.js
+#scripts[] = js/plugins/slimscroll/jquery.slimscroll.min.js
+#scripts[] = js/inspinia.js
+#scripts[] = js/plugins/pace/pace.min.js
+#scripts[] = js/plugins/sweetalert/sweetalert.min.js
+#scripts[] = js/plugins/toastr/toastr.min.js
+#scripts[] = js/plugins/iCheck/icheck.min.js
+

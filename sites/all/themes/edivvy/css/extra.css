@@ -1,37 +1,13 @@
 
-input.form-submit {
-    display: inline-block;
-    padding: 6px 12px;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 1.42857143;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
-        touch-action: manipulation;
-    cursor: pointer;
-    -webkit-user-select: none;
-    
-        user-select: none;
-    background-image: none;
-    border: 1px solid transparent;
-    border-radius: 4px;
-    margin-right: 20px;
-    
-    background-color: #1ab394;
-    border-color: #1ab394;
-    color: #FFFFFF;
-    min-width: 120px;    border-radius: 3px;
-    
-    
-}
+
 
 #requirement-node-form label { 
     width: 25%;
     
 }
 #invite-form { 
-    
+    padding: 20px;
+    background: white;
 }
 #invite-form #edit-field-invite-user-relation-type 
 {
@@ -111,16 +87,11 @@ input.form-submit {
 }
 
 .page-messages-new #privatemsg-new .form-actions input.form-submit {
-	 text-indent: -9999px;
+ 
 }
 
 .page-messages-new #privatemsg-new .form-actions:after {
-	content: "Send";
-	text-indent: 0;
-	display: block;
-	color:white;
-	margin-top:-25px;
-	padding-left:40px;
+	 
 }
 
 .page-profile-main #profile2-edit-main-form .tabledrag-toggle-weight-wrapper {
@@ -162,6 +133,7 @@ input.form-submit {
 	   width: 100%;
 	   border-collapse: collapse;
 	   margin:0px;padding:0px;
+	   max-widht: 100%;
 }
 
 .page-user table.views-table tbody tr td {
@@ -177,10 +149,7 @@ input.form-submit {
 }
 .page-messages .action-links {
     list-style-type: none;
-    width: 156px;
-    background-color: #1ab394;
-    padding: 12px;
-    border-radius: 3px;	
+     padding-left: 0px;
 }
 .page-messages .action-links li a {
 	
@@ -232,11 +201,11 @@ input.form-submit {
 }
 
 .page-invite-add-invite-by-email .description {
-    padding-left: 43px;
+     
 }
 
 .page-invite-add-invite-by-email input#edit-submit {
-	margin-left: 43px;
+ 
 }
 
 .page-user p.pending_ractivation {
@@ -389,6 +358,8 @@ position: relative;
 
 .page-searchapi-candidate .view-searchapi-candidate span.flag-wishlist a {
 	color: #ed5565;
+
+    color:white;
 }
 
 .page-searchapi-candidate .view-searchapi-candidate span.flag-wishlist a:hover {
@@ -455,7 +426,7 @@ position: relative;
 	padding: 6px 12px;
 }
 #sidebar-first { 
- background:white;
+    
 }
 #sidebar-first .block-facetapi h2{ 
       font-size: 16px;

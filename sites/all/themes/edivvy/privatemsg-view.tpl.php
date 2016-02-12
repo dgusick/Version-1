@@ -14,6 +14,7 @@ print $anchors; ?>
     <?php if (isset($new)): ?>
       <span class="new privatemsg-message-new"><?php print $new ?></span>
     <?php endif ?>
+    
       <div class="privatemsg-message-information">
         <span class="privatemsg-author-name"><?php print $author_name_link; ?></span> <span class="privatemsg-message-date"><?php print $message_timestamp; ?></span>
         
@@ -23,8 +24,9 @@ print $anchors; ?>
         
       </div>
     <div class="privatemsg-message-body">
-      <?php print $message_body; ?>
+  <?php print $message_body; ?>
     </div>
   </div>
   <div class="clearfix"></div>
 </div>
+

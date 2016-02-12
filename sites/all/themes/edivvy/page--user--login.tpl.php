@@ -72,34 +72,49 @@
  * @ingroup themeable
  */
 ?>
- <div class="middle-box text-center loginscreen animated fadeInDown">
-        <div>
-            <div>
+<div class="wrapper">
 
-                <h1 class="logo-name">EDV</h1>
+        <div class="block-center mt-xl wd-xl">
+         <!-- START panel-->
+         <div class="panel panel-dark panel-flat">
+                <div class="panel-heading text-center">
+                       <a href="#" style="color:white;  font-size: 22px; margin-top: 0; font-weight: bold;">Edivvy 
+                       <?php if($logo) { ?>
+                       <img style="display:none;" src="<?php echo $logo; ?>" alt="Image" class="block-center img-rounded">
+                       <?php } ?>
+                        </a>
+                </div>
+                <div class="panel-body">
+                       <p class="text-center pv">SIGN IN TO CONTINUE.</p>
 
-            </div>
-            
-            <div id="content" class="column"><div class="section">
-                <?php if ($page['highlighted']): ?><div id="highlighted"><?php print render($page['highlighted']); ?></div><?php endif; ?>
-                <a id="main-content"></a>
-                 <h3>Welcome to Edivvy</h3>
+                <!--    <div id="content" class="column">
+                       <div class="section">  -->
+                       
+                         <?php if ($page['highlighted']): ?><div id="highlighted"><?php print render($page['highlighted']); ?></div><?php endif; ?>
+                         <a id="main-content"></a>
                  
-                <?php if ($tabs): ?><div class="tabs"><?php //print render($tabs); ?></div><?php endif; ?>
-                <?php print render($page['help']); ?>
-                <?php if ($action_links): ?><ul class="action-links"><?php print render($action_links); ?></ul><?php endif; ?>
-                <?php print $messages; ?>
-                <?php print render($page['content']); ?>
-                <?php print $feed_icons; ?>
-              </div></div> <!-- /.section, /#content -->
-              
-              
-            <p class="m-t"> <small>Edivvy &copy; 2015</small> </p>
+                         <?php if ($tabs): ?><div class="tabs"><?php //print render($tabs); ?></div><?php endif; ?>
+                         <?php print render($page['help']); ?>
+                         <?php if ($action_links): ?><ul class="action-links"><?php print render($action_links); ?></ul><?php endif; ?>
+                         <?php print $messages; ?>
+                         <?php print render($page['content']); ?>
+                         <?php print $feed_icons; ?>
+                         
+                    <!--   </div>
+                    </div> <!-- /.section, /#content -->
+
             
-            
-            
-        </div>
-    </div>
+                </div> <!-- panel-body-->
+        </div> 
+        
+         <div class="p-lg text-center">
+            <p class="m-t"> <small>Edivvy &copy; <?php echo date('Y'); ?></small> </p>
+         </div>
+         
+         
+      </div>  <!--block-center mt-xl wd-xl -->
+
+    </div>  <!--wrapper close -->
     
      
 

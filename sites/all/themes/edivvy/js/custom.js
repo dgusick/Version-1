@@ -1,4 +1,4 @@
-$(document).ready(function () {
+jQuery(document).ready(function () {
     var recruiter_per_page = 8;
     
     $(window).load(function() {
@@ -44,7 +44,7 @@ $(document).ready(function () {
   //  $('#edit-field-zip-code').attr("tabindex","4");
     $('#edit-field-zip-code').attr("placeholder","Zip Code");
     
-   
+    /*
     $('#edit-field-city').addClass('chosen-select form-control');
     $('#edit-field-city').attr("tabindex","4");
     $('#edit-field-city').attr("data-placeholder","City");
@@ -61,6 +61,7 @@ $(document).ready(function () {
     $('#edit-field-skills-tid').addClass('chosen-select form-autocomplete');
     $('#edit-field-skills-tid').attr("tabindex","4");
     $('#edit-field-skills-tid').attr("data-placeholder","Choose a skill...");
+    */
     
     $('#edit-submit-candidate-search').addClass('btn  btn-primary');
     $('#edit-submit-candidate-search').attr("value",'Search');
@@ -75,6 +76,7 @@ $(document).ready(function () {
     
     $('#views-exposed-form-candidate-search-top-page').attr('action',Drupal.settings.basePath+'candidate-search');
     
+    /*
     $('#edit-field-job-title-tid').addClass('form-control');
     $("#edit-field-job-title-tid option:first").text("Job title");
     
@@ -92,7 +94,9 @@ $(document).ready(function () {
     
     $('#edit-field-expertise-tid').addClass('form-control');
     $("#edit-field-expertise-tid option:first").text("Expertise");
+    */
     
+    /*
     $('#edit-field-role-department').addClass('chosen-select form-control');
     $('#edit-field-role-department').attr("tabindex","4");
     $('#edit-field-role-department').attr("data-placeholder","Role / Department");
@@ -120,7 +124,8 @@ $(document).ready(function () {
     $('#edit-profile-evaluation-field-skills-rating-field-skills').addClass('chosen-select form-control');
     $('#edit-profile-evaluation-field-skills-rating-field-skills').attr("tabindex","4");
     $('#edit-profile-evaluation-field-skills-rating-field-skills').attr("data-placeholder","Choose a skill...");
-    
+    */
+    /*
     $('#edit-field-job-title').addClass('form-control');
     $("#edit-field-job-title option:first").text("Job title");
     
@@ -141,11 +146,12 @@ $(document).ready(function () {
     
     $('#edit-submit-searchapi-candidate').addClass('btn  btn-primary');
     $('#edit-submit-searchapi-candidate').attr("value",'Search');
+    */
     
     //style paging
-    $('.pager').replaceWith('<div class="pager1 btn-group">' + $('.pager').html() +'</div>');
-    $('.pager1 li').wrap('<div class="btn btn-white"></div>');
-    $('.pager-current').parent('div').addClass('active');
+    //$('.pager').replaceWith('<div class="pager1 btn-group">' + $('.pager').html() +'</div>');
+    //$('.pager1 li').wrap('<div class="btn btn-white"></div>');
+    //$('.pager-current').parent('div').addClass('active');
     
     //set all advanced select to display none
     $('.grid-3').addClass("hide");
@@ -207,7 +213,7 @@ $(document).ready(function () {
      //   $('.views-widget-filter-field_certification').toggleClass("hide");
      //	$('.views-widget-filter-field_experience').toggleClass("hide");
     });
-
+    /*
     var config = {
         '.chosen-select'           : {},
         '.chosen-select-deselect'  : {allow_single_deselect:true},
@@ -216,9 +222,15 @@ $(document).ready(function () {
         '.chosen-select-width'     : {width:"100%"}
     }
     for (var selector in config) {
-        $(selector).chosen(config[selector]);
+    	if($(selector).length) { 
+          $(selector).chosen(config[selector]); 
+    	}
+    }*/
+    
+    if($('.chosen-select').length > 0) { 
+     $('.chosen-select').chosen();
     }
-
+    
     $('.contact-btn').click(function(){
         swal({
             title: "Want to contact Nicki Smith? ",
@@ -237,6 +249,8 @@ $(document).ready(function () {
             swal("Nice!", "Following message was sent to the candidate...\n " + inputValue , "success");
         });
     });
+    
+    
     $('.save-search-btn').click(function(){
         swal({
             title: "Want to save this search result? ",
@@ -283,16 +297,17 @@ $(document).ready(function () {
     });
     
     //Styling checkbox
-    $(document).ready(function(){
-            $('.i-checks').iCheck({
-                checkboxClass: 'icheckbox_square-green',
-                radioClass: 'iradio_square-green',
-            });
+    //
+    //        $('.i-checks').iCheck({
+     //           checkboxClass: 'icheckbox_square-green',
+     //           radioClass: 'iradio_square-green',
+     //       });
 
 
             //$('.summernote').summernote();
 
-        });
+  
+        
         var edit = function() {
             //$('.click2edit').summernote({focus: true});
         };
@@ -302,7 +317,7 @@ $(document).ready(function () {
         };
     
     //adding title suffix
-    $(".page-recruiter-list #page-title").after('<span class="text-muted">You can follow recruiters to be notified of new profiles</span>');
+    $(".page-recruiter-list #page-title").after('<h5 class="text-muted">You can follow recruiters to be notified of new profiles</h5>');
     $(".page-candidate-search #page-title").after('<span class="text-muted">Choose a Title, A Skill, and Location</span>');
     $(".page-candidate-search-top #page-title").after('<span class="text-muted">Choose a Title, A Skill, and Location</span>');
     
@@ -317,12 +332,14 @@ $(document).ready(function () {
     $(".page-candidate-register .btn-white").attr('href',Drupal.settings.basePath+'candidate/login');
     
     //Fix Firefox issue of pagination button
-    $(".page-candidate-search .pager1 button").removeClass("btn");
+   // $(".page-candidate-search .pager1 button").removeClass("btn");
     
     //var follow_string = $('.follow-btn a').html();
     //$('.follow-btn a').text( "Follow" );
     //$('a .flagged').text( "Stop Follow" );
     //alert(follow_string);
+     $(".page-user-invites .table tbody tr").removeClass("even");
+     $(".page-user-invites .table tbody tr").removeClass("odd");
     
 });
 

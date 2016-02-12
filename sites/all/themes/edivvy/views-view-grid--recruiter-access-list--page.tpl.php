@@ -256,48 +256,46 @@ if($field_approved_recruiter_uid!="")
 	                  }
 	                  if($load_recruiter->field_picture_url)
 	                    {
-	                      $pic_recruiter = '<img class="img-circle m-t-xs img-responsive" src="'.$load_recruiter->field_picture_url['und'][0]['value'].'" />';  
+	                      $pic_recruiter = '<img class="img-thumbnail img-circle img-responsive thumb96" src="'.$load_recruiter->field_picture_url['und'][0]['value'].'" />';  
 	                        }
 	                       else
 	                         {
 	                          if($load_recruiter->field_user_picture){
 	                          $field_user_picture = file_create_url($load_recruiter->field_user_picture[LANGUAGE_NONE][0]['uri']);
-                               $pic_recruiter = '<img class="img-circle" src="'.$field_user_picture.'" />'; 
+                               $pic_recruiter = '<img class="img-thumbnail img-circle img-responsive thumb96" src="'.$field_user_picture.'" />'; 
 	                           }
 	                                                            
 	                          else{ 
 	                            $base_theme_url = drupal_get_path('theme',$GLOBALS['theme']);
-	                           $pic_recruiter = '<img class="img-circle m-t-xs img-responsive" src="'.base_path().'/'.$base_theme_url.'/img/default-avatar.png" />';
+	                           $pic_recruiter = '<img class="img-thumbnail img-circle img-responsive thumb96" src="'.base_path().'/'.$base_theme_url.'/img/default-avatar.png" />';
 	                                                            } 
 	                                                        } 
 	                                                          
 	                                                          ?>
 	                                                          
 	                                                            <div class="col-lg-4">
-	                                                                <div class="contact-box" style="min-height: 170px;">
-	                                                                    <a href="<?php echo url("user/".$load_recruiter->uid) ?>">
-	                                                                        <div class="row">
-	                                                                            <div class="col-sm-4 col-sm-push-4 text-center">
-	                                                                                <div class="text-center">
-	                                                                                   <?php echo $pic_recruiter ?> 
+	                                                                <div class="contact-box panel widget" style="min-height: 170px;">
+	                                                                 <div class="panel-body">
+	                                                                <div class="row row-tabl">
+	                                                                   <div class="col-xs-5 text-center">
+	                                                                        <a href="<?php echo url("user/".$load_recruiter->uid) ?>">
+	                                                                                   <?php echo $pic_recruiter ?>  </a>
 	                                                                                    <div class="m-t-xs font-bold"><?php if($is_rec)  { echo 'Candidate'; } else { echo 'Recruiter'; } ?><!-- , Veritas --></div>
-	                                                                                </div>
-	                                                                            </div>
-	                                                                        </div>
-	                                                                        <div class="row">
-	                                                                            <div class="col-sm-12 text-center">
-	                                                                                <h3><strong><?php echo $full_name_connection ?></strong></h3>
-	                                                                               <!-- <p><i class="fa "></i> <?php echo $load_recruiter->field_first_name['und'][0]['value'].".".$load_recruiter->field_last_name['und'][0]['value'] ?></p> -->
+	                                                                              
+	                                                                   </div>
+	                                                                   <div class="col-xs-7">
+	                                                                       <h3 class="mt0"><?php echo $full_name_connection ?></h3>
+	                                                                       <!-- <p><i class="fa "></i> <?php echo $load_recruiter->field_first_name['und'][0]['value'].".".$load_recruiter->field_last_name['und'][0]['value'] ?></p> -->
 	                                                                                <?php if( $is_my_profile && $req_data->approved ) { //fa-linkedin-square  ?>
-	                                                                                <p><i class="fa fa-inbox"></i> <a href="mailto:<?php echo $load_recruiter->mail ?>"> <?php echo $load_recruiter->mail ?></a></p>
+	                                                                         <p class="mb-sm"><i class="fa fa-inbox"></i> <a href="mailto:<?php echo $load_recruiter->mail ?>"> <?php echo $load_recruiter->mail ?></a></p>
 	                                                                                <?php }
 	                                                                                
 	                                                                                if( !$req_data->approved && $is_my_profile) { echo 'Approval pending'; } ?>
 	                                                                                
 	                                                                               
-	                                                                            </div>
-	                                                                        </div>
-	                                                                     
+	                                                                   </div>
+	                                                                </div>
+	                                                                      
 	                                                                        <div class="col-sm-12">
 	                                                                         <?php 
 	                                                                         if( $logged_is_rec && $is_can  ) { 
@@ -310,8 +308,10 @@ if($field_approved_recruiter_uid!="")
 	                                                                            <?php } 
 	                                                                            } ?>
 	                                                                        </div>
-	                                                                        <div class="clearfix"></div>
-	                                                                    </a>
+	                                                                     
+	                                                                   
+	                                                                </div>
+	                                                                   <div class="clearfix"></div>
 	                                                                </div>
 	                                                            </div>
 	                                                          <?php

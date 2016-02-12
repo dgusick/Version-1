@@ -53,6 +53,7 @@
                                     <div id="tab-1" class="tab-pane active">
                                         <div class="full-height-scroll">
                                             <div class="table-responsive">
+                                            
                                                 <table class="table table-striped table-hover">
                                                     <tbody>
                                                     
@@ -158,17 +159,17 @@
 	        															//if current user is the recruiter that invited the candidate
 	        														  if( $has_access && $is_evaluated )
 	        															{
-	        																?> <a href="<?php echo url('node/'.$evaluated_node_id.'') ?>" type="button"  class="btn btn-xs btn-outline  btn-success " style="width: 140px;"> View Evaluation </a>  <?php	
+	        																?> <a href="<?php echo url('node/'.$evaluated_node_id.'') ?>" type="button"  class="btn btn-xs   btn-success " style="width: 140px;"> View Evaluation </a>  <?php	
 	        															} else if( $has_access )
 	        															{
-	        																?> <a href="<?php echo url('node/add/evaluation/'.$uid.'') ?>" type="button"  class="btn btn-xs btn-outline  btn-success " style="width: 140px;"> Create New Evaluation </a> <?php	
+	        																?> <a href="<?php echo url('node/add/evaluation/'.$uid.'') ?>" type="button"  class="btn btn-xs   btn-success " style="width: 140px;"> Create New Evaluation </a> <?php	
 	        															} else if( $pending_access )
 	        															{
-	        																?> <a href="#" type="button"  class="btn btn-xs btn-outline  btn-success " style="width: 140px;"> Request Pending </a> <?php	
+	        																?> <a href="#" type="button"  class="btn btn-xs   btn-success " style="width: 140px;"> Request Pending </a> <?php	
 	        															} 
 	        															else
 	        															{ //request-access/'.$uid.''  relationship/204/request/2?destination=user/204 
-	                                                                		?> <a href="<?php echo url('relationship/'.$uid.'/request/2', array('query'=>array('destination'=>'candidate-search'))) ?>" type="button" class="btn btn-xs btn-outline btn-danger" style="width: 140px;"> Request Access </a> <?php 
+	                                                                		?> <a href="<?php echo url('relationship/'.$uid.'/request/2', array('query'=>array('destination'=>'candidate-search'))) ?>" type="button" class="btn btn-xs  btn-danger" style="width: 140px;"> Request Access </a> <?php 
 	                                                                	}
 	        															
 	                                                                ?>
@@ -183,8 +184,8 @@
 	                                                                ?>
 	                                                                
 	                                                                
-	                                                         <!       <a data-toggle="button" type="button" class="btn btn-xs btn-outline btn-danger save-btn" style="width: 51.4666px;"><i class="fa fa-heart-o"></i> Save </a>
-	                                                                <a data-toggle="button" type="button"  class="btn btn-xs btn-outline  btn-success contact-btn "><i class="fa fa-envelope-o"></i> Contact </a>
+	                                                         <!       <a data-toggle="button" type="button" class="btn btn-xs btn-danger save-btn" style="width: 51.4666px;"><i class="fa fa-heart-o"></i> Save </a>
+	                                                                <a data-toggle="button" type="button"  class="btn btn-xs    btn-success contact-btn "><i class="fa fa-envelope-o"></i> Contact </a>
 	                                                            </span>
 	                                                        </td>
                                                     	</tr>

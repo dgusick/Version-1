@@ -94,7 +94,7 @@
               </div></div> <!-- /.section, /#content -->
               
               
-            <p class="m-t"> <small>Saarwid &copy; 2015</small> </p>
+            <p class="m-t"> <small>Edivvy &copy; <?php echo date('Y'); ?></small> </p>
             
             
             

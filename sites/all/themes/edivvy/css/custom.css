@@ -1,0 +1,73 @@
+.thumb10 {
+    width: 36px;
+    height: 36px;
+    margin-bottom: 5px;
+    margin-right: 4px;
+}
+.contact-box {
+    border: 1px solid #e7eaec;
+}
+a {
+    color: #515253;
+}
+a:hover {
+    text-decoration: none;
+}
+.row-table .col-xs-6 {
+    padding-top: 30px;
+}
+
+.flag-follow a {
+   color: #ffffff;
+    background-color: #27c24c;
+     border-radius: 3px;
+    font-size: 13px;
+    border-color: transparent;
+    -webkit-appearance: none;
+    transition: all 0.1s;
+    outline: none !important;
+    display: inline-block;
+    margin-bottom: 0;
+    font-weight: normal;
+    text-align: center;
+    vertical-align: middle;
+    touch-action: manipulation;
+    cursor: pointer;
+    background-image: none;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    padding: 6px 16px;
+    line-height: 1.52857143;
+    -webkit-user-select: none;
+}
+.flag-follow a:hover,
+.btn-danger a{
+    color: #ffffff;
+}
+
+.view-id-invite .panel-body table tbody td a {
+    /*
+    display: block;
+    border: 1px solid;
+    text-align: center;
+    padding: 5px;
+    background: gray;
+    color: white;
+    border-radius: 5px;*/
+}
+.uc-store-address-field .form-item label {
+	text-align: left;
+}
+#uc-cart-view-form tr.even, tr.odd {
+    background-color: #fff;
+}
+#uc-cart-view-form td.desc {
+        width: auto;
+}
+#uc-cart-view-form td {
+    vertical-align: middle;
+}
+#uc-cart-view-form {
+    padding: 20px;
+    background: white;
+}

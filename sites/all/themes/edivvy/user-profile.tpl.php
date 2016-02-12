@@ -102,16 +102,16 @@ if($field_approved_recruiter_uid!="")
  //get user fields  
  if($user_get->field_picture_url)
  {
-    $pic = '<img class="img-circle" src="'.$user_get->field_picture_url['und'][0]['value'].'" />';  
+    $pic = '<img class="img-thumbnail img-circle thumb96" src="'.$user_get->field_picture_url['und'][0]['value'].'" />';  
  }
  else
  {
      if($user_get->field_user_picture){
             $field_user_picture = file_create_url($user_get->field_user_picture[LANGUAGE_NONE][0]['uri']);
-            $pic = '<img class="img-circle" src="'.$field_user_picture.'" />'; 
+            $pic = '<img class="img-thumbnail img-circle thumb96" src="'.$field_user_picture.'" />'; 
      }else{ 
         $base_theme_url = drupal_get_path('theme',$GLOBALS['theme']);
-        $pic = '<img class="img-circle" src="'.base_path().'/'.$base_theme_url.'/img/default-avatar.png" />';
+        $pic = '<img class="img-thumbnail img-circle thumb96" src="'.base_path().'/'.$base_theme_url.'/img/default-avatar.png" />';
       }
  }
  
@@ -224,9 +224,10 @@ if($field_approved_recruiter_uid!="")
     
 ?>
 <div class="col-md-3">
-
-                <div class="ibox-content <?php  if($is_rec) echo 'navy-bg'; 
-                else echo 'red-bg';  ?> text-center">
+    <div class="panel panel-default">
+        <div class="panel-body">
+        
+                <div class="ibox-content <?php  if($is_rec) echo 'navy-bg'; else echo 'red-bg';  ?> text-center">
                     <h1><?php echo $contact_display ? $full_name : 'Hidden'; ?></h1>
                     <div class="m-b-sm">
                        <!--  <img alt="image" class="img-circle" src="img/a8.jpg"> -->
@@ -336,16 +337,16 @@ if($field_approved_recruiter_uid!="")
 	                                        
 	                                        if($load_recruiter->field_picture_url)
 	                                        {
-	                                            $pic_recruiter = '<img class="img-circle" src="'.$load_recruiter->field_picture_url['und'][0]['value'].'" />';  
+	                                            $pic_recruiter = '<img class="img-thumbnail img-circle thumb10" src="'.$load_recruiter->field_picture_url['und'][0]['value'].'" />';  
 	                                        }
 	                                        else
 	                                        {
 	                                            if($load_recruiter->field_user_picture){
 	                                                              	   $field_user_picture = file_create_url($load_recruiter->field_user_picture[LANGUAGE_NONE][0]['uri']);
-                                                                       $pic_recruiter = '<img class="img-circle" src="'.$field_user_picture.'" />';  
+                                                                       $pic_recruiter = '<img class="img-thumbnail img-circle thumb10" src="'.$field_user_picture.'" />';  
 	                                            }else{ 
 	                                              	 $base_theme_url = drupal_get_path('theme',$GLOBALS['theme']);
-	                                              	 $pic_recruiter = '<img class="img-circle" src="'.base_path().'/'.$base_theme_url.'/img/default-avatar.png" />';
+	                                              	 $pic_recruiter = '<img class="img-thumbnail img-circle thumb10" src="'.base_path().'/'.$base_theme_url.'/img/default-avatar.png" />';
 	                                            }
 	                                        }
 	                                        ?>
@@ -362,9 +363,14 @@ if($field_approved_recruiter_uid!="")
                         </div>
                         <?php } ?>
                     </div>
-                </div> <!-- --> 
+                  </div>
+                 </div>
+                </div> <!-- cold 3--> 
                 
                 <div class="col-md-9">
+                    <div class="panel panel-default">
+        <div class="">
+        
                     <div class="ibox">
                         <div class="ibox-content">
                           <?php if($is_my_profile) {  ?>
@@ -680,7 +686,7 @@ if($field_approved_recruiter_uid!="")
 	                                                        {
 	                                                            if($load_recruiter->field_user_picture){
 	                                                              	   $field_user_picture = file_create_url($load_recruiter->field_user_picture[LANGUAGE_NONE][0]['uri']);
-                                                                       $pic_recruiter = '<img class="img-circle" src="'.$field_user_picture.'" />'; 
+                                                                       $pic_recruiter = '<img class="img-circle m-t-xs img-responsive" src="'.$field_user_picture.'" />'; 
 	                                                            }else{ 
 	                                                              	 $base_theme_url = drupal_get_path('theme',$GLOBALS['theme']);
 	                                                              	 $pic_recruiter = '<img class="img-circle m-t-xs img-responsive" src="'.base_path().'/'.$base_theme_url.'/img/default-avatar.png" />';
@@ -689,7 +695,8 @@ if($field_approved_recruiter_uid!="")
 	                                                          
 	                                                          ?>
 	                                                            <div class="col-lg-4">
-	                                                                <div class="contact-box">
+	                                                                <div class="contact-box panel widget">
+	                                                                 <div class="panel-body">
 	                                                                    <a href="<?php echo url("user/".$load_recruiter->uid) ?>">
 	                                                                        <div class="row">
 	                                                                            <div class="col-sm-4 col-sm-push-4">
@@ -758,9 +765,13 @@ if($field_approved_recruiter_uid!="")
 	                                                                            <?php } 
 	                                                                            } ?>
 	                                                                        </div>
-	                                                                        <div class="clearfix"></div>
+	                                                                     
 	                                                                    </a>
+	                                                                        <div class="clearfix"></div>
+	                                                                    </div>
+	                                                                    
 	                                                                </div>
+	                                                               
 	                                                            </div>
 	                                                          <?php
 				                                        
@@ -783,8 +794,8 @@ if($field_approved_recruiter_uid!="")
 
                         </div>
                     </div>
-
-                </div>
+ </div> </div>
+                </div> <!--col 9 -->
            
  <div class="profile"<?php //print $attributes; ?>>
   <?php //print_r( array_keys($user_profile)); Array ( [0] => user_picture [1] => links [2] => field_first_name [3] => flags [4] => user_relationships_ui [5] => flag_follow [6] => field_agree_term [7] => field_recruiter_status [8] => field_user_picture [9] => privatemsg_send_new_message [10] => summary [11] => field_birthday ) 

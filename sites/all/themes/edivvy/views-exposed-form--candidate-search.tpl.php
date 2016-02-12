@@ -30,6 +30,8 @@
   <div class="views-exposed-widgets clearfix">
     
     <div class="row">
+    <span class="text-muted">Choose a Title, A Skill, and Location</span>
+    
     <div class="form-group col-lg-9">
         <?php $i=0; ?>
         <?php foreach ($widgets as $id => $widget): ?>
