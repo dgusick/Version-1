@@ -138,14 +138,12 @@
 
 .page-user table.views-table tbody tr td {
     padding: 10px;
-    border: 1px solid;
+ 
 }
 
 .page-user table.views-table thead > tr >th {
     padding: 10px;
-    border: 1px solid #676A6C;
-    background-color: #323232;
-    color: #FFF;
+     
 }
 .page-messages .action-links {
     list-style-type: none;
@@ -244,7 +242,8 @@
 }
 
 .page-profile-main .ds-2col .group-right div.fivestar-widget {
-	margin-top: 20px;
+  /*	margin-top: 20px; */
+      margin-top: 53px;
 }
 
 .page-profile-main table tbody tr td input[type="submit"] {
@@ -372,22 +371,43 @@ position: relative;
 	height: 25px;  */
 }
 .page-searchapi-candidate .views-submit-button {
-    position: absolute;
+  /*  position: absolute;
     right: 0px;
-    top: 0px;
+    top: 0px; */
 }
 .page-searchapi-candidate .views-widget-filter-profile_evaluation_field_skills_rating_field_skills {
-   margin-right: 1px;
+  /* margin-right: 1px; */
 }
 .page-searchapi-candidate .views-submit-button input {
-    width: auto;
+  /* 
     height: auto;
     margin-top: 1em !important;
+    margin-right: 6px; */
+    width: auto;
+    height: auto;
+    margin-top: 2.4em !important;
     margin-right: 6px;
+    /*background-color: #1ab394;
+    background-color: #5d9cec;
+    color: #fff;
+     border: none;*/
+    padding: 7px 55px;
+       
+}
+.page-searchapi-candidate .views-submit-button input:hover,
+.page-searchapi-candidate .views-submit-button input:focus{
+     /*  background-color: #5d9cec;
+     color: #fff;*/
+}
+.page-searchapi-candidate .views-submit-button {
+  /*  text-align: center; */
 }
 .page-searchapi-candidate  .views-exposed-form .views-exposed-widget {
-    padding: .5em 2em 0 0;
-    width: 25%;
+  /*  padding: .5em 2em 0 0;
+    width: 25%; */
+}
+.page-searchapi-candidate .views-widget-filter-field_interests {
+  /*  clear: left; */
 }
 .page-searchapi-candidate  .views-exposed-form .views-exposed-widget label {
  /*  display: none;  */  
@@ -396,7 +416,8 @@ position: relative;
     padding: 0;
 }
 .page-searchapi-candidate .views-submit-button a {
-    color: #1ab394;
+    /*color: #1ab394;*/
+    color: #5d9cec;
     margin-top: 0px;
     padding-top: 7px;
 }
@@ -406,7 +427,7 @@ position: relative;
     padding: 6px 12px;
 }
 .page-searchapi-candidate  #edit-profile-evaluation-field-skills-rating-field-skills-wrapper {
-    margin-bottom: 40px;
+   /* margin-bottom: 40px; */
 }
 .page-relationships .tabs {
 	display: none; 
@@ -442,8 +463,13 @@ position: relative;
     list-style-image: none;
     
 }
-.page-searchapi-candidate .views-widget input,
-.page-searchapi-candidate .views-exposed-widget select{
+
+.page-searchapi-candidate .views-exposed-widget select {
+    width: 100%;
+    padding-left: 10px;
+    border-color: #CBD5DD;
+}
+.page-searchapi-candidate .views-widget input{
     width: 100%;
     height: 33px;
     padding-left: 10px;
@@ -453,13 +479,19 @@ position: relative;
     color: #111 !important;
 }
 .page-searchapi-candidate .views-widget-filter-field_zip_code {
-    margin-right: 1px;
-    margin-bottom: 35px;  
+  /*  margin-right: 1px;
+    margin-bottom: 35px;  */
 }
-.page-searchapi-candidate .views-widget-filter-field_interests {
-    clear: left;
+
+.page-searchapi-candidate #edit-field-job-title-wrapper {
+  /*  clear: left ; */
 }
-.page-searchapi-candidate .views-submit-button {
-    text-align: center;
+.page-messages #edit-operation  {
+    border-color: #eaeaea;
+    width: 159px;
 }
+.page-messages #edit-delete {
+    height: 35px;
+    margin-top: -3px !important;
+}  
     

@@ -22,10 +22,8 @@
     
 ?>
 
-
-
  <div class="ibox-content">
- <h2 class="pull-left">Search results</h2>
+ <h2 class="pull-left">Search results  <a href="javascript: void()" onclick="javascript: jQuery('#block-views-saved-search-block-1').toggle();" style="font-size:14px;padding-left: 20px;">View Saved Searches</a></h2>  
  <br>
  <br>
                        <div class="clients-list">
@@ -40,6 +38,18 @@
                                          <div class="panel panel-default">
                                             <div class="table-responsive">
                                                 <table class="table table-striped table-bordered table-hover">
+                                                <?php if (!empty($header)) : ?>
+    <thead>
+      <tr>
+        <?php foreach ($header as $field => $label): ?>
+          <th <?php if ($header_classes[$field]) { print 'class="'. $header_classes[$field] . '" '; } ?>>
+            <?php print $label; ?>
+          </th>
+        <?php endforeach; ?>
+      </tr>
+    </thead>
+  <?php endif; ?>
+  
                                                     <tbody>
                                                     
                                                     
@@ -55,7 +65,6 @@
                                                     <?php
                                                     //print_R($row); 
                                                         $item = $row; 
-                                                        
                                                          
                                                         if($user->uid != $item['uid'])
                                                         {
@@ -64,7 +73,47 @@
                                                     <?php
                                                     $uid = $item['uid'];
                                                     //echo $uid;
-                                                    
+                                                    $item_user_eval  = profile2_load_by_user($uid, 'evaluation'); 
+                                                    $eval_ratings = array();
+                                                    if($item_user_eval) {
+                                                    	if($item_user_eval->field_skills_rating && isset($item_user_eval->field_skills_rating['und']) ) { //hard skills
+                                                    	  foreach($item_user_eval->field_skills_rating['und'] as $hard_skill_arr) { 
+                                                    	    $hskid = $hard_skill_arr['value']; 
+                                                    	    if($hskid) { 
+                                                    	       $hsk_items = entity_load('field_collection_item', array($hskid)); 
+                                                    	       if($hsk_items){
+                                                    	       	  //print_r($hsk_items); 
+                                                    	       	  $hsk_item = $hsk_items[$hskid]; 
+                                                    	       	  if($hsk_item && $hsk_item->field_skill_1 && $hsk_item->field_skill_1['und']) { 
+                                                    	       	    $eval_ratings[] = $hsk_item->field_skill_1['und'][0]['rating']; 
+                                                    	       	  	
+                                                    	       	  }
+                                                    	       }
+
+                                                    	    }
+                                                    	  	
+                                                    	  }
+                                                    	  
+                                                    	}
+                                                    	
+                                                    	if($item_user_eval->field_sskill_1_rating && $item_user_eval->field_sskill_1_rating['und'] ) {
+                                                    	  $eval_ratings[] = $item_user_eval->field_sskill_1_rating['und'][0]['rating']; 
+                                                    	}
+                                                    	if($item_user_eval->field_sskill_2_rating && $item_user_eval->field_sskill_2_rating['und'] ) {
+                                                    	  $eval_ratings[] = $item_user_eval->field_sskill_2_rating['und'][0]['rating']; 
+                                                    	}
+                                                    	if($item_user_eval->field_sskill_3_rating && $item_user_eval->field_sskill_3_rating['und'] ) {
+                                                    	  $eval_ratings[] = $item_user_eval->field_sskill_3_rating['und'][0]['rating']; 
+                                                    	}
+                                                    	if($item_user_eval->field_sskill_4_rating && $item_user_eval->field_sskill_4_rating['und'] ) {
+                                                    	  $eval_ratings[] = $item_user_eval->field_sskill_4_rating['und'][0]['rating']; 
+                                                    	}
+                                                    	if($item_user_eval->field_sskill_5_rating && $item_user_eval->field_sskill_5_rating['und'] ) {
+                                                    	  $eval_ratings[] = $item_user_eval->field_sskill_5_rating['und'][0]['rating']; 
+                                                    	}
+                                                    	
+                                                    }
+                                                    //print_r($item_user_eval);
                                                     //get node evaluation by field_recruiter_id
                                                     $query = new EntityFieldQuery;
                                                     $query->entityCondition('entity_type', 'node')
@@ -72,15 +121,17 @@
                                                       ->fieldCondition('field_user_id', 'target_id', $item['uid'])
                                                       ->fieldCondition('field_recruiter_id', 'value', $user->uid);
                                                     
-                                                    $results = $query->execute();
+                                                    $results = $query->execute(); 
                                                     
                                                     $recruiter_id = ""; $evaluated_node_id = ''; 
                                                     $is_evaluated = false; 
-                                                    if (isset($results['node']) && count($results['node'])) {
+                                                    if (isset($results['node']) && count($results['node'])) { //last eval ?
                                                        $is_evaluated = true;
                                                        $list_evaluated_nodes =array_keys($results['node']); 
                                                        $evaluated_node_id = $list_evaluated_nodes[0]; 
                                                        
+                                                       //$evnode = node_load($evaluated_node_id); 
+                                                       //print_r($evnode); 
                                                     }
 
                                                     //echo $node_id;
@@ -93,16 +144,22 @@
                                                     $compare = strtolower($item['field_skills']);
                                                     $keyword = strtolower($search_value);
                                                     
-                                                   	//echo $compare;#contact-1	?>
+                                                   	//echo $compare;#contact-1
+                                                   	?>
                                                     
                                                     
-	                                                    	<tr style="">
+	                                                    	<tr>
 	                                                    
 	                                                        <td><div class="media"> <?php echo $url_pic; ?></div> </td>
-	                                                        <td><a   href="<?php echo url('user/'.$item['uid']); ?>" class="client-link"><?php print $item['name']; ?></a></td>
-	                                                        <td> <?php print $item['field_job_level']; ?> </td>
-	                                                        <td> <?php print $item['field_role_department']; ?> </td>
-	                                                        
+	                                                        <td><a href="<?php echo url('user/'.$item['uid']); ?>" class="client-link"><?php print $item['field_first_name']; //name 
+	                                                        ?></a></td>
+	                                                        <td class="job_title"> <?php print $item['field_job_title']; //job_level 
+	                                                        ?> </td>
+	                                                        <td class="function_expertise"> <?php print $item['field_expertise'];// role_department 
+	                                                        ?> </td>
+	                                                        <td><?php if($eval_ratings){ $meval_rating = max($eval_ratings); 
+	                                                        	echo $meval_rating/20;
+	                                                        } ?>&nbsp;</td>
 	                                                        <td class="client-status">
 	                                                            <span> <?php // print $item['ops']; ?>  
 	                                                                <?php
@@ -142,7 +199,7 @@
 	        															} 
 	        															else
 	        															{ //request-access/'.$uid.''  relationship/204/request/2?destination=user/204 
-	                                                                		?> <a href="<?php echo url('relationship/'.$uid.'/request/2', array('query'=>array('destination'=>'searchapi-candidate'))) ?>" type="button" class="btn btn-xs  btn-danger" style="width: 140px;"> Request Access </a> <?php 
+	                                                                		?> <a href="<?php echo url('relationship/'.$uid.'/request/2', array('query'=>array('destination'=>'searchapi-candidate'))) ?>" type="button" class="btn btn-xs btn-green" style="width: 140px;">Engage </a> <?php 
 	                                                                	}
 	        															
 	                                                                ?>
@@ -160,7 +217,7 @@
 	                                                                         $wishlist_link = flag_create_link('wishlist', $uid);
 	                                                                         
 	                                                                         if($wishlist_link  != '' ) { ?>
-	                                                                           <div data-toggle="button" type="button" class="btn btn-xs  btn-danger wishlist" style="width: 76px;"><i class="fa fa-heart-o"></i>
+	                                                                           <div data-toggle="button" type="button" class="btn btn-xs  btn-success wishlist" style="width: 76px;"><i class="fa fa-heart-o"></i>
 	                                                                               <?php echo $wishlist_link; ?>
 	                                                                            </div>
 	                                                                            <?php } 

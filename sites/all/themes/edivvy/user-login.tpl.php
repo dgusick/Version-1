@@ -19,13 +19,20 @@
                            <span class="fa fa-check"></span>Remember Me</label>
               </div>
                <div class="pull-right">
-                <a class="text-muted" href="<?php echo url('user/password'); ?>">Forgot your password?</a>
+                <a class="text-muted" href="<?php echo url('user/password'); ?>?destination=user/login">Forgot your password?</a>
                </div>
             </div> 
-             
+            <div class="clearfix">
+                     <div class="checkbox c-checkbox mt0">
+                        <label>
+                           <input type="checkbox" value="" required="" name="agreed" data-parsley-multiple="agreed" data-parsley-id="11" checked>
+                           <span class="fa fa-check"></span>Agree to terms and conditions
+                        </label>
+                     </div>
+            </div>
                 <button type="submit" id="edit-submit" name="op"  class="btn btn-block btn-primary mt-lg" >Login</button>
                 
-                <button type="button" onclick="window.location.href='<?php echo url('connect/oauthconnector_linkedin') ?>'" class="btn btn-success btn-block btn-facebook block full-width m-b mt-lg"><i class="fa fa-linkedin"></i>&nbsp;&nbsp;<span class="bold">Sign in using LinkedIn</span></button>
+                <button type="button" onclick="window.location.href='<?php echo url('connect/oauthconnector_linkedin') ?>'" class="btn btn-success btn-block btn-facebook block full-width m-b mt-lg"><i class="fa fa-linkedin"></i>&nbsp;&nbsp;<span class="bold">Sign in as a Recruiter using LinkedIn<!--Sign in using LinkedIn--></span></button>
         
                  <p class="pt-lg text-center">Need to Signup?</p>
                   <!-- <a class="btn btn-block btn-default" href="<?php echo url('user/register'); ?>">Do not have an account?</a> -->

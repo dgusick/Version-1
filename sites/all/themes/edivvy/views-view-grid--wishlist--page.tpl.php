@@ -59,10 +59,7 @@
                         
                         //$url_pic = $base_theme_url.'/img/default-avatar.png';
                     }
-                    if($user->uid!=$item['uid'])
-                    
-        
-                    {
+                    if($user->uid!=$item['uid'])  {
                 
                 $user_load = user_load($item['uid']);
                 $user_link = drupal_get_path_alias('user/' . $item['uid']);
@@ -73,7 +70,7 @@
                      <div class="panel-body">
                      
                      <div class="row row-table">
-                            <div class="col-xs-5 text-center"">
+                            <div class="col-xs-5 text-center">
                               <a href="<?php echo $user_link ?>">
                                         <?php echo $url_pic ?></a>
                                        <!-- <div class="m-t-xs font-bold">My Wishlist</div> -->
@@ -82,9 +79,9 @@
                             <div class="col-xs-7">
                                <div class="pull-right btn btn-danger"><em class="fa fa-times-circle fa-fw"></em><?php print $item['ops']; ?></div>
                                 <h3 class="mt0"><?php print $item['name']; ?></h3>
-                                <p class="mb-sm"><i class="fa fa-inbox"></i> <a href="mailto:john.smith@something.com"> <?php print $item['mail']; ?></a></p>
+                                <!-- <p class="mb-sm"><i class="fa fa-inbox"></i> <?php print $item['mail']; ?> <a href="mailto: john.smith@something.com"></a>  </p> -->
 
-                            </div>
+                            </div> 
                              
                         </div>
 
@@ -98,8 +95,8 @@
                 
             </div>
             <div class="row">
-                <div class="col-sm-12">
+               <!--  <div class="col-sm-12">
                     <button class="btn btn-primary btn-block m-t"><i class="fa fa-arrow-down"></i> Show More</button>
-                </div>
+                </div> -->
             </div>
         </div>

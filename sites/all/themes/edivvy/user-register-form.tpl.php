@@ -8,9 +8,10 @@
                 </div>
                 
                 <div class="form-group has-feedback">
-                  <?php unset($form['account']['mail']); ?>
+                  
                   <input type="email" id="edit-mail"  placeholder="Enter email" name="mail" value="<?php echo isset($form['account']['mail']['#default_value']) ? $form['account']['mail']['#default_value'] : '' ; ?>" size="60" maxlength="254" class="form-control form-text required">
                   <span class="fa fa-envelope form-control-feedback text-muted"></span>
+                  <?php unset($form['account']['mail']); //after for def value ?>
                 </div>
                 <div class="form-group has-feedback">
                   <?php unset($form['account']['pass']); ?>

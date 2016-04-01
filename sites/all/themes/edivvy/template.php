@@ -2,7 +2,8 @@
 // 
 function edivvy_preprocess_html(&$vars) {
     global $user; 
-    
+
+   
   $path = drupal_get_path_alias();
   $aliases = explode('/', $path);
   if($aliases[0] == 'user' && $aliases[1] != '' && $user->uid == 0 ) { 
@@ -14,12 +15,185 @@ function edivvy_preprocess_html(&$vars) {
   }
   
   if( ($path == '' || $path == 'home' || $path == '/') && $user->uid == 0  ) { 
+  	//lost message ?
+  	
   	drupal_goto('user/login');
   	
   }
   
 }
 
+
+function edivvy_username($variables) {
+    
+    if($variables['account']) { 
+        $acc = $variables['account']; 
+        
+        if($acc->field_first_name && $acc->field_last_name) { 
+            if($acc->field_first_name['und'][0]['value'] != "") { 
+                $variables['name'] = $acc->field_first_name['und'][0]['value'] . " " . $acc->field_last_name['und'][0]['value']; 
+            }
+        }
+    }
+    
+  if (isset($variables['link_path'])) {
+    // We have a link path, so we should generate a link using l().
+    // Additional classes may be added as array elements like
+    // $variables['link_options']['attributes']['class'][] = 'myclass';
+    //print_r($variables); 
+    
+    $output = l($variables['name'] . $variables['extra'], $variables['link_path'], $variables['link_options']);
+  }
+  else {
+    // Modules may have added important attributes so they must be included
+    // in the output. Additional classes may be added as array elements like
+    // $variables['attributes_array']['class'][] = 'myclass';
+    $output = '<span' . drupal_attributes($variables['attributes_array']) . '>' . $variables['name'] . $variables['extra'] . '</span>';
+  }
+  
+  return $output;
+}
+
+
+function edivvy_css_alter(&$css) { 
+    unset($css[drupal_get_path('module','system').'/system.theme.css']); 
+}
+
+function edivvy_table($variables) {
+  $header = $variables['header'];
+  $rows = $variables['rows'];
+  $attributes = $variables['attributes'];
+  $caption = $variables['caption'];
+  $colgroups = $variables['colgroups'];
+  $sticky = $variables['sticky'];
+  $empty = $variables['empty'];
+  
+  // Add sticky headers, if applicable.
+  if (count($header) && $sticky) {
+    drupal_add_js('misc/tableheader.js');
+    // Add 'sticky-enabled' class to the table to identify it for JS.
+    // This is needed to target tables constructed by this function.
+    $attributes['class'][] = 'sticky-enabled';
+  }
+  
+  $output = '<table' . drupal_attributes($attributes) . ">\n";
+  
+  $attributes['class'][] = 'table-striped table-bordered table-hoverviews-table';
+  
+  if (isset($caption)) {
+    $output .= '<caption>' . $caption . "</caption>\n";
+  }
+
+  // Format the table columns:
+  if (count($colgroups)) {
+    foreach ($colgroups as $number => $colgroup) {
+      $attributes = array();
+
+      // Check if we're dealing with a simple or complex column
+      if (isset($colgroup['data'])) {
+        foreach ($colgroup as $key => $value) {
+          if ($key == 'data') {
+            $cols = $value;
+          }
+          else {
+            $attributes[$key] = $value;
+          }
+        }
+      }
+      else {
+        $cols = $colgroup;
+      }
+
+      // Build colgroup
+      if (is_array($cols) && count($cols)) {
+        $output .= ' <colgroup' . drupal_attributes($attributes) . '>';
+        $i = 0;
+        foreach ($cols as $col) {
+          $output .= ' <col' . drupal_attributes($col) . ' />';
+        }
+        $output .= " </colgroup>\n";
+      }
+      else {
+        $output .= ' <colgroup' . drupal_attributes($attributes) . " />\n";
+      }
+    }
+  }
+
+  // Add the 'empty' row message if available.
+  if (!count($rows) && $empty) {
+    $header_count = 0;
+    foreach ($header as $header_cell) {
+      if (is_array($header_cell)) {
+        $header_count += isset($header_cell['colspan']) ? $header_cell['colspan'] : 1;
+      }
+      else {
+        $header_count++;
+      }
+    }
+    $rows[] = array(array('data' => $empty, 'colspan' => $header_count, 'class' => array('empty', 'message')));
+  }
+
+  // Format the table header:
+  if (count($header)) {
+    $ts = tablesort_init($header);
+    // HTML requires that the thead tag has tr tags in it followed by tbody
+    // tags. Using ternary operator to check and see if we have any rows.
+    $output .= (count($rows) ? ' <thead><tr>' : ' <tr>');
+    foreach ($header as $cell) {
+      $cell = tablesort_header($cell, $header, $ts);
+      $output .= _theme_table_cell($cell, TRUE);
+    }
+    // Using ternary operator to close the tags based on whether or not there are rows
+    $output .= (count($rows) ? " </tr></thead>\n" : "</tr>\n");
+  }
+  else {
+    $ts = array();
+  }
+
+  // Format the table rows:
+  if (count($rows)) {
+    $output .= "<tbody>\n";
+    $flip = array('even' => 'odd', 'odd' => 'even');
+    $class = 'even';
+    foreach ($rows as $number => $row) {
+      // Check if we're dealing with a simple or complex row
+      if (isset($row['data'])) {
+        $cells = $row['data'];
+        $no_striping = isset($row['no_striping']) ? $row['no_striping'] : FALSE;
+
+        // Set the attributes array and exclude 'data' and 'no_striping'.
+        $attributes = $row;
+        unset($attributes['data']);
+        unset($attributes['no_striping']);
+      }
+      else {
+        $cells = $row;
+        $attributes = array();
+        $no_striping = FALSE;
+      }
+      if (count($cells)) {
+        // Add odd/even class
+        if (!$no_striping) {
+          $class = $flip[$class];
+          $attributes['class'][] = $class;
+        }
+
+        // Build row
+        $output .= ' <tr' . drupal_attributes($attributes) . '>';
+        $i = 0;
+        foreach ($cells as $cell) {
+          $cell = tablesort_cell($cell, $header, $ts, $i++);
+          $output .= _theme_table_cell($cell);
+        }
+        $output .= " </tr>\n";
+      }
+    }
+    $output .= "</tbody>\n";
+  }
+
+  $output .= "</table>\n";
+  return $output;
+}
 
 
 function edivvy_button($variables) {
@@ -270,11 +444,11 @@ function edivvy_pager($variables) {
       );
     }
     
-    return '<h2 class="element-invisible">' . t('Pages') . '</h2>' . theme('item_list', array(
+    return '<h2 class="element-invisible">' . t('Pages') . '</h2><div class="text-center">' . theme('item_list', array(
       'items' => $items,
      // 'type'=>'ul',
-      'attributes' => array('class' => array('pagination ',  'pagination-sm')), //pager
-    )); 
+      'attributes' => array('class' => array('pagination ',  'pagination-lg center')), //pager
+    )).'</div>'; 
   }
 }
 

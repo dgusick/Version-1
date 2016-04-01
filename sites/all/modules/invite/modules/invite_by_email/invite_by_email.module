@@ -445,7 +445,7 @@ function invite_by_email_form_invite_form_alter(&$form, &$form_state, $form_id) 
     }
 
     $form['#validate'][] = 'invite_by_email_form_invite_form_validate';
-    $form['actions']['submit']['#value'] = t('Send Invitation');
+    $form['actions']['submit']['#value'] = t('Send Invitation'); /*--Send Invitation*/
   }
 }
 

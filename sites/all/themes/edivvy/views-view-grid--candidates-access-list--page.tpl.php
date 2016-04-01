@@ -228,7 +228,7 @@ if($field_approved_recruiter_uid!="")
        <div class="row">
               <?php
                                                 //get list connection
-                                                 if($relationships_profile_conn_list != "")
+                if($relationships_profile_conn_list != "")
                                 {
                                     foreach($relationships_profile_conn_list as $req_data) 
                                     {
@@ -279,11 +279,11 @@ if($field_approved_recruiter_uid!="")
 	                                                                <div class="contact-box panel widget" style="min-height: 195px;">
 	                                                                 <div class="panel-body">
 	                                                                  <div class="row row-table">
-	                                                                    <div class="col-xs-6 text-center">
+	                                                                    <div class="col-xs-5 text-center">
 	                                                                        <a href="<?php echo url("user/".$load_recruiter->uid) ?>"><?php echo $pic_recruiter ?></a>
 	                                                                                    <div class="m-t-xs font-bold"><?php if($is_rec)  { echo 'Candidate'; } else { echo 'Recruiter'; } ?><!-- , Veritas --></div>
 	                                                                     </div>
-	                                                                      <div class="col-xs-6">
+	                                                                      <div class="col-xs-7">
 	                                                                        <h3 class="mt0"><a href="<?php echo url("user/".$load_recruiter->uid) ?>"><?php echo $full_name_connection ?></a></h3>
 	                                                                        	                                                                               <!-- <p><i class="fa "></i> <?php echo $load_recruiter->field_first_name['und'][0]['value'].".".$load_recruiter->field_last_name['und'][0]['value'] ?></p> -->
 	                                                                                <?php if( $is_my_profile && $req_data->approved ) { //fa-linkedin-square  ?>

@@ -5,8 +5,15 @@ if($user->uid)
 else
  $user_load = $user; 
  
-  if(isset($user_load->roles[5])) {$is_rec = true; $is_rec_inactive = true;   } 
-  if(isset($user_load->roles[6])) {$is_can = true;    } 
+ $paid_rec = false;
+  if(isset($user_load->roles[5])) { 
+  	$is_rec = true; $is_rec_inactive = true;  
+    $paid_rec = true;
+  } 
+  if(isset($user_load->roles[6])) {$is_can = true;  
+  $paid_rec = true; 
+  	
+  } 
  
  if($is_rec && !empty($user_load->field_recruiter_status)){
     $field_recruiter_status =  $user_load->field_recruiter_status['und'][0]['value'];
@@ -95,6 +102,7 @@ else
   
   global $user;
   $users = user_load($user->uid);
+  $base_theme_url = drupal_get_path('theme',$GLOBALS['theme']);
   
   if($users->field_picture_url)
      {
@@ -106,7 +114,7 @@ else
             $field_user_picture = file_create_url($users->field_user_picture[LANGUAGE_NONE][0]['uri']);
             $pic = '<img class="img-thumbnail img-circle" src="'.$field_user_picture.'" />'; 
         }else{ 
-            $base_theme_url = drupal_get_path('theme',$GLOBALS['theme']);
+            
             $pic = '<img class="img-thumbnail img-circle" src="'.base_path().'/'.$base_theme_url.'/img/default-avatar.png" />';
         }
      }
@@ -128,7 +136,7 @@ else
          <nav role="navigation" class="navbar topnavbar">
             <!-- START navbar header-->
             <div class="navbar-header">
-               <a href="<?php echo $front_page; ?>" class="navbar-brand"> 
+               <a href="<?php if(isset($user->roles[5])  && !$is_rec_inactive ) {  echo url('searchapi-candidate'); } else { echo $front_page; } ?>" class="navbar-brand"> 
                   <div class="brand-logo">
                   
                       <img style="display:none;" src="<?php echo $logo; ?>" alt="App Logo" class="img-responsive">  
@@ -165,11 +173,30 @@ else
                      </a>
                   </li>
                   <!-- END User avatar toggle-->
-                  
+                   <?php if(isset($user->roles[5])  && !$is_rec_inactive ) { //rec. menu  ?>
+                    <li>
+	                    <a href="<?php echo url('invite/add/invite_by_email'); ?>"><span class="nav-label">Invite Candidate</span></a>
+	                </li>
+	                <li>
+	                    <a href="<?php echo url('invite/add/invite_recruiter'); ?>"><span class="nav-label">Invite Recruiter</span></a>
+	                </li>
+                     <?php } ?>
+                     
+                     
+                     <li>
+	                    <a href="<?php echo url('node/136'); ?>"><span class="nav-label">How Does This Work ?</span></a>
+	                </li>
+	               <li>
+	                    <a href="<?php echo url('node/137'); ?>"><span class="nav-label">Recruiters </span></a>
+	                </li>
+	                <li><a href="<?php echo url('node/138'); ?>"><span class="nav-label">Candidates</span> </a></li>
+                
                </ul>
                
                <!-- END Left navbar-->
-               <ul class="nav navbar-nav navbar-right" style="<?php if($user->uid) echo 'display:none;';  ?>">
+                  
+               
+               <ul class="nav navbar-nav navbar-right" style="<?php if($user->uid && $paid_rec) echo 'display:none;';  ?>">
                   <!-- Search icon-->
                   
                   <li>
@@ -185,32 +212,42 @@ else
                   
                </ul>
                <!-- START Right Navbar-->
+               
+              
+                
                <ul class="nav navbar-nav navbar-right" style="<?php if(!$user->uid) echo 'display:none;';  ?>">
-                  <!-- Search icon-->
+                 <!-- LinkedIn" icon-->
+                   
                   <li>
+                     <a href="https://www.linkedin.com/" target="_blank" data-linkedin-open="">
+                       <em class="fa fa-linkedin"></em>
+                     </a>
+                  </li>  
+                  <!-- Search icon-->
+            <!--      <li>
                      <a href="#" data-search-open="">
                         <em class="icon-magnifier"></em>
                      </a>
-                  </li>
+                  </li>  -->
                    <!-- Fullscreen (only desktops)-->
-                  <li class="visible-lg">
+            <!--      <li class="visible-lg">
                      <a href="#" data-toggle-fullscreen="">
                         <em class="fa fa-expand"></em>
                      </a>
                   </li>
                  <!-- START Alert menu-->
                   <li class="dropdown dropdown-list">
-                     <a href="#" data-toggle="dropdown">
-                        <em class="icon-bell"></em>
-                        <div class="label label-danger">11</div>
+                     <a href="mailto: ?Subject=Hello%20again" target="_top"> <!-- data-toggle="dropdown"-->
+                        <em class="icon-envelope"></em>  <!--icon-bell-->
+                      <!--  <div class="label label-danger">0</div>  -->
                      </a>
                      <!-- START Dropdown menu-->
-                     <ul class="dropdown-menu animated flipInX">
-                        <li>
+                <!--     <ul class="dropdown-menu animated flipInX">
+                        <li style="display:none;">
                            <!-- START list group-->
-                           <div class="list-group">
+                <!--           <div class="list-group">
                               <!-- list item-->
-                              <a href="#" class="list-group-item">
+                <!--              <a href="#" class="list-group-item">
                                  <div class="media-box">
                                     <div class="pull-left">
                                        <em class="fa fa-twitter fa-2x text-info"></em>
@@ -224,7 +261,7 @@ else
                                  </div>
                               </a>
                               <!-- list item-->
-                              <a href="#" class="list-group-item">
+                <!--              <a href="#" class="list-group-item">
                                  <div class="media-box">
                                     <div class="pull-left">
                                        <em class="fa fa-envelope fa-2x text-warning"></em>
@@ -238,7 +275,7 @@ else
                                  </div>
                               </a>
                               <!-- list item-->
-                              <a href="#" class="list-group-item">
+                 <!--             <a href="#" class="list-group-item">
                                  <div class="media-box">
                                     <div class="pull-left">
                                        <em class="fa fa-tasks fa-2x text-success"></em>
@@ -252,26 +289,42 @@ else
                                  </div>
                               </a>
                               <!-- last list item -->
-                              <a href="#" class="list-group-item">
+                <!--              <a href="#" class="list-group-item">
                                  <small>More notifications</small>
                                  <span class="label label-danger pull-right">14</span>
                               </a>
                            </div>
                            <!-- END list group-->
-                        </li>
+                <!--        </li>
                      </ul>
                      <!-- END Dropdown menu-->
                   </li>
                   <!-- END Alert menu-->
+                    <li>
+                     <a href="<?php echo url('messages'); ?>" title="inbox">
+                       <em class="fa fa-inbox"></em>
+                     </a>
+                  </li> 
                   <!-- START Offsidebar button-->
-                  <li>
+              <!--    <li>
                      <a href="#" data-toggle-state="offsidebar-open" data-no-persist="true">
                         <em class="icon-notebook"></em>
                      </a>
-                  </li>
+                  </li>  -->
                   <!-- END Offsidebar menu-->
                </ul>
                <!-- END Right Navbar-->
+               
+                 <ul class="nav navbar-nav navbar-right">
+                 <li>
+	                    <a href="<?php echo url('node/134'); ?>"><span class="nav-label">About</span></a>
+	                </li>
+	                <li>
+	                    <a href="<?php echo url('node/135'); ?>"><span class="nav-label">Help</span></a>
+	                </li>
+                  
+                </ul>
+                
             </div>
             <!-- END Nav wrapper-->
             
@@ -322,10 +375,7 @@ else
                            </div>
                            
                         </div>
-                        
-                          
-                              
-                             
+                         
                     </div>
                      
                   </li>
@@ -334,17 +384,17 @@ else
                <li class="nav-heading "><span data-localize="sidebar.heading.HEADER">Menu Navigation</span> </li>
                   
                 <li <?php if(arg(0) == "") echo 'active';?>>
-                    <a href="<?php echo url('user'); ?>"><em class="icon-home"></em> <span class="nav-label">Home</span></a> <!--<em class="fa fa-home"></em>-->
+                    <a href="<?php if(isset($user->roles[5])  && !$is_rec_inactive ) {  echo url('searchapi-candidate'); } else { echo url('user'); } ?>"><em class="icon-home"></em> <span class="nav-label">Home</span></a> <!--<em class="fa fa-home"></em>-->
                 </li>
                 
-                <li class="<?php if(arg(0) == "user") echo 'active';?>" ><a href="#profilesNav" data-toggle="collapse" ><em class="icon-user"></em>
+                <li class="<?php if( (arg(0) == "user"  || $_GET['q'] == 'messages' ) &&  arg(2) != "invites" ) echo 'active';?>" ><a href="#profilesNav" data-toggle="collapse" ><em class="icon-user"></em>
                 <span data-localize="sidebar.nav.PROFILE">Profile</span></a> <!--data-toggle="collapse" -->
                   
                   
-               <ul id="profilesNav" class="nav sidebar-subnav collapse">
+               <ul id="profilesNav" class="nav sidebar-subnav collapse <?php if( (arg(0) == "user" || $_GET['q'] == 'messages' ) &&  arg(2) != "invites" ) echo 'in';?>">
                    <li><a class="<?php echo ($_GET['q'] == 'user' ? 'active' : ''); ?>" href="<?php echo url('user'); ?>"><em class="fa fa-user"></em>My Profile</a></li>
                 <?php if(isset($user->roles[5]) && !$is_rec_inactive ): //rec. menu <?php echo url('user');  ?>
-                <li class="<?php echo ($_GET['q'] == 'user/'.$user->uid.'/wishlist' ? 'active' : ''); ?>"><a href="<?php echo url('user/'.$user->uid.'/wishlist'); ?>" ><em class="icon-heart"></em>My Wishlist</a></li>
+                <li style="" class="<?php echo ($_GET['q'] == 'user/'.$user->uid.'/wishlist' ? 'active' : ''); ?>"><a href="<?php echo url('user/'.$user->uid.'/wishlist'); ?>" ><em class="icon-heart"></em>My Saved List</a></li>
                 <li class="<?php echo ($_GET['q'] == 'user/'.$user->uid.'/order' ? 'active' : ''); ?>"><a href="<?php echo url('user/'.$user->uid.'/orders'); ?>" ><em class="icon-basket"></em>My Orders</a></li>
                 
                 <li class="<?php echo ($_GET['q'] == 'user/'.$user->uid.'/my_following' ? 'active' : ''); ?>"><a href="<?php echo url('user/'.$user->uid.'/my_following'); ?>"><em class="icon-user-following"></em>I'm Following</a></li>
@@ -378,15 +428,17 @@ else
                     <a href="<?php echo url('user/'.$user->uid.'/saved-searches'); ?>"><i class="fa fa-search"></i> <span class="nav-label">My Saved Search</span></a>
                 </li> -->
                 
-                <li class="<?php if(arg(0) == "invite") echo 'active';?>">
+                <li class="<?php if(arg(0) == "invite" || arg(2) == "invites" ) echo 'active';?>">
                   <a href="#profilesInvite" data-toggle="collapse" ><em class="icon-people"></em>
-                	<span >Invite Candidate</span></a>
+                	<span >Invite </span></a>
                 
-                     
-	                 <ul id="profilesInvite" class="nav sidebar-subnav collapse">
+	                 <ul id="profilesInvite" class="nav sidebar-subnav collapse <?php if(arg(0) == "invite" || arg(2) == "invites" ) echo 'in';?>">
 	                 
 	                 <li>
 	                    <a href="<?php echo url('invite/add/invite_by_email'); ?>"><em class="fa fa-user-plus"></em> <span class="nav-label">Invite Candidate</span></a>
+	                </li>
+	                <li>
+	                    <a href="<?php echo url('invite/add/invite_recruiter'); ?>"><em class="fa fa-user-plus"></em> <span class="nav-label">Invite Recruiter</span></a>
 	                </li>
 	                <li>
 	                    <a href="<?php echo url('user/'.$user->uid.'/invites'); ?>"><em class="icon-share"></em> <span class="nav-label">Invited List</span></a> <!--<em class="fa fa-search"></em>-->
@@ -468,7 +520,7 @@ else
                         <div class="table-grid mb">
                            <div class="col mb">
                               <div class="setting-color">
-                                 <label data-load-css="css/theme-a.css">
+                                 <label data-load-css="<?php echo base_path().'/'.$base_theme_url; ?>/css/theme-a.css">
                                     <input type="radio" name="setting-theme" checked="checked">
                                     <span class="icon-check"></span>
                                     <span class="split">
@@ -481,7 +533,7 @@ else
                            </div>
                            <div class="col mb">
                               <div class="setting-color">
-                                 <label data-load-css="css/theme-b.css">
+                                 <label data-load-css="<?php echo base_path().'/'.$base_theme_url; ?>/css/theme-b.css">
                                     <input type="radio" name="setting-theme">
                                     <span class="icon-check"></span>
                                     <span class="split">
@@ -494,7 +546,7 @@ else
                            </div>
                            <div class="col mb">
                               <div class="setting-color">
-                                 <label data-load-css="css/theme-c.css">
+                                 <label data-load-css="<?php echo base_path().'/'.$base_theme_url; ?>/css/theme-c.css">
                                     <input type="radio" name="setting-theme">
                                     <span class="icon-check"></span>
                                     <span class="split">
@@ -507,7 +559,7 @@ else
                            </div>
                            <div class="col mb">
                               <div class="setting-color">
-                                 <label data-load-css="css/theme-d.css">
+                                 <label data-load-css="<?php echo base_path().'/'.$base_theme_url; ?>/css/theme-d.css">
                                     <input type="radio" name="setting-theme">
                                     <span class="icon-check"></span>
                                     <span class="split">
@@ -522,7 +574,7 @@ else
                         <div class="table-grid mb">
                            <div class="col mb">
                               <div class="setting-color">
-                                 <label data-load-css="css/theme-e.css">
+                                 <label data-load-css="<?php echo base_path().'/'.$base_theme_url; ?>/css/theme-e.css">
                                     <input type="radio" name="setting-theme">
                                     <span class="icon-check"></span>
                                     <span class="split">
@@ -535,7 +587,7 @@ else
                            </div>
                            <div class="col mb">
                               <div class="setting-color">
-                                 <label data-load-css="css/theme-f.css">
+                                 <label data-load-css="<?php echo base_path().'/'.$base_theme_url; ?>/css/theme-f.css">
                                     <input type="radio" name="setting-theme">
                                     <span class="icon-check"></span>
                                     <span class="split">
@@ -548,7 +600,7 @@ else
                            </div>
                            <div class="col mb">
                               <div class="setting-color">
-                                 <label data-load-css="css/theme-g.css">
+                                 <label data-load-css="<?php echo base_path().'/'.$base_theme_url; ?>/css/theme-g.css">
                                     <input type="radio" name="setting-theme">
                                     <span class="icon-check"></span>
                                     <span class="split">
@@ -561,7 +613,7 @@ else
                            </div>
                            <div class="col mb">
                               <div class="setting-color">
-                                 <label data-load-css="css/theme-h.css">
+                                 <label data-load-css="<?php echo base_path().'/'.$base_theme_url; ?>/css/theme-h.css">
                                     <input type="radio" name="setting-theme">
                                     <span class="icon-check"></span>
                                     <span class="split">
@@ -646,7 +698,7 @@ else
                   </div>
                   <div id="app-chat" role="tabpanel" class="tab-pane fade">
                      <h3 class="text-center text-thin">Connections</h3>
-                     <ul class="nav">
+                     <ul class="nav" style="display:none;">
                         <!-- START list title-->
                         <li class="p">
                            <small class="text-muted">ONLINE</small>
@@ -785,7 +837,7 @@ else
                         </li>
                      </ul>
                      <!-- Extra items-->
-                     <div class="p">
+                     <div class="p" style="display:none;">
                         <p>
                            <small class="text-muted">Tasks completion</small>
                         </p>
@@ -795,7 +847,8 @@ else
                            </div>
                         </div>
                      </div>
-                     <div class="p">
+                     
+                     <div class="p" style="display:none;">
                         <p>
                            <small class="text-muted">Upload quota</small>
                         </p>
@@ -887,6 +940,9 @@ else
 		        <?php if ($page['highlighted']): ?><div id="highlighted"><?php print render($page['highlighted']); ?></div><?php endif; ?>
 		        <a id="main-content"></a>
 		         <?php if($is_rec && $is_rec_inactive )  {  ?><p class="pending_ractivation">Your profile is pending Activation. Once approved you will be able to use all features.</p><?php } ?>
+		         <?php if( arg(0) != 'paid-membership' && !$paid_rec  && arg(0) != 'cart' )  {  ?><p class="pending_ractivation">Your profile is not active YET. <?php echo l("Become a paid member", 'paid-membership'); ?> to activate your account.</p><?php } ?>
+		         
+		         
 		        <?php if ($tabs): ?><div class="tabs"><?php print render($tabs); ?></div><?php endif; ?>
 		        <?php print render($page['help']);// print_r($action_links); ?>
 		        
@@ -916,7 +972,8 @@ else
 		    
 		    <?php if(arg(0) != 'user' || (arg(0) == 'user' && arg(1) != '' && arg(2) == 'edit' ) ) {  ?>
 		  </div></div> <!-- /.row -->
-		  </div></div>
+		  </div>
+		  </div>
 		  <?php } ?>
 		  
 		   
@@ -925,7 +982,6 @@ else
 		    
 		    <?php if ($page['sidebar_first']): ?>
 		   <div class="col-lg-3">
-		    <h3 class="m0 pb-lg">Filters</h3>
 		    
             <div id="sidebar-first" class="column "><div class="section">
               <?php print render($page['sidebar_first']); ?>

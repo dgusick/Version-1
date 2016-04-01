@@ -1,3 +1,16 @@
+body.page-searchapi-candidate .chosen-container-multi .chosen-choices {
+    height: 35px !important;
+}
+body.page-searchapi-candidate .chosen-container-multi .chosen-choices li.search-field input[type=text] {
+    width: 100% !important;
+}
+.page-searchapi-candidate .views-exposed-form .views-exposed-widget {
+    float: none;
+}
+@media (min-width: 768px) {
+.page-searchapi-candidate .col-sm-6{
+	 float: left !important;
+} }
 .thumb10 {
     width: 36px;
     height: 36px;
@@ -7,12 +20,14 @@
 .contact-box {
     border: 1px solid #e7eaec;
 }
+/*
 a {
     color: #515253;
 }
 a:hover {
     text-decoration: none;
 }
+*/
 .row-table .col-xs-6 {
     padding-top: 30px;
 }
@@ -58,7 +73,7 @@ a:hover {
 .uc-store-address-field .form-item label {
 	text-align: left;
 }
-#uc-cart-view-form tr.even, tr.odd {
+#uc-cart-view-form tr.even, #uc-cart-view-form tr.odd {
     background-color: #fff;
 }
 #uc-cart-view-form td.desc {
@@ -70,4 +85,97 @@ a:hover {
 #uc-cart-view-form {
     padding: 20px;
     background: white;
+}
+.item-list ul.pagination { 
+}
+
+
+@media (min-width: 768px) {
+	.page-user-edit .field-name-field-first-name,
+	.page-user-edit .field-name-field-last-name,
+	.page-user-edit #edit-account .form-item-current-pass,
+	.page-user-edit #edit-account .form-item-mail,
+	.page-user-edit .field-name-field-user-picture,
+	.page-user-edit .field-name-field-date-of-last-interview, 
+	.page-user-edit .field-name-field-experience,
+	.page-user-edit .field-name-field-city,
+	.page-user-edit .field-name-field-zip-code,
+	.page-user-edit .field-name-field-job-title,
+	.page-user-edit .field-name-field-interests,
+	.page-user-edit .field-name-field-expertise,
+	.page-user-edit .field-name-field-degree-type,
+	.page-user-edit .field-name-field-college-university,
+	.page-user-edit .field-name-field-company-size,
+	.page-user-edit .field-name-field-company-present,
+	.page-user-edit .field-name-field-company-past,
+	.page-user-edit .field-name-field-industry{
+		width: 42%;
+		float: left;
+	    margin-right: 77px; 
+  	}
+
+	.page-user-edit #edit-privatemsg {
+	    clear: left;
+	    	width: 42%;
+	}
+  	 .dl-horizontal dt {
+  	     width: auto;
+  	 }
+  	 .dl-horizontal dd {
+  	     margin-left: 110px;
+  	 }
+}
+
+#edit-attributes-1--2{
+        width: 20%;
+}
+
+.page-relationship #user-relationships-ui-request #edit-submit {
+	margin-right: 10px;
+}
+#edit-submit-searchapi-candidate {
+    background: #5d9cec;
+    color: #fff;
+    border: 0;
+}
+.page-node-add-evaluation .node-evaluation-form .group-right .form-type-select {
+    margin-top: 35px;
+}
+.page-relationships-received .user_relationships_popup_link {
+    color: #ffffff;
+    background-color: #24b145;
+    padding: 5px 20px;
+    margin-right: 7px;
+    text-decoration: none;
+}
+.page-user-relationships-requested-disapprove #edit-actions{
+    margin-top: 10px;
+}
+.page-user-relationships-requested-disapprove .username {
+    margin-right: 5px;
+    margin-left: 5px;
+}
+.page-user-relationships-requested-disapprove #edit-actions #edit-submit{
+     color: #ffffff;
+    background-color: #24b145;
+    margin-right: 18px;
+    padding: 6px 28px;
+}
+.node-type-evaluation #page-title span {
+        margin-right: 10px;
+}
+.page-node-add-evaluation .node-evaluation-form table#field-skills-rating-values thead tr th:last-child,
+.page-node-add-evaluation .node-evaluation-form table#field-skills-rating-values tbody tr td:last-child{
+    display:none;
+}
+.page-node-add-evaluation .node-evaluation-form .field-name-field-notes-feedback,
+.page-node-add-evaluation .node-evaluation-form .required-fields{
+        margin-bottom: 10px;
+}
+.page-node-add-evaluation .node-evaluation-form .field-type-fivestar label {
+	float: left;
+	width: 15%;
+}
+.progress {
+	height: 10px;
 }

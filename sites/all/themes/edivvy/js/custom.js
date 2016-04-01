@@ -1,5 +1,6 @@
 jQuery(document).ready(function () {
     var recruiter_per_page = 8;
+    jQuery('#block-views-saved-search-block-1').hide();
     
     $(window).load(function() {
         var count_visible_recruiters = $('.pd-top-content .row .col-lg-3').length;
@@ -68,7 +69,7 @@ jQuery(document).ready(function () {
     
     $('<a class="btn btn-link  " data-toggle="button" type="button" id="adv-search-btn"><i class="fa fa-plus"></i>&nbsp;Advance Search</a>').insertAfter("#edit-submit-candidate-search");
     
-     $('<a class="btn btn-link  " data-toggle="button" type="button" id="adv-search-btn"><i class="fa fa-plus"></i>&nbsp;Advance Search</a>').insertAfter("#edit-submit-searchapi-candidate");
+     $('<a class="btn btn-link  " data-toggle="button" type="button" id="adv-search-btn"><i class="fa fa-plus"></i>&nbsp;Advanced Search</a>').insertAfter("#edit-submit-searchapi-candidate");
     
     $('#edit-submit-candidate-search-top').addClass('btn  btn-primary');
     $('#edit-submit-candidate-search-top').attr("value",'Search');
@@ -189,10 +190,10 @@ jQuery(document).ready(function () {
     $('.views-widget-sort-order').addClass("hide");
     $('.views-widget-filter-profile_main').addClass("hide"); 
     $('.views-widget-filter-profile_main_field_skills_rating').addClass("hide"); 
-    $('.views-widget-filter-field_role_department').addClass("hide"); 
-    $('.views-widget-filter-field_certification').addClass("hide");
-    $('.views-widget-filter-field_specialization').addClass("hide");
-    $('.views-widget-filter-field_job_level').addClass("hide");
+//    $('.views-widget-filter-field_role_department').addClass("hide"); 
+ //   $('.views-widget-filter-field_certification').addClass("hide");
+//    $('.views-widget-filter-field_specialization').addClass("hide");
+ //   $('.views-widget-filter-field_job_level').addClass("hide");
     
     
     $('#adv-search-btn').click(function(){
@@ -322,8 +323,7 @@ jQuery(document).ready(function () {
     $(".page-candidate-search-top #page-title").after('<span class="text-muted">Choose a Title, A Skill, and Location</span>');
     
     $(".page-searchapi-candidate #page-title").after('<span class="text-muted">Choose a Title, A Skill, and Location</span>');
-
-    
+ 
     //Fix layout candidate register page
     $(".page-candidate-register").addClass("gray-bg");
     $(".page-candidate-login").addClass("gray-bg");
@@ -341,5 +341,20 @@ jQuery(document).ready(function () {
      $(".page-user-invites .table tbody tr").removeClass("even");
      $(".page-user-invites .table tbody tr").removeClass("odd");
     
+    jQuery('#edit-field-skills-rating-und-0-field-skills-und').attr("placeholder","e.g. Java"); 
+    jQuery('#edit-field-skills-rating-und-1-field-skills-und').attr("placeholder","e.g. Java");
+    jQuery('#edit-field-skills-rating-und-2-field-skills-und').attr("placeholder","e.g. Java");
+    jQuery('#edit-field-skills-rating-und-3-field-skills-und').attr("placeholder","e.g. Java");
+    jQuery('#edit-field-skills-rating-und-4-field-skills-und').attr("placeholder","e.g. Java");
+	
+	$('.page-relationships-received .sticky-enabled').find('tr th').first().remove();
+	$('.page-relationships-received .sticky-enabled').find('tr td').first().remove();
+	$('.page-relationships-received .sticky-enabled').find('thead tr').first().children("th:nth-child(2)").text('Relationship Requested');
+	$('.page-relationships-received .sticky-enabled').find('thead tr').first().children("th:last-child").text('Decline request');
+
+    $('.node-type-evaluation #page-title').prepend("<span>Feedback Created for Candidate</span>");
+
+     $(".page-messages .form-item-operation select").removeClass("form-control");
+
 });
 

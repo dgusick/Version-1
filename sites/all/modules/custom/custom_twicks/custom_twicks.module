@@ -17,7 +17,68 @@ function custom_twicks_menu() { //views - cash-inflow-chart
     'type' => MENU_CALLBACK,
   );
   */
+  
   return $items; 
+}
+
+/**
+ * Implements hook_js_alter().
+ */
+function custom_twicks_js_alter(&$javascript) { 
+    if(arg(0) == 'node' && arg(1) == 'add' && arg(2) == 'evaluation' ) {//&& arg(3) != ''
+        unset($javascript['misc/tabledrag.js']);
+    }
+}
+
+function custom_twicks_init() { 
+  global $user; 
+  
+   if(arg(0) == 'user' && arg(1) == 'logout' && $user->uid == 0 )  {
+   	   drupal_goto('user/login'); 
+  	   exit;
+    } 
+    
+    
+  if(arg(0) == 'invite' && arg(1) == 'add' && arg(2) == 'invite_by_email' ){ 
+    drupal_set_title("Recommend a Candidate Profile"); 
+  }
+  
+  if(arg(0) == 'node' && arg(1) == 'add' && arg(2) == 'evaluation' && arg(3) != '') {  
+  	    
+    	$query = new EntityFieldQuery; 
+	    $query->entityCondition('entity_type', 'node')
+	      ->entityCondition('bundle', 'evaluation')
+	      ->fieldCondition('field_user_id', 'target_id', arg(3) )
+	      ->fieldCondition('field_recruiter_id', 'value', $user->uid);
+	    
+	    $results = $query->execute();
+	    
+	    $recruiter_id = ""; $evaluated_node_id = ''; 
+	    $is_evaluated = false; 
+	    if (isset($results['node']) && count($results['node'])) {
+	       $is_evaluated = true;
+	       $list_evaluated_nodes =array_keys($results['node']); 
+	       $evaluated_node_id = $list_evaluated_nodes[0]; 
+	       
+	       drupal_goto('node/'.$evaluated_node_id.'/edit');
+	    }
+  	
+  }
+  
+  //check if recruiter invited and trying to register 
+  if(arg(0) == 'candidate' && arg(1) == 'register') { 
+      if ( ($invite = invite_load_from_session()) && !empty($invite->type_details()->invite_sending_controller['invite_by_email'])) {
+        //$invite_wrapper = entity_metadata_wrapper('invite', $invite);
+        //print_r($invite);
+        if($invite->type == 'invite_recruiter') { 
+            drupal_goto('user/register'); 
+        }
+      }  
+  } 
+  
+  //$relationships_profile_conn_list = user_relationships_load(array('requester_id' => $user->uid )); 
+  //print_r($relationships_profile_conn_list);
+  
 }
 
 
@@ -30,10 +91,14 @@ function custom_twicks_node_insert($node) {
 function custom_twicks_node_update($node) {
     update_user_latest_eval($node); 
 }
+
 function update_user_latest_eval($node) { 
+	
   // save evaluation latest to user profile2 
-  if($node->type=='evaluation')  {
-    $canid = $node->field_user_id['und'][0]['target_id']; 
+  if($node->type=='evaluation')  { 
+  	
+    $canid = $node->field_user_id['und'][0]['target_id'];  
+    
     // load this candidates profile2 - type - evaluation 
     $c_user = user_load($canid); 
     
@@ -41,7 +106,8 @@ function update_user_latest_eval($node) {
 	
 	//loop through nodes data __ 
 	//print_r($node); exit;
-    if($node->field_skills_rating['und']) { 
+    if($node->field_skills_rating['und']) {
+    	
     	$profile_evaluation = profile2_load_by_user($c_user, 'evaluation');  
     	
 	    if($profile_evaluation) { //create if not exist 
@@ -95,7 +161,15 @@ function update_user_latest_eval($node) {
     		}
 		      
     		
-    	}//end for 
+    	} //end for 
+    	
+    	//update soft skills 
+    	$profile_evaluation->field_sskill_1_rating['und'][0] = $node->field_sskill_1_rating['und'][0]; 
+    	$profile_evaluation->field_sskill_2_rating['und'][0] = $node->field_sskill_2_rating['und'][0]; 
+    	$profile_evaluation->field_sskill_3_rating['und'][0] = $node->field_sskill_3_rating['und'][0]; 
+    	$profile_evaluation->field_sskill_4_rating['und'][0] = $node->field_sskill_4_rating['und'][0]; 
+    	$profile_evaluation->field_sskill_5_rating['und'][0] = $node->field_sskill_5_rating['und'][0]; 
+    	
     	
     	//check for other  remove extra 
         $has_total =	count($profile_evaluation->field_skills_rating['und']); 
@@ -106,6 +180,7 @@ function update_user_latest_eval($node) {
     	 	//0-.. todo 
     	 	
     	 }
+    	 
     	 profile2_save($profile_evaluation);
     	 
     	// print_r($profile_evaluation);exit;
@@ -118,6 +193,44 @@ function update_user_latest_eval($node) {
 
  function custom_twicks_form_alter(&$form, &$form_state, $form_id) {
     	global $user;
+    	
+    	if ($form_id == "user_profile_form" ) {
+    	    //print_r($form); 
+    	    //print_r(array_keys($form['field_city']['und'][0])); 
+    	   // $form['field_city']['und'][0]['#required'] = true;
+     	   //$form['field_city']['und'][0]['#attributes']['required'] = '';
+     	   
+     	   $form['field_city']['und'][0]['value']['#required'] = TRUE; 
+     	   
+     	   $form['field_last_name']['und'][0]['value']['#required'] = TRUE; 
+     	   $form['field_zip_code']['und'][0]['value']['#required'] = TRUE; 
+     	   $form['field_college_university']['und'][0]['value']['#required'] = TRUE; 
+     	   //print_r($form['field_experience']['und']);
+     	   $form['field_experience']['und']['#required'] = TRUE; 
+     	   $form['field_job_title']['und']['#required'] = TRUE; 
+     	   $form['field_expertise']['und']['#required'] = TRUE; //function 
+     	   $form['field_degree_type']['und']['#required'] = TRUE; 
+     	   $form['field_company_size']['und']['#required'] = TRUE; 
+     	   $form['field_company_present']['und']['#required'] = TRUE; 
+     	   //$form['field_company_past']['und'][0]['value']['#required'] = TRUE; 
+     	   $form['field_industry']['und']['#required'] = TRUE; 
+     	   
+     	   //field_experience[und] 
+     	   //field_last_name[und][0][value]
+     	   //field_zip_code[und][0][value]
+     	   // field_job_title[und]
+     	   //field_interests[und][0][value] xx
+     	   //field_expertise[und]
+     	   //field_degree_type[und]
+     	   //field_college_university[und][0][value]
+     	   //field_company_size[und]
+     	   //field_company_present[und]
+     	   //field_company_past[und]
+     	   //field_industry[und]
+     	   
+     	   
+     	   
+    	}
     	
     	if ($form_id == "views_exposed_form" && $form['#id'] == "views-exposed-form-searchapi-candidate-page") {
     	   // print_r($form);
@@ -155,15 +268,17 @@ function update_user_latest_eval($node) {
               drupal_goto('searchapi-candidate');
           }
  
-           $user_can = user_load($idgetcan);
+           $user_can = user_load($idgetcan); 
+           
 				$username_candidate = $user_can->name;
 			    $full_name_candidate = $username_candidate; 
+			    
 				  if (!empty($user_can->field_first_name) ) {//&& !empty($users->field_last_name)
 				    $full_name_candidate = $user_can->field_first_name['und'][0]['value'] . ' ' . $user_can->field_last_name['und'][0]['value'];
 				  }
 				
 				if(arg(1) == 'add') 
-				  $form['title']['#default_value'] = ''.$user->name.'-'.$username_candidate;
+				  $form['title']['#default_value'] = $username_candidate; //''.$user->name.'-'.
 				
     	    $form['title']['#type'] = "hidden";
     	    if($user->uid != 1) { 
@@ -186,6 +301,28 @@ function update_user_latest_eval($node) {
 			
 			
     	}
+    	
+    	if($form_id == "invite_form"){
+    		if(arg(2) == 'invite_by_email') { 
+    			//print_r($form); 
+    			$form['actions']['submit']['#value'] = 'Recommend';
+    			drupal_set_title("Recommend a Candidate Profile"); 
+    		}
+    		else if(arg(2) == 'invite_recruiter') { 
+    			//print_r($form['actions']); 
+    			$form['actions']['submit']['#value'] = 'Refer your colleague';
+    			drupal_set_title("Refer a recruiter"); 
+    		}
+    	}
+    	
+    	if($form_id == "user_relationships_ui_request"){
+    			if(arg(0) == 'relationship' && arg(2) == 'request') { 
+    			//print_r($form); 
+    		
+    			drupal_set_title("Engage Candidate"); 
+    		}
+    	}
+    	
  }
  
  function custom_twicks_node_presave($node) {
@@ -195,7 +332,7 @@ function update_user_latest_eval($node) {
         
         //print_r($node); exit; 
         $type = is_string($node) ? $node : $node->type;
-        if ($type == 'evaluation' && arg(2) != 'edit')
+        if ($idgetcan && $type == 'evaluation' && arg(2) != 'edit') //add case only__
         {  
             $relationships = user_relationships_load(array('requester_id' => $user->uid, 'requestee_id' => $idgetcan, 'approved' => 1 )); 
   			//print_r($relationships); 
@@ -251,7 +388,7 @@ function _cz_connector_create_account($connector_name, $cid = NULL, $consumer = 
     return FALSE;
   }
   $authname = $connector_name . '__' . $cid;
-
+  
   if (variable_get('user_register', 1)) {
     $userinfo = array(
       'name' => $authname,
@@ -263,24 +400,25 @@ function _cz_connector_create_account($connector_name, $cid = NULL, $consumer = 
 			    DRUPAL_AUTHENTICATED_RID => 'authenticated user',
     			//5 => 'custom role',
 			  ),
-    );
+    ); 
+    
     //reset this role if invited __ 
-    //$userinfo['roles'][5]
-    if( isset($_SESSION['invite_code']) && $_SESSION['invite_code'] ) { 
+    //$userinfo['roles'][5] - recruiter role__ 
+    if( isset($_SESSION['invite_code']) && $_SESSION['invite_code'] ) { //what type of invitation?? 
         //this is candidate role -- 
         $userinfo['roles'][6] = 'candidate'; 
     } else {
-        $userinfo['roles'][5] = 'recruiter'; 
+        $userinfo['roles'][8] = 'recruiter free';   //new recruiter account need payment.. 
     }
     
-    // Try to assign values from connection.
+    // Try to assign values from connection. 
     $info = array();
     if (!empty($connector['information callback']) && is_callable($connector['information callback'])) {
       $info = $connector['information callback']($connector, $cid, array(), $access_token);
     }
     
-     watchdog('custom_twicks', "info Data register -".print_r($info, true) .print_r($_SESSION, true) , array(), WATCHDOG_NOTICE);  
-     
+    watchdog('custom_twicks', "info Data register -".print_r($info, true) .print_r($_SESSION, true) , array(), WATCHDOG_NOTICE);  
+    
     $allowed_fields = array('name', 'mail');  
     //'field_linkedin_user_id', 'field_first_name', 'field_interests', 'field_last_name', 'field_picture_url', 'field_summary'
     
@@ -308,6 +446,7 @@ function _cz_connector_create_account($connector_name, $cid = NULL, $consumer = 
     
     $new_account = user_save('', $userinfo); 
     // Terminate if an error occured during user_save().
+    
     if (!$new_account) {
       drupal_set_message(t("Error saving user account."), 'error');
     } else {
@@ -322,6 +461,7 @@ function _cz_connector_create_account($connector_name, $cid = NULL, $consumer = 
     }
   }
 }
+
 
 
 function cz_user_update_picture($file, $account) { 

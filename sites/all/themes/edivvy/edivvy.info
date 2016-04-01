@@ -42,6 +42,8 @@ scripts[] = js/jquery.slimscroll.min.js
 scripts[] = js/screenfull.js
 scripts[] = js/jquery.localize.js
 
+scripts[] = js/jquery.validate.min.js
+
 scripts[] = chosen_v1.2.0/chosen.jquery.min.js
 scripts[] = js/select2.js
 scripts[] = js/custom.js
@@ -56,4 +58,5 @@ scripts[] = js/app.js
 #scripts[] = js/plugins/sweetalert/sweetalert.min.js
 #scripts[] = js/plugins/toastr/toastr.min.js
 #scripts[] = js/plugins/iCheck/icheck.min.js
+#scripts[] = jquery.steps/bild/jquery.steps.js
 

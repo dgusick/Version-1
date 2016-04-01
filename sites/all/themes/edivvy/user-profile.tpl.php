@@ -197,17 +197,24 @@ if($field_approved_recruiter_uid!="")
    	if($field_recruiter_status=="Inactive" and ($user_load->uid != $user_get->uid) and ($contact_display == false) )
    	{ //$my_inviter != $user_load->uid 
    		$full_name = "Hidden";
-   		$field_gender = "Hidden";
-   		$field_birthday = "Hidden";
-   		$field_marital_status = "Hidden";
-   		$field_phone = "Hidden";
-   		$field_corporate_email = "Hidden";
-   		$field_private_email = "Hidden";
-   		$field_linkedin_user_id = "Hidden";
-   		$field_twitter_account = "Hidden";
-   		$field_skype = "Hidden";
    		
-   	
+   		if($field_gender)  $field_gender = "Hidden";
+   		
+   		if($field_birthday)  $field_birthday = "Hidden";
+   		
+   		if($field_marital_status)  $field_marital_status = "Hidden";
+   		
+   		if($field_phone)  $field_phone = "Hidden";
+   		
+   		if($field_corporate_email) $field_corporate_email = "Hidden";
+   		
+   		if($field_private_email)  $field_private_email = "Hidden";
+   		if($field_linkedin_user_id) $field_linkedin_user_id = "Hidden";
+   		
+   		if($field_twitter_account) $field_twitter_account = "Hidden";
+   		
+   		if($field_skype) $field_skype = "Hidden"; 
+   	    
    	}
   }
   
@@ -236,7 +243,7 @@ if($field_approved_recruiter_uid!="")
                     <?php if($is_rec) {  ?>
                     <p class="font-bold"><?php echo $total_connection ?> Total connections</p>
                      <?php } else{  ?>
-                     <p class="font-bold"><?php if(isset($user_get->field_headline['und']) && $user_get->field_headline['und']) echo $user_get->field_headline['und'][0]['value']; ?></p>
+                     <p class="font-bold"><?php if(isset($user_get->field_job_title['und']) && $user_get->field_job_title['und']) echo $user_get->field_job_title['und'][0]['taxonomy_term']->name; ?></p>
                      <?php } ?>
                 </div>
                     <div class="ibox-content ">
@@ -279,7 +286,20 @@ if($field_approved_recruiter_uid!="")
                             <?php
 	                        	}
                             ?>
-                            <p><i class="fa fa-inbox"></i> <?php echo $contact_display ? $user_get->mail : 'Hidden'; ?></p>
+                            
+                      <!--<p><i class="fa fa-inbox"></i> <?php echo $contact_display ? $user_get->mail : 'Hidden'; ?></p> -->
+                          <?php
+                           if($contact_display != ""  )
+	                            {
+	                        ?>
+                            <p><i class="fa fa-inbox"></i>&nbsp;&nbsp;<a class="text-info" href="mailto: <?php echo $contact_display ?> ">Send a message </a> </p>
+                            <?php
+	                            } else {
+	                             echo $contact_display ? $user_get->mail : 'Hidden';
+	                            }
+	                           
+                            ?>
+                            
                             <?php
                         	if($field_skype!="")
 	                        	{
@@ -328,12 +348,17 @@ if($field_approved_recruiter_uid!="")
                                        } else {
                                        	$recruiter_uid = $req_data->requester_id;  
                                        	}
-                                       
-                                        
-                                         
+                                            
+                                            
+                                            
 	                                        //load recruiter user
 	                                        $load_recruiter = user_load($recruiter_uid);
 	                                        //print_r($load_recruiter);
+	                                        $rfull_name = $load_recruiter->name; 
+	                                        
+                                          if (!empty($load_recruiter->field_first_name) ) { //&& !empty($user_get->field_last_name) 
+                                            $rfull_name = $load_recruiter->field_first_name['und'][0]['value'] . ' ' . $load_recruiter->field_last_name['und'][0]['value'];
+                                          } 
 	                                        
 	                                        if($load_recruiter->field_picture_url)
 	                                        {
@@ -343,15 +368,16 @@ if($field_approved_recruiter_uid!="")
 	                                        {
 	                                            if($load_recruiter->field_user_picture){
 	                                                              	   $field_user_picture = file_create_url($load_recruiter->field_user_picture[LANGUAGE_NONE][0]['uri']);
-                                                                       $pic_recruiter = '<img class="img-thumbnail img-circle thumb10" src="'.$field_user_picture.'" />';  
+                                                                       $pic_recruiter = '<img class="img-thumbnail img-circle thumb10" src="'.$field_user_picture.'"  title="'.$rfull_name.'"/>';  
 	                                            }else{ 
 	                                              	 $base_theme_url = drupal_get_path('theme',$GLOBALS['theme']);
-	                                              	 $pic_recruiter = '<img class="img-thumbnail img-circle thumb10" src="'.base_path().'/'.$base_theme_url.'/img/default-avatar.png" />';
+	                                              	 $pic_recruiter = '<img class="img-thumbnail img-circle thumb10" src="'.base_path().'/'.$base_theme_url.'/img/default-avatar.png" title="'.$rfull_name.'" />';
 	                                            }
 	                                        }
 	                                        ?>
-	                                         <a href="<?php echo url("user/".$load_recruiter->uid) ?>"><?php echo $pic_recruiter ?></a>
-	                                        <?php
+	                                        <a href="<?php echo url("user/".$load_recruiter->uid) ?>"><?php echo $pic_recruiter ?> </a>
+	                                     <?php if(!$is_rec) { echo ($rfull_name)."<br />" ; } ?> 
+	                                        <?php 
                                          
                                     }
                                 }
@@ -407,10 +433,16 @@ if($field_approved_recruiter_uid!="")
                                                 ?>
                                                  
                                             </div>
-                                            
+                                            <br/>
                                             <div>
-                                             <h2 class="media-heading"><i class="fa fa-user"></i>&nbsp;Skills</h2><br/>
-                                              <?php foreach($evnode->field_skills_rating['und'] as $scids) { 
+                                             <h2 class="media-heading"><i class="fa fa-user"></i>&nbsp;Skills</h2>
+                                             <br/>
+                                             <div class="row">
+                                             <div class="col-sm-6">
+                                              <?php 
+                                              //hard/core skills 
+                                              
+                                              foreach($evnode->field_skills_rating['und'] as $scids) { 
                                                 	$fcid = $scids['value']; 
                                                  $scid_Data = entity_load('field_collection_item', array($fcid));
                                                  //print_r($scid_Data); 
@@ -426,7 +458,68 @@ if($field_approved_recruiter_uid!="")
                                                     <div style="width: <?php echo $scid_object->field_skill_1['und'][0]['rating']; ?>%;" class="progress-bar"></div>
                                                 </div>
                                                 <?php   }  ?>
- 
+                                                </div>
+                                                <div class="col-sm-6">
+                                                <?php
+                                                  //soft skills 
+                                                  if($evnode->field_sskill_1_rating['und'] && $evnode->field_sskill_1_rating['und'][0] ) { 
+                                                ?>
+                                                <div>
+                                                    <span>Edge</span>
+                                                    <small class="pull-right"><?php echo ($evnode->field_sskill_1_rating['und'][0]['rating'] / 20) ?>/5</small>
+                                                </div>
+                                                <div class="progress progress-small">
+                                                    <div style="width: <?php echo $evnode->field_sskill_1_rating['und'][0]['rating']; ?>%;" class="progress-bar"></div>
+                                                </div>
+                                                <?php }
+                                                
+                                                if($evnode->field_sskill_2_rating['und'] && $evnode->field_sskill_2_rating['und'][0] ) { 
+                                                ?>
+                                                <div>
+                                                    <span>Energy</span>
+                                                    <small class="pull-right"><?php echo ($evnode->field_sskill_2_rating['und'][0]['rating'] / 20) ?>/5</small>
+                                                </div>
+                                                <div class="progress progress-small">
+                                                    <div style="width: <?php echo $evnode->field_sskill_2_rating['und'][0]['rating']; ?>%;" class="progress-bar"></div>
+                                                </div>
+                                                <?php }
+                                                
+                                                if($evnode->field_sskill_3_rating['und'] && $evnode->field_sskill_3_rating['und'][0] ) { 
+                                                ?>
+                                                <div>
+                                                    <span>Ability to Energize</span>
+                                                    <small class="pull-right"><?php echo ($evnode->field_sskill_3_rating['und'][0]['rating'] / 20) ?>/5</small>
+                                                </div>
+                                                <div class="progress progress-small">
+                                                    <div style="width: <?php echo $evnode->field_sskill_3_rating['und'][0]['rating']; ?>%;" class="progress-bar"></div>
+                                                </div>
+                                                <?php }
+                                                
+                                                if($evnode->field_sskill_4_rating['und'] && $evnode->field_sskill_4_rating['und'][0] ) { 
+                                                ?>
+                                                <div>
+                                                    <span>Execution</span>
+                                                    <small class="pull-right"><?php echo ($evnode->field_sskill_4_rating['und'][0]['rating'] / 20) ?>/5</small>
+                                                </div>
+                                                <div class="progress progress-small">
+                                                    <div style="width: <?php echo $evnode->field_sskill_4_rating['und'][0]['rating']; ?>%;" class="progress-bar"></div>
+                                                </div>
+                                                <?php }
+                                                
+                                                if($evnode->field_sskill_5_rating['und'] && $evnode->field_sskill_5_rating['und'][0] ) { 
+                                                ?>
+                                                <div>
+                                                    <span>Communication Style</span>
+                                                    <small class="pull-right"><?php echo ($evnode->field_sskill_5_rating['und'][0]['rating'] / 20) ?>/5</small>
+                                                </div>
+                                                <div class="progress progress-small">
+                                                    <div style="width: <?php echo $evnode->field_sskill_5_rating['und'][0]['rating']; ?>%;" class="progress-bar"></div>
+                                                </div>
+                                                <?php }
+                                                
+                                                 ?>
+                                                </div>
+ 												 </div>
                                             </div>
                                             
                                             <?php }
@@ -436,10 +529,10 @@ if($field_approved_recruiter_uid!="")
                                           <?php endif; ?>
                                             <?php
 				                        	if($field_summary!="")
-					                        	{
+					                        	{ 
 					                        ?>
                                             <br/>
-                                            <h2 class="media-heading"><i class="fa fa-bar-chart"></i>&nbsp;Summary</h2>
+                                            <h2 class="media-heading"><i class="fa fa-bar-chart"></i>&nbsp;Profile Summary</h2>
                                             <div class="click2edit wrapper p-md">
                                                 <?php echo $field_summary ?>
                                             </div>
@@ -448,13 +541,17 @@ if($field_approved_recruiter_uid!="")
                                             ?>
                                             
                                             <br/>
-                                            <h2 class="media-heading"><i class="fa fa-user"></i>&nbsp;Basic Information</h2>
+                     
+                                            <div class="row">
+                                            <div class="col-sm-6">
+                                         <!--   <h2 class="media-heading"><i class="fa fa-user"></i>&nbsp;Basic Information</h2> -->
                                             <br/>
                                             <div class="pmbb-view">
                                                 <?php
 					                        	if($full_name!="")
 						                        	{
 						                        ?>
+                                                
                                                 <dl class="dl-horizontal">
                                                     <dt>Full Name</dt>
                                                     <dd><?php echo $full_name ?></dd>
@@ -475,14 +572,7 @@ if($field_approved_recruiter_uid!="")
                                                 ?>
                                                 <?php
 					                        	if($field_birthday!="")
-						                        	{
-						                        ?>
-                                                <dl class="dl-horizontal">
-                                                    <dt>Birthday</dt>
-                                                    <dd><?php echo $field_birthday ?></dd>
-                                                </dl>
-                                                <?php
-						                        	}
+						                        	{ 	}
                                                 ?>
                                                 <?php
 					                        	if($field_marital_status!="")
@@ -496,7 +586,9 @@ if($field_approved_recruiter_uid!="")
 						                        	}
                                                 ?>
                                             </div>
-                                            <h2 class="media-heading"><i class="fa fa-phone"></i>&nbsp;Contact Information</h2>
+                                            </div>
+                                            <div class="col-sm-6">
+                                        <!--    <h2 class="media-heading"><i class="fa fa-phone"></i>&nbsp;Contact Information</h2> -->
                                             <br/>
                                             <div>
                                                 <?php
@@ -579,10 +671,12 @@ if($field_approved_recruiter_uid!="")
                                                 ?>
                                                 <?php  endif; ?>
                                             </div>
+                                            </div>
+                                            </div>
                                             <hr class="hr-line-solid"/>
                                             
                                             <div class="form-group" style="<?php if(!$is_my_profile)  { echo 'display:none;'; }?>">
-                                                <div class="col-lg-9">
+                                                <div class="col-lg-9" style="float:none;">
                                                     <div class="i-checks">
                                                         <?php 
                                                             if($field_agree_term==1)
@@ -596,7 +690,7 @@ if($field_approved_recruiter_uid!="")
                                                         ?>
                                                         <label>
                                                             <input disabled type="checkbox" <?php echo $check ?> value=""> <i></i> &nbsp; I agree to the <a class="text-info"
-                                                            href="#">Terms and conditions</a>. 
+                                                            href="#" onclick="window.open('<?php echo url('terms-and-conditions'); ?>', 'Msg', 'width=600, height=500' )">Terms and conditions</a>. 
                                                         </label>
                                                         
                                                         <br/><br/>
@@ -697,13 +791,12 @@ if($field_approved_recruiter_uid!="")
 	                                                            <div class="col-lg-4">
 	                                                                <div class="contact-box panel widget">
 	                                                                 <div class="panel-body">
-	                                                                    <a href="<?php echo url("user/".$load_recruiter->uid) ?>">
+	                                                                   
 	                                                                        <div class="row">
-	                                                                            <div class="col-sm-4 col-sm-push-4">
-	                                                                                <div class="text-center">
-	                                                                                    <?php echo $pic_recruiter ?>
+	                                                                            <div class="col-sm-4 col-sm-push-4 text-center">
+	                                                                                 <a href="<?php echo url("user/".$load_recruiter->uid) ?>">
+	                                                                                    <?php echo $pic_recruiter ?> </a>
 	                                                                                    <div class="m-t-xs font-bold"><?php if($is_rec)  { echo 'Candidate'; } else { echo 'Recruiter'; } ?><!-- , Veritas --></div>
-	                                                                                </div>
 	                                                                            </div>
 	                                                                        </div>
 	                                                                        <div class="row">
@@ -766,7 +859,7 @@ if($field_approved_recruiter_uid!="")
 	                                                                            } ?>
 	                                                                        </div>
 	                                                                     
-	                                                                    </a>
+	                                                                    
 	                                                                        <div class="clearfix"></div>
 	                                                                    </div>
 	                                                                    
