@@ -129,19 +129,21 @@
     border-top-color: #999; 
 }
 
-.page-user table.views-table {
+.page-user table.views-table  , #block-system-main table {
 	   width: 100%;
 	   border-collapse: collapse;
 	   margin:0px;padding:0px;
 	   max-widht: 100%;
 }
 
-.page-user table.views-table tbody tr td {
+.page-user table.views-table tbody tr td , #block-system-main table tbody tr td {
     padding: 10px;
  
 }
-
-.page-user table.views-table thead > tr >th {
+ #block-system-main table > tbody > tr > td { 
+     border: 1px solid #eeeeee; 
+}
+.page-user table.views-table thead > tr >th ,  #block-system-main table thead > tr >th {
     padding: 10px;
      
 }

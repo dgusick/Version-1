@@ -15,16 +15,35 @@
   $is_rec = false; $logged_is_rec = false; 
   $is_can = false; $logged_is_can = false; 
   
-  $is_my_profile = false; 
+  $is_my_profile = false; $is_my_profile_complete = true; 
   if( $user_load->uid == $user_get->uid ) { $is_my_profile = true;  } 
   $contact_display = true; 
+ 
+ 
+ if($is_my_profile) { 
+ 	
+ 	$preq_fields = array('field_first_name', 'field_last_name', 'field_city', 'field_zip_code', 'field_experience', 'field_job_title', 
+ 	   'field_expertise', 'field_degree_type', 'field_company_size', 'field_company_present', 'field_industry'); 
+ 	   
+   foreach($preq_fields  as $preq_field ) { 
+   	  if( isset($user_get->{$preq_field}['und']) && $user_get->{$preq_field}['und'][0]  ) { 
+   	  } else {
+   	  	$is_my_profile_complete = false; 
+   	  	break; 
+   	  }
+   }
+    
+ 	//print_r($user_get); 
+ }
  
  if(isset($user_load->roles[5])) {$logged_is_rec = true;  } 
  if(isset($user_load->roles[6])) {$logged_is_can = true;  } 
  
  $can_evaluations = array(); 
  if(isset($user_get->roles[5])) {$is_rec = true;  } 
- if(isset($user_get->roles[6])) {$is_can = true; $contact_display = false; 
+ 
+ if(isset($user_get->roles[6])) { 
+ 	$is_can = true; $contact_display = false; 
  
  	$my_inviter = db_query("select uid from {invite} where invitee =  ".$user_get->uid)->fetchField(); //logged in user 
  	
@@ -39,7 +58,7 @@
           $can_evaluations = array($all_can_evaluations[0]); 
         } 
  } 
- 
+ $total_connection = 0;
  //check if connected -- 
  $field_approved_recruiter_uid = ''; 
  //print_r($field_approved_recruiter_uid); 
@@ -61,21 +80,10 @@
 if($field_approved_recruiter_uid!="")
     {
         $count_connection = 0;
-        for($i=0;$i<count($field_approved_recruiter_uid_explode);$i++)
-            {
-                $recruiter_uid = $field_approved_recruiter_uid_explode[$i];
-
-                //check if list contains user own account
-                if($recruiter_uid!=$user_load->uid)
-                    {
-                        $count_connection++;
-                    }
-            }
+        
         $total_connection = $count_connection;
     }
- else{
-    $total_connection = 0;
- }
+ 
 	
   //echo $user_get->uid;
   //field_user_candidate_uid_explode
@@ -224,11 +232,16 @@ if($field_approved_recruiter_uid!="")
     if($is_rec) { 
       $relationships_profile_conn_list = user_relationships_load(array('requester_id' => $user_get->uid )); 
       //'requestee_id' => $user_get->uid requester_id
+      $total_connection = count($relationships_profile_conn_list); 
     } else { 
       $relationships_profile_conn_list = user_relationships_load(array('requestee_id' => $user_get->uid )); 
       
     } 
     
+    
+    
+?>
+<?php if(!$is_my_profile_complete && $user->uid) echo '<div> <a href="'.url('user/'.$user_get->uid.'/edit').'">Please complete your profile before being added to the system.</a></div><br/>';  
 ?>
 <div class="col-md-3">
     <div class="panel panel-default">
@@ -277,6 +290,8 @@ if($field_approved_recruiter_uid!="")
                         </div>
                         <br/>
                         -->
+                        
+                       
                         <h4 class="media-heading">Contact</h4>
                             <?php
                         	if($field_phone!="")
@@ -289,13 +304,15 @@ if($field_approved_recruiter_uid!="")
                             
                       <!--<p><i class="fa fa-inbox"></i> <?php echo $contact_display ? $user_get->mail : 'Hidden'; ?></p> -->
                           <?php
-                           if($contact_display != ""  )
-	                            {
+                           if($contact_display && !$is_my_profile )
+	                            { ///mailto:  $user_get->mail 
 	                        ?>
-                            <p><i class="fa fa-inbox"></i>&nbsp;&nbsp;<a class="text-info" href="mailto: <?php echo $contact_display ?> ">Send a message </a> </p>
+                            <p><i class="fa fa-inbox"></i>&nbsp;&nbsp;<a class="text-info" href="<?php echo url("messages/new/".$user_get->uid); ?> ">Send a message </a> </p>
                             <?php
+	                            } else if ($is_my_profile) {
+	                             echo  '<p><i class="fa fa-inbox"></i> '.$user_get->mail.'</p>';
 	                            } else {
-	                             echo $contact_display ? $user_get->mail : 'Hidden';
+	                             echo  '<p><i class="fa fa-inbox"></i> Hidden</p>';
 	                            }
 	                           
                             ?>
@@ -328,6 +345,23 @@ if($field_approved_recruiter_uid!="")
                             <?php
 	                        	}
                             ?>
+                            
+                            <?php if(!$is_my_profile && $is_can) { 
+                            if( $has_access )
+								{
+									// 
+								} else if( $pending_access )
+								{
+									?> <a href="#" type="button"  class="btn btn-xs   btn-success " style="width: 140px;"> Request Pending </a> <br/><?php	
+								} 
+								else
+								{ //request-access/'.$uid.''  relationship/204/request/2?destination=user/204 
+                            		?> <a href="<?php echo url('relationship/'.$user_get->uid.'/request/2', array('query'=>array('destination'=>'searchapi-candidate'))) ?>" type="button" class="btn btn-xs btn-green" style="width: 140px;">Engage </a> <?php 
+                            	} 
+                            }
+	                           	?>
+	                           	
+	                           	
                         <br/>
                         <?php if( (!$is_can) || $is_my_profile ) { ?>
                         <h4 class="media-heading">Connections</h4>
@@ -523,10 +557,13 @@ if($field_approved_recruiter_uid!="")
                                             </div>
                                             
                                             <?php }
+                                            
+                                            
                                             endif; ?>
                                             
                                           
-                                          <?php endif; ?>
+                                          <?php endif; //end is_can ?>
+                                          
                                             <?php
 				                        	if($field_summary!="")
 					                        	{ 
@@ -543,6 +580,7 @@ if($field_approved_recruiter_uid!="")
                                             <br/>
                      
                                             <div class="row">
+                                            
                                             <div class="col-sm-6">
                                          <!--   <h2 class="media-heading"><i class="fa fa-user"></i>&nbsp;Basic Information</h2> -->
                                             <br/>
@@ -559,32 +597,78 @@ if($field_approved_recruiter_uid!="")
                                                 <?php
 						                        	}
                                                 ?>
+                                                
                                                 <?php
-					                        	if($field_gender!="")
+					                        	if($user_get->field_experience['und'] && $user_get->field_experience['und'][0]['tid'] !="")
 						                        	{
 						                        ?>
                                                 <dl class="dl-horizontal">
-                                                    <dt>Gender</dt>
-                                                    <dd><?php echo $field_gender ?></dd>
+                                                    <dt>Years of Experience: </dt>
+                                                    <dd>&nbsp; <?php echo $user_get->field_experience['und'][0]['taxonomy_term']->name; ?></dd>
                                                 </dl>
+                                                <?php } ?>
+                                                
                                                 <?php
-						                        	}
-                                                ?>
-                                                <?php
-					                        	if($field_birthday!="")
-						                        	{ 	}
-                                                ?>
-                                                <?php
-					                        	if($field_marital_status!="")
+					                        	if($user_get->field_city['und'] && $user_get->field_city['und'][0]['value'] !="")
 						                        	{
 						                        ?>
                                                 <dl class="dl-horizontal">
-                                                    <dt>Martial Status</dt>
-                                                    <dd><?php echo $field_marital_status ?></dd>
+                                                    <dt>City: </dt>
+                                                    <dd><?php echo $user_get->field_city['und'][0]['value'] ?></dd>
                                                 </dl>
+                                                <?php } ?>
+                                                
                                                 <?php
-						                        	}
-                                                ?>
+					                        	if($user_get->field_zip_code['und'] && $user_get->field_zip_code['und'][0]['value'] !="")
+						                        	{
+						                        ?>
+                                                <dl class="dl-horizontal">
+                                                    <dt>Zip Code: </dt>
+                                                    <dd><?php echo $user_get->field_zip_code['und'][0]['value'] ?></dd>
+                                                </dl>
+                                                <?php } ?>
+                                                
+                                                
+                                                <?php  //print_r($user_get);
+					                        	if($user_get->field_company_size['und'] && $user_get->field_company_size['und'][0]['tid'] !="")
+						                        	{  //$skil_term = taxonomy_term_load($scid_object->field_skills['und'][0]['tid']);  
+						                        ?>
+                                                <dl class="dl-horizontal">
+                                                    <dt>Company size: </dt>
+                                                    <dd><?php echo $user_get->field_company_size['und'][0]['taxonomy_term']->name; ?></dd>
+                                                </dl>
+                                                <?php } ?>
+                                                
+                                                 <?php  //print_r($user_get);
+					                        	if($user_get->field_industry['und'] && $user_get->field_industry['und'][0]['tid'] !="")
+						                        	{  //$skil_term = taxonomy_term_load($scid_object->field_skills['und'][0]['tid']);  
+						                        ?>
+                                                <dl class="dl-horizontal">
+                                                    <dt>Industry: </dt>
+                                                    <dd><?php echo $user_get->field_industry['und'][0]['taxonomy_term']->name; ?></dd>
+                                                </dl>
+                                                <?php } ?>
+                                                
+                                                <?php  //print_r($user_get);
+					                        	if($user_get->field_company_present['und'] && $user_get->field_company_present['und'][0]['tid'] !="")
+						                        	{  //$skil_term = taxonomy_term_load($scid_object->field_skills['und'][0]['tid']);  
+						                        ?>
+                                                <dl class="dl-horizontal">
+                                                    <dt>Company Present: </dt>
+                                                    <dd><?php echo $user_get->field_company_present['und'][0]['taxonomy_term']->name; ?></dd>
+                                                </dl>
+                                                <?php } ?>
+                                                
+                                                <?php  //print_r($user_get);
+					                        	if($user_get->field_relocation['und'] && $user_get->field_relocation['und'][0]['value'] !="")
+						                        	{  //$skil_term = taxonomy_term_load($scid_object->field_skills['und'][0]['tid']);  
+						                        ?>
+                                                <dl class="dl-horizontal">
+                                                    <dt>Relocation: </dt>
+                                                    <dd><?php echo $user_get->field_relocation['und'][0]['value'] ? 'Yes' : 'No' ; ?></dd>
+                                                </dl>
+                                                <?php } ?>
+                                                
                                             </div>
                                             </div>
                                             <div class="col-sm-6">
@@ -670,6 +754,65 @@ if($field_approved_recruiter_uid!="")
 						                        	}
                                                 ?>
                                                 <?php  endif; ?>
+                                                
+                                                <?php
+					                        	if($user_get->field_job_title['und'] && $user_get->field_job_title['und'][0]['tid'] !="")
+						                        	{
+						                        ?>
+                                                <dl class="dl-horizontal">
+                                                    <dt>Job Title: </dt>
+                                                    <dd><?php echo $user_get->field_job_title['und'][0]['taxonomy_term']->name; ?></dd>
+                                                </dl>
+                                                <?php } ?>
+                                                
+                                                <?php
+					                        	if($user_get->field_interests['und'] && $user_get->field_interests['und'][0]['value'] !="")
+						                        	{
+						                        ?>
+                                                <dl class="dl-horizontal">
+                                                    <dt>Interests: </dt>
+                                                    <dd><?php echo $user_get->field_interests['und'][0]['value'] ?></dd>
+                                                </dl>
+                                                <?php } ?>
+
+
+                                                
+                                                <?php
+					                        	if($user_get->field_expertise['und'] && $user_get->field_expertise['und'][0]['tid'] !="")
+						                        	{
+						                        ?>
+                                                <dl class="dl-horizontal">
+                                                    <dt>Function: </dt>
+                                                    <dd><?php echo $user_get->field_expertise['und'][0]['taxonomy_term']->name; ?></dd>
+                                                </dl>
+                                                <?php } ?>
+
+
+                                                
+                                                <?php  //print_r($user_get);
+					                        	if($user_get->field_degree_type['und'] && $user_get->field_degree_type['und'][0]['tid'] !="")
+						                        	{  //$skil_term = taxonomy_term_load($scid_object->field_skills['und'][0]['tid']);  
+						                        ?>
+                                                <dl class="dl-horizontal">
+                                                    <dt>Degree Type: </dt>
+                                                    <dd><?php echo $user_get->field_degree_type['und'][0]['taxonomy_term']->name; ?></dd>
+                                                </dl>
+                                                <?php } ?>
+
+
+                                                
+                                                <?php  //print_r($user_get);
+					                        	if($user_get->field_college_university['und'] && $user_get->field_college_university['und'][0]['value'] !="")
+						                        	{  //$skil_term = taxonomy_term_load($scid_object->field_skills['und'][0]['tid']);  
+						                        ?>
+                                                <dl class="dl-horizontal">
+                                                    <dt>College/University: </dt>
+                                                    <dd><?php echo $user_get->field_college_university['und'][0]['value']; ?></dd>
+                                                </dl>
+                                                <?php } ?>
+                                                
+                                                
+                                                
                                             </div>
                                             </div>
                                             </div>

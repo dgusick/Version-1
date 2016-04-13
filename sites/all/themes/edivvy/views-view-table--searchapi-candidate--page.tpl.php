@@ -151,7 +151,7 @@
 	                                                    	<tr>
 	                                                    
 	                                                        <td><div class="media"> <?php echo $url_pic; ?></div> </td>
-	                                                        <td><a href="<?php echo url('user/'.$item['uid']); ?>" class="client-link"><?php print $item['field_first_name']; //name 
+	                                                        <td><a href="<?php echo url('user/'.$item['uid']); ?>" class="client-link">Edivvy candidate <?php print $item['uid']; //$item['field_first_name']; //name 
 	                                                        ?></a></td>
 	                                                        <td class="job_title"> <?php print $item['field_job_title']; //job_level 
 	                                                        ?> </td>

@@ -4,7 +4,13 @@
 				<div class="form-group has-feedback">
 				   <?php unset($form['field_first_name']); ?>
                     
-                    <input required="" class="form-control required" placeholder="Name" type="text" id="edit-field-first-name-und-0-value" name="field_first_name[und][0][value]" >
+                    <input required="" class="form-control required" placeholder="First Name" type="text" id="edit-field-first-name-und-0-value" name="field_first_name[und][0][value]" >
+                </div>
+                
+                <div class="form-group has-feedback">
+				   <?php unset($form['field_last_name']); ?>
+                    
+                    <input required="" class="form-control required" placeholder="Last Name" type="text" id="edit-field-last-name-und-0-value" name="field_last_name[und][0][value]" >
                 </div>
                 
                 <div class="form-group has-feedback">

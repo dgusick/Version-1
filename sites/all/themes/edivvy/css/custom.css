@@ -10,7 +10,8 @@ body.page-searchapi-candidate .chosen-container-multi .chosen-choices li.search-
 @media (min-width: 768px) {
 .page-searchapi-candidate .col-sm-6{
 	 float: left !important;
-} }
+}
+}
 .thumb10 {
     width: 36px;
     height: 36px;
@@ -108,12 +109,13 @@ a:hover {
 	.page-user-edit .field-name-field-company-size,
 	.page-user-edit .field-name-field-company-present,
 	.page-user-edit .field-name-field-company-past,
-	.page-user-edit .field-name-field-industry{
+	.page-user-edit .field-name-field-industry, .page-user-edit .field-name-field-relocation {
 		width: 42%;
 		float: left;
 	    margin-right: 77px; 
   	}
-
+    .page-user-edit #edit-field-relocation
+    { padding-top:10px; }
 	.page-user-edit #edit-privatemsg {
 	    clear: left;
 	    	width: 42%;

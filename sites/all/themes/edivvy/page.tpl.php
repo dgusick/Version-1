@@ -25,6 +25,18 @@ else
  }
  
 
+$preq_fields = array('field_first_name', 'field_last_name', 'field_city', 'field_zip_code', 'field_experience', 'field_job_title', 
+ 	   'field_expertise', 'field_degree_type', 'field_company_size', 'field_company_present', 'field_industry'); 
+ $is_my_profile_complete = true; 
+ 
+ foreach($preq_fields  as $preq_field ) { 
+   	  if( isset($user_load->{$preq_field}['und']) && $user_load->{$preq_field}['und'][0]  ) { 
+   	  } else {
+   	  	$is_my_profile_complete = false; 
+   	  	break; 
+   	  }
+   }
+   
 
 /**
  * @file
@@ -395,7 +407,7 @@ else
                    <li><a class="<?php echo ($_GET['q'] == 'user' ? 'active' : ''); ?>" href="<?php echo url('user'); ?>"><em class="fa fa-user"></em>My Profile</a></li>
                 <?php if(isset($user->roles[5]) && !$is_rec_inactive ): //rec. menu <?php echo url('user');  ?>
                 <li style="" class="<?php echo ($_GET['q'] == 'user/'.$user->uid.'/wishlist' ? 'active' : ''); ?>"><a href="<?php echo url('user/'.$user->uid.'/wishlist'); ?>" ><em class="icon-heart"></em>My Saved List</a></li>
-                <li class="<?php echo ($_GET['q'] == 'user/'.$user->uid.'/order' ? 'active' : ''); ?>"><a href="<?php echo url('user/'.$user->uid.'/orders'); ?>" ><em class="icon-basket"></em>My Orders</a></li>
+                <li class="<?php echo ($_GET['q'] == 'user/'.$user->uid.'/recurring-fees' ? 'active' : ''); ?>"><a href="<?php echo url('user/'.$user->uid.'/recurring-fees'); ?>" ><em class="icon-basket"></em>My Subscription</a></li>
                 
                 <li class="<?php echo ($_GET['q'] == 'user/'.$user->uid.'/my_following' ? 'active' : ''); ?>"><a href="<?php echo url('user/'.$user->uid.'/my_following'); ?>"><em class="icon-user-following"></em>I'm Following</a></li>
                 <li class="<?php echo ($_GET['q'] == 'user/'.$user->uid.'/my_followers' ? 'active' : ''); ?>"><a href="<?php echo url('user/'.$user->uid.'/my_followers'); ?>"><em class="icon-user-follow"></em>My Followers</a></li>
@@ -939,8 +951,13 @@ else
 		      <div id="content" class="column"><div class="section">
 		        <?php if ($page['highlighted']): ?><div id="highlighted"><?php print render($page['highlighted']); ?></div><?php endif; ?>
 		        <a id="main-content"></a>
-		         <?php if($is_rec && $is_rec_inactive )  {  ?><p class="pending_ractivation">Your profile is pending Activation. Once approved you will be able to use all features.</p><?php } ?>
-		         <?php if( arg(0) != 'paid-membership' && !$paid_rec  && arg(0) != 'cart' )  {  ?><p class="pending_ractivation">Your profile is not active YET. <?php echo l("Become a paid member", 'paid-membership'); ?> to activate your account.</p><?php } ?>
+		        <?php  ?>
+		         <?php if(!$is_my_profile_complete && arg(0) != 'user'  && $user->uid)  {  ?><p class="pending_ractivation"><?php echo '<a href="'.url('user/'.$user->uid.'/edit').'">Please complete your profile before being added to the system.</a>'; ?></p><?php 
+		         }
+		         else if($is_rec && $is_rec_inactive )  {  ?><p class="pending_ractivation">Your profile is pending Activation. Once approved you will be able to use all features.</p><?php }
+		            
+		         ?>
+		         <?php if( arg(0) != 'paid-membership' && !$paid_rec  && arg(0) != 'cart'  && $user->uid)  {  ?><p class="pending_ractivation">Your profile is not active YET. <?php echo l("Become a paid member", 'paid-membership'); ?> to activate your account.</p><?php } ?>
 		         
 		         
 		        <?php if ($tabs): ?><div class="tabs"><?php print render($tabs); ?></div><?php endif; ?>

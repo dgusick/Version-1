@@ -199,7 +199,9 @@ function update_user_latest_eval($node) {
     	    //print_r(array_keys($form['field_city']['und'][0])); 
     	   // $form['field_city']['und'][0]['#required'] = true;
      	   //$form['field_city']['und'][0]['#attributes']['required'] = '';
-     	   
+     	  $preq_fields = array('field_first_name', 'field_last_name', 'field_city', 'field_zip_code', 'field_experience', 'field_job_title', 
+ 	   'field_expertise', 'field_degree_type', 'field_company_size', 'field_company_present', 'field_industry'); 
+ 	 
      	   $form['field_city']['und'][0]['value']['#required'] = TRUE; 
      	   
      	   $form['field_last_name']['und'][0]['value']['#required'] = TRUE; 
@@ -214,6 +216,7 @@ function update_user_latest_eval($node) {
      	   $form['field_company_present']['und']['#required'] = TRUE; 
      	   //$form['field_company_past']['und'][0]['value']['#required'] = TRUE; 
      	   $form['field_industry']['und']['#required'] = TRUE; 
+     	   //$form['field_relocation']['und']['#required'] = TRUE; 
      	   
      	   //field_experience[und] 
      	   //field_last_name[und][0][value]
@@ -258,6 +261,9 @@ function update_user_latest_eval($node) {
     	if($form_id == "evaluation_node_form"){
     	    //validate this user id __ 
     	    $idgetcan = arg(3);
+    	    $form['actions']['preview']['#access'] = FALSE;
+  	    
+  	    
     	    if(arg(2) == 'edit' && $idgetcan == '') { 
     	    	$node = $form['#node']; //print_r($form); 
 				$idgetcan = $node->field_user_id['und'][0]['target_id']; 

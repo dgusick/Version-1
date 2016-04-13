@@ -19,13 +19,12 @@ if(isset($form['field_user_about']))
   hide($form['field_user_about']); 
   
   hide($form['field_corporate_email']); 
-  hide($form['field_specialties']); 
-  hide($form['field_job_level']); 
-  hide($form['field_specialization']); 
+  //hide($form['field_specialties']); 
+  //hide($form['field_job_level']); 
+  //hide($form['field_specialization']); 
   hide($form['field_role_department']); 
-  hide($form['field_job_level']);  
-  hide($form['field_certification']); 
-  hide($form['field_technology']); 
+  //hide($form['field_certification']); 
+  //hide($form['field_technology']); 
   hide($form['field_summary']); 
   hide($form['field_company_past']);
   //print_r($form['field_city']); 
