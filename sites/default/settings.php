@@ -217,9 +217,9 @@ $databases = array (
   array (
     'default' => 
     array (
-      'database' => 'ediv',
-      'username' => 'root',
-      'password' => 'admin@678',
+      'database' => 'd_di139942_dev',
+      'username' => 'd_di139942',
+      'password' => 'di1399428',
       'host' => 'localhost',
       'port' => '',
       'driver' => 'mysql',
@@ -258,7 +258,7 @@ $update_free_access = FALSE;
  *   $drupal_hash_salt = file_get_contents('/home/example/salt.txt');
  *
  */
-$drupal_hash_salt = 'TVGpH8FsWFUQvplG4DXwyEZVAXFnxpe-GkUUJ_qx6tM';
+$drupal_hash_salt = 'Cp9d_Slfa_p-izsW-iS_ShwGyfsBGx_D5jYAKEacInY';
 
 /**
  * Base URL (optional).

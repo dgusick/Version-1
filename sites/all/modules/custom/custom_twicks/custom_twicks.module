@@ -43,25 +43,47 @@ function custom_twicks_init() {
     drupal_set_title("Recommend a Candidate Profile"); 
   }
   
+  //dont create more then 1 evaluation..
   if(arg(0) == 'node' && arg(1) == 'add' && arg(2) == 'evaluation' && arg(3) != '') {  
   	    
+  	    //if arg-3 is numeric ___
+  	    $sel_can_uid = arg(3); $sel_can_email = ""; 
+  	    if(is_numeric($sel_can_uid)) { 
+  	      
+  	    } else {
+  	       $sel_can_email = arg(3); 
+  	       $sel_can_user = user_load_by_mail($sel_can_email); 
+  	       if( $sel_can_user && $sel_can_user->uid ) { 
+  	         $sel_can_uid = $sel_can_user->uid; 
+  	       }
+  	    }
+  	    
+  	    $results = array(); 
+  	    
     	$query = new EntityFieldQuery; 
-	    $query->entityCondition('entity_type', 'node')
-	      ->entityCondition('bundle', 'evaluation')
-	      ->fieldCondition('field_user_id', 'target_id', arg(3) )
-	      ->fieldCondition('field_recruiter_id', 'value', $user->uid);
-	    
-	    $results = $query->execute();
+    	if($sel_can_uid != '' && is_numeric($sel_can_uid) ) { 
+		    $query->entityCondition('entity_type', 'node')
+		      ->entityCondition('bundle', 'evaluation')
+		      ->fieldCondition('field_recruiter_id', 'value', $user->uid)
+		      ->fieldCondition('field_user_id', 'target_id', $sel_can_uid ); 
+	   	} else if ($sel_can_email != '' && is_string($sel_can_email) ) {  
+	   	   $query->entityCondition('entity_type', 'node')
+		      ->entityCondition('bundle', 'evaluation')
+		      ->fieldCondition('field_recruiter_id', 'value', $user->uid)
+		      ->fieldCondition('field_candidate_email', 'value', $sel_can_email ); 
+	   	} 
+	    $results = $query->execute(); 
 	    
 	    $recruiter_id = ""; $evaluated_node_id = ''; 
 	    $is_evaluated = false; 
-	    if (isset($results['node']) && count($results['node'])) {
-	       $is_evaluated = true;
+	    if ($results && isset($results['node']) && count($results['node'])) {
+	       $is_evaluated = true; 
 	       $list_evaluated_nodes =array_keys($results['node']); 
 	       $evaluated_node_id = $list_evaluated_nodes[0]; 
 	       
 	       drupal_goto('node/'.$evaluated_node_id.'/edit');
 	    }
+	    
   	
   }
   
@@ -91,16 +113,73 @@ function custom_twicks_node_insert($node) {
 function custom_twicks_node_update($node) {
     update_user_latest_eval($node); 
 }
+//fire this on user create as well so matching email id will update evaluation__  
 
+function custom_twicks_user_insert(&$edit, $account, $category) {
+   //$account->uid get this user's email  mail 
+   
+   //if user already exists ?   -update last evaluation found for this user ..
+   
+   if($account->mail) { 
+      //find node of this email ..
+      $sel_can_email = $account->mail; 
+      $query = new EntityFieldQuery; 
+    	if ($sel_can_email != '' && is_string($sel_can_email) ) {  
+	   	   $query->entityCondition('entity_type', 'node')
+		      ->entityCondition('bundle', 'evaluation')
+		      //->fieldCondition('field_recruiter_id', 'value', $user->uid)
+		      ->fieldCondition('field_candidate_email', 'value', $sel_can_email ); 
+	   	}  //todo last rec feedback .. 
+	    $results = $query->execute(); 
+	    
+	    $recruiter_id = ""; $evaluated_node_id = ''; 
+	    $is_evaluated = false; 
+	    if ($results && isset($results['node']) && count($results['node'])) {
+	       $is_evaluated = true; 
+	       $list_evaluated_nodes = array_keys($results['node']); 
+	       if($list_evaluated_nodes[0]) { 
+	         $evaluated_node_id = $list_evaluated_nodes[0]; 
+	       
+	         $evaluated_node = node_load($evaluated_node_id); 
+	         if($evaluated_node) { 
+	         	watchdog('custom_twicks', "updating evalu-user-insert -".$evaluated_node_id . " -- " . $sel_can_email , array(), WATCHDOG_NOTICE);   
+	         	
+	            update_user_latest_eval($evaluated_node);  
+	         } 
+	         
+	       } 
+	    }
+	    
+      
+      
+   } 
+   
+}
+
+
+//update users latest evaluation.. 
 function update_user_latest_eval($node) { 
 	
   // save evaluation latest to user profile2 
-  if($node->type=='evaluation')  { 
+  if($node->type == 'evaluation')  { 
   	
-    $canid = $node->field_user_id['und'][0]['target_id'];  
-    
+  	if( isset($node->field_user_id['und']) && $node->field_user_id['und'][0]['target_id'] ) { 
+  	   $canid = $node->field_user_id['und'][0]['target_id'];  
+  	   
+  	} else if( isset($node->field_candidate_email['und']) && $node->field_candidate_email['und'][0]['value'] ) { //try with email and see if has user 
+  	   $canemail = $node->field_candidate_email['und'][0]['value']; 
+  	   $ncan_user = user_load_by_mail($canemail); 
+  	       if( $ncan_user && $ncan_user->uid ) { 
+  	         $canid = $ncan_user->uid; 
+  	       }
+  	       
+  	} 
+  	
+  	if($canid && is_numeric($canid)) { 
+  	   $c_user = user_load($canid); 
+  	 
     // load this candidates profile2 - type - evaluation 
-    $c_user = user_load($canid); 
+    
     
 	//print_r($profile_evaluation); exit; 
 	
@@ -115,6 +194,7 @@ function update_user_latest_eval($node) {
 		   $profile_evaluation = profile2_create(array('type' => 'evaluation', 'uid' => $c_user->uid));
 		}
 		
+		//loop through all 
     	foreach($node->field_skills_rating['und'] as $ck => $skill_col) {
     		//value
     		$i =$ck; 
@@ -159,8 +239,7 @@ function update_user_latest_eval($node) {
 		      $profile_evaluation->field_skills_rating['und'][$i]['value'] = $fc_wrapper->getIdentifier();  
 		      
     		}
-		      
-    		
+		    
     	} //end for 
     	
     	//update soft skills 
@@ -186,6 +265,8 @@ function update_user_latest_eval($node) {
     	// print_r($profile_evaluation);exit;
     	
     }
+    
+  	} 
     
   }
 }
@@ -231,8 +312,6 @@ function update_user_latest_eval($node) {
      	   //field_company_past[und]
      	   //field_industry[und]
      	   
-     	   
-     	   
     	}
     	
     	if ($form_id == "views_exposed_form" && $form['#id'] == "views-exposed-form-searchapi-candidate-page") {
@@ -262,13 +341,17 @@ function update_user_latest_eval($node) {
     	    //validate this user id __ 
     	    $idgetcan = arg(3);
     	    $form['actions']['preview']['#access'] = FALSE;
-  	    
-  	    
+  	        
     	    if(arg(2) == 'edit' && $idgetcan == '') { 
     	    	$node = $form['#node']; //print_r($form); 
 				$idgetcan = $node->field_user_id['und'][0]['target_id']; 
     	    }
+    	     
+    	     //only invited candidate can evaluate
+    	     if($idgetcan != "" && is_numeric($idgetcan)) {
+    	     	
     	     $relationships = user_relationships_load(array('requester_id' => $user->uid, 'requestee_id' => $idgetcan, 'approved' => 1 )); 
+    	     
           if(count($relationships) == 0 && $user->uid != 1) { //pending_  
               drupal_set_message("You do not have permission to create evaluation for selected candidate"); 
               drupal_goto('searchapi-candidate');
@@ -277,19 +360,33 @@ function update_user_latest_eval($node) {
            $user_can = user_load($idgetcan); 
            
 				$username_candidate = $user_can->name;
-			    $full_name_candidate = $username_candidate; 
+				$full_name_candidate = $username_candidate; 
 			    
 				  if (!empty($user_can->field_first_name) ) {//&& !empty($users->field_last_name)
 				    $full_name_candidate = $user_can->field_first_name['und'][0]['value'] . ' ' . $user_can->field_last_name['und'][0]['value'];
 				  }
+				  
+    	     }else if(is_string($idgetcan)) { 
+    	     	 $full_name_candidate = $idgetcan; 
+    	     	 
+    	     	 //check if this has invited this user. .
+    	     	 
+    	     }
+    	     
+			    
 				
 				if(arg(1) == 'add') 
 				  $form['title']['#default_value'] = $username_candidate; //''.$user->name.'-'.
 				
-    	    $form['title']['#type'] = "hidden";
-    	    if($user->uid != 1) { 
+    	    $form['title']['#type'] = "hidden"; //hide title 
+    	    
+    	    if($user->uid != 1) { //default 
 				$form['field_user_id']['#type'] = "hidden";
-				$form['field_recruiter_id']['#type'] = "hidden";
+				$form['field_recruiter_id']['#type'] = "hidden"; //set on presave 
+				
+				//white creating from invite 
+				$form['field_candidate_email']['#type'] = "hidden"; 
+				$form['field_invite_id']['#type'] = "hidden";
     	    }
     	    
 			$form['evaluation_form_title'] = array(
@@ -300,12 +397,10 @@ function update_user_latest_eval($node) {
 			
 			$form['can_title'] =  array(
 			 '#type' => 'markup',
-			 '#markup' =>  '<h3>Candidate - '.l( $full_name_candidate, 'user/'.$idgetcan, array(  'attributes'=>array( 'target'=>'_blank'))  ).'</h3>', 
+			 '#markup' =>  '<h3>Candidate - '. (is_numeric($idgetcan) ? l( $full_name_candidate, 'user/'.$idgetcan, array(  'attributes'=>array( 'target'=>'_blank'))  ) : $full_name_candidate  ).'</h3>', 
 			 '#weight' => -10
 			);
-			
-			
-			
+		  	
     	}
     	
     	if($form_id == "invite_form"){
@@ -334,6 +429,8 @@ function update_user_latest_eval($node) {
  function custom_twicks_node_presave($node) {
         global $user;
         //make sure it works only on add case ___ node/add/evaluation/226   node/id/edit 
+        
+        //if user is selected .. 
         $idgetcan = arg(3);  //check if this user has relation ___
         
         //print_r($node); exit; 
@@ -345,6 +442,7 @@ function update_user_latest_eval($node) {
             //$form['field_recruiter_id']['und'][0]['value']['#default_value'] = $user->uid;
             $node->field_recruiter_id['und'][0]['value'] = $user->uid;
             $node->field_user_id['und'][0]['target_id'] = $idgetcan; //entity 
+            
         }
     }
     
