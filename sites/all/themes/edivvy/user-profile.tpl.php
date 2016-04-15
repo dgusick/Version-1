@@ -56,8 +56,26 @@
         if($results && $results['node'] ) {  
           $all_can_evaluations = array_keys($results['node']); 
           $can_evaluations = array($all_can_evaluations[0]); 
+        }
+        
+    if(count($can_evaluations) == 0 ) {
+      //try with email 
+      $query = new EntityFieldQuery; 
+      $query->entityCondition('entity_type', 'node')
+          ->entityCondition('bundle', 'evaluation')
+          ->fieldCondition('field_candidate_email', 'value', $user_get->mail );
+
+          $results = $query->execute(); 
+
+         if($results && $results['node'] ) {  
+          $all_can_evaluations = array_keys($results['node']); 
+          $can_evaluations = array($all_can_evaluations[0]); 
         } 
+
+    }
+
  } 
+ 
  $total_connection = 0;
  //check if connected -- 
  $field_approved_recruiter_uid = ''; 
