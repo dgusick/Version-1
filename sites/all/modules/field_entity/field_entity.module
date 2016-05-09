@@ -1,0 +1,134 @@
+<?php
+/**
+ * @file
+ * Field and Field Instance entity definitions.
+ */
+
+/**
+ * Implements hook_entity_info().
+ */
+function field_entity_entity_info() {
+  $items = array();
+
+  $items['field_entity'] = array(
+    'label' => t('Field'),
+    'plural label' => t('Fields'),
+    'base table' => 'field_config',
+    'fieldable' => FALSE,
+    'entity keys' => array(
+      'id' => 'id',
+      'label' => 'field_name',
+    ),
+    'module' => 'field_entity',
+    'access callback' => 'field_entity_field_entity_access',
+  );
+
+  $items['field_instance_entity'] = array(
+    'label' => t('Field instance'),
+    'plural label' => t('Field instances'),
+    'controller class' => 'FieldInstanceEntityController',
+    'base table' => 'field_config_instance',
+    'label callback' => 'field_entity_field_instance_entity_label',
+    'fieldable' => FALSE,
+    'entity keys' => array(
+      'id' => 'id',
+      'bundle' => 'entity_type_bundle',
+    ),
+    'module' => 'field_entity',
+    'access callback' => 'field_entity_field_instance_entity_access',
+    'bundles' => array(),
+  );
+
+  $entity_bundles = array();
+  foreach (field_info_field_map() as $field_name => $info) {
+    foreach ($info['bundles'] as $entity_type => $bundles) {
+      foreach ($bundles as $bundle) {
+        $key = $entity_type . ':' . $bundle;
+        if (!isset($entity_bundles[$key])) {
+          $entity_bundles[$key] = $key;
+        }
+      }
+    }
+  }
+  foreach ($entity_bundles as $type => $name) {
+    $items['field_instance_entity']['bundles'][$type] = array(
+      'label' => $name,
+    );
+  }
+
+  return $items;
+}
+
+/**
+ * Implements hook_entity_query_alter().
+ */
+function field_entity_entity_query_alter($query) {
+  $conditions = &$query->entityConditions;
+
+  if (isset($conditions['entity_type']) && $conditions['entity_type']['value'] == 'field_instance_entity' && isset($conditions['bundle'])) {
+    $entity_type_bundle = $conditions['bundle']['value'];
+    if (is_array($entity_type_bundle)) {
+      // Single bundle condition is supported only.
+      // @todo Support multiple bundles.
+      $entity_type_bundle = reset($entity_type_bundle);
+      if ($entity_type_bundle) {
+        list($entity_type, $bundle) = explode(':', $entity_type_bundle, 2);
+        $query->propertyCondition('entity_type', $entity_type, '=');
+        $query->propertyCondition('bundle', $bundle, '=');
+      }
+    }
+    unset($conditions['bundle']);
+  }
+}
+
+/**
+ * Entity access callback for field entity.
+ */
+function field_entity_field_entity_access($op, $entity, $account = NULL, $entity_type = 'field_entity') {
+  return $op === 'view';
+}
+
+/**
+ * Entity access callback for field instance entity.
+ */
+function field_entity_field_instance_entity_access($op, $entity, $account = NULL, $entity_type = 'field_instance_entity') {
+  return $op === 'view';
+}
+
+/**
+ * Entity label callback for field instance entity.
+ */
+function field_entity_field_instance_entity_label($entity, $entity_type) {
+  $instance = field_info_instance($entity->entity_type, $entity->field_name, $entity->bundle);
+  return isset($instance['label']) ? ($instance['label'] . ' (' . $entity->field_name . ')') : $entity->field_name;
+}
+
+/**
+ * Class FieldInstanceEntityController.
+ */
+class FieldInstanceEntityController extends DrupalDefaultEntityController {
+
+  protected function buildQuery($ids, $conditions = array(), $revision_id = FALSE) {
+    $bundle_values = array();
+    if ($conditions) {
+      foreach ($conditions as $field => $value) {
+        if ($field === 'entity_type_bundle') {
+          $bundle_values[] = $value;
+        }
+      }
+      unset($conditions['entity_type_bundle']);
+    }
+
+    $query = parent::buildQuery($ids, $conditions, $revision_id);
+
+    foreach ($bundle_values as $value) {
+      list($entity_type, $bundle) = explode(':', $value, 2);
+      $query->condition('base.entity_type', $entity_type, '=');
+      $query->condition('base.bundle', $bundle, '=');
+    }
+    $query->addExpression("CONCAT(CONCAT(base.entity_type, ':'), base.bundle)", 'entity_type_bundle');
+
+    return $query;
+  }
+
+}

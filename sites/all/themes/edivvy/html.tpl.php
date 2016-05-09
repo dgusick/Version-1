@@ -51,6 +51,10 @@
   <title><?php print $head_title; ?></title>
   <?php print $styles; ?>
   <?php print $scripts; ?>
+
+  <script type="text/javascript" src="https://askitdev.atlassian.net/s/ec1bb00025e666066c2dd38f3fe6a2a2-T/8aq6r0/72002/540a9dcad303bf2aeba7dfad2b76fa6e/2.0.14/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?locale=en-US&collectorId=981ff710"></script>
+
+
 </head>
 <body class="<?php print $classes; ?>" <?php print $attributes;?>>
   <div id="skip-link">

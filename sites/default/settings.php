@@ -217,9 +217,9 @@ $databases = array (
   array (
     'default' => 
     array (
-      'database' => 'd_di139942_dev',
-      'username' => 'd_di139942',
-      'password' => 'di1399428',
+      'database' => 'edivvy',
+      'username' => 'root',
+      'password' => 'admin@678',
       'host' => 'localhost',
       'port' => '',
       'driver' => 'mysql',
