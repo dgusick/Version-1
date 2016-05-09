@@ -29,9 +29,11 @@ function edivvy_username($variables) {
     if($variables['account']) { 
         $acc = $variables['account']; 
         
+        $variables['name'] = 'Edivvy candidate '.$acc->uid; //check if already connected .. ?
+
         if($acc->field_first_name && $acc->field_last_name) { 
             if($acc->field_first_name['und'][0]['value'] != "") { 
-                $variables['name'] = $acc->field_first_name['und'][0]['value'] . " " . $acc->field_last_name['und'][0]['value']; 
+               // $variables['name'] = $acc->field_first_name['und'][0]['value'] . " " . $acc->field_last_name['und'][0]['value']; 
             }
         }
     }

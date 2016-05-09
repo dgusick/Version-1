@@ -1,5 +1,5 @@
-name = Invite by e-mail
-description = Allow users invite other using e-mail
+name = Invite by e-mail - DO NOT UPDATE
+description = Allow users invite other using e-mail , customized for edivvy 
 core = 7.x
 package = Invite
 

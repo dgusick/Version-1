@@ -271,7 +271,14 @@ function invite_by_email_invite_presave($invite) {
   //$invite->data['message'] = $entity->field_invitation_email_body->value();
   
   // The value of the body hasn't been set yet. Let' s go get the template!
+
+  //hack--sh  for editable body.. 
   $entity->field_invitation_email_body = variable_get('invite_default_mail_body', ''); 
+  
+  $body_comments = ''; 
+  if($entity->field_comment) { 
+    $body_comments = $entity->field_comment->value();
+  }
 
   $invite_by_email_settings = $invite->type_details()->data['invite_by_email'];
 
@@ -285,6 +292,8 @@ function invite_by_email_invite_presave($invite) {
     $entity->field_invitation_email_body = token_replace($entity->field_invitation_email_body->value(), $token_data);
     $invite->data['subject'] = $entity->field_invitation_email_subject->value();
     $invite->data['message'] = $entity->field_invitation_email_body->value();
+
+    $invite->data['message'] = $entity->field_invitation_email_body->value() . $body_comments;
   }
 }
 
@@ -395,9 +404,17 @@ function invite_by_email_mail($key, &$message, $params) {
     $message['headers']['Reply-To'] = $params['reply-to'];
   }
 
-  $entity = entity_metadata_wrapper('invite', $invite);
+  $entity = entity_metadata_wrapper('invite', $invite); 
+
+  $body_comments = ''; 
+  if($entity->field_comment) { 
+    $body_comments = $entity->field_comment->value();
+  }
   $message['subject'] = str_replace(array("\r", "\n"), '', trim($entity->field_invitation_email_subject->value()));
-  $message['body'][] = $entity->field_invitation_email_body->value();
+  //$message['body'][] = $entity->field_invitation_email_body->value();
+
+  $message['body'][] = $entity->field_invitation_email_body->value() . "\r \n \n" . $body_comments;
+
 }
 
 /**
