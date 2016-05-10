@@ -28,12 +28,15 @@ function edivvy_username($variables) {
     
     if($variables['account']) { 
         $acc = $variables['account']; 
+        //print_r($variables); 
+        $acc_user = user_load($acc->uid);  
+        //print_r($acc_user); 
         
         $variables['name'] = 'Edivvy candidate '.$acc->uid; //check if already connected .. ?
 
-        if($acc->field_first_name && $acc->field_last_name) { 
+        if($acc->field_first_name && $acc->field_last_name && $acc_user->roles && ( $acc_user->roles[5] || $acc_user->roles[8] ) ) { 
             if($acc->field_first_name['und'][0]['value'] != "") { 
-               // $variables['name'] = $acc->field_first_name['und'][0]['value'] . " " . $acc->field_last_name['und'][0]['value']; 
+                $variables['name'] = $acc->field_first_name['und'][0]['value'] . " " . $acc->field_last_name['und'][0]['value']; 
             }
         }
     }

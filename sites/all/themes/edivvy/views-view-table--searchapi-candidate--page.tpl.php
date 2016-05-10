@@ -134,6 +134,26 @@
                                                        //print_r($evnode); 
                                                     }
 
+                                                    if($is_evaluated == false && isset($item['mail']) && $item['mail'] ) { 
+                                                      $query = new EntityFieldQuery; 
+                                                       $query->entityCondition('entity_type', 'node')
+                                                        ->entityCondition('bundle', 'evaluation')
+                                                        ->fieldCondition('field_recruiter_id', 'value', $user->uid)
+                                                        ->fieldCondition('field_candidate_email', 'value', $item['mail'] );  
+                                                       
+                                                       $results = $query->execute(); 
+                                                    
+                                                        $recruiter_id = ""; $evaluated_node_id = ''; 
+                                                        $is_evaluated = false; 
+                                                        if ($results && isset($results['node']) && count($results['node'])) {
+                                                           $is_evaluated = true; 
+                                                           
+                                                           $list_evaluated_nodes =array_keys($results['node']); 
+                                                           $evaluated_node_id = $list_evaluated_nodes[0]; 
+                                                        } 
+                                                      }
+                                                      //.. 
+
                                                     //echo $node_id;
                                                     if($item['field_user_picture'] != ''){
                                                         	$url_pic = $item['field_picture_url'];

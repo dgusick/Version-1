@@ -65,33 +65,57 @@ function custom_twicks_init() {
   	    }
   	    
   	    $results = array(); 
-  	    
-    	$query = new EntityFieldQuery; 
+  	    $efound = false; 
+
+    	
     	if($sel_can_uid != '' && is_numeric($sel_can_uid) ) { 
+        $query = new EntityFieldQuery;  
 		    $query->entityCondition('entity_type', 'node')
 		      ->entityCondition('bundle', 'evaluation')
 		      ->fieldCondition('field_recruiter_id', 'value', $user->uid)
 		      ->fieldCondition('field_user_id', 'target_id', $sel_can_uid ); 
-	   	} else if ($sel_can_email != '' && is_string($sel_can_email) ) {  
+
+         
+         $results = $query->execute(); 
+      
+          $recruiter_id = ""; $evaluated_node_id = ''; 
+          $is_evaluated = false; 
+          if ($results && isset($results['node']) && count($results['node'])) {
+             $is_evaluated = true; $efound = true; 
+
+             $list_evaluated_nodes =array_keys($results['node']); 
+             $evaluated_node_id = $list_evaluated_nodes[0]; 
+             
+             drupal_goto('node/'.$evaluated_node_id.'/edit');
+          } 
+	   	} 
+      //try with email if userid not worked .. 
+      if ($sel_can_email != '' && is_string($sel_can_email) && $efound == false ) {  
+        $query = new EntityFieldQuery; 
 	   	   $query->entityCondition('entity_type', 'node')
 		      ->entityCondition('bundle', 'evaluation')
 		      ->fieldCondition('field_recruiter_id', 'value', $user->uid)
-		      ->fieldCondition('field_candidate_email', 'value', $sel_can_email ); 
+		      ->fieldCondition('field_candidate_email', 'value', $sel_can_email );  
+         
+
+         $results = $query->execute(); 
+      
+          $recruiter_id = ""; $evaluated_node_id = ''; 
+          $is_evaluated = false; 
+          if ($results && isset($results['node']) && count($results['node'])) {
+             $is_evaluated = true; $efound = true; 
+
+             $list_evaluated_nodes =array_keys($results['node']); 
+             $evaluated_node_id = $list_evaluated_nodes[0]; 
+             
+             drupal_goto('node/'.$evaluated_node_id.'/edit');
+          } 
+
 	   	} 
-	    $results = $query->execute(); 
 	    
-	    $recruiter_id = ""; $evaluated_node_id = ''; 
-	    $is_evaluated = false; 
-	    if ($results && isset($results['node']) && count($results['node'])) {
-	       $is_evaluated = true; 
-	       $list_evaluated_nodes =array_keys($results['node']); 
-	       $evaluated_node_id = $list_evaluated_nodes[0]; 
-	       
-	       drupal_goto('node/'.$evaluated_node_id.'/edit');
-	    }
 	    
   	
-  }
+    }
   }
   
   //check if recruiter invited and trying to register 
@@ -125,7 +149,7 @@ function custom_twicks_node_update($node) {
 
 function custom_twicks_user_insert(&$edit, $account, $category) {
    
-   update_user_latest_eval_by_user($account); 
+   update_user_latest_eval_by_user($account); //on insert 
 
 }
 
@@ -255,8 +279,10 @@ function update_user_latest_eval($node, $canid = '') {
 		      
     		}
 		    
-    	} //end for 
+    	} //end for profile_evaluation[field_notes_feedback][und][0][value]
     	
+      $profile_evaluation->field_notes_feedback['und'][0]['value'] = $node->field_notes_feedback['und'][0]['value']; 
+      
     	//update soft skills 
     	$profile_evaluation->field_sskill_1_rating['und'][0] = $node->field_sskill_1_rating['und'][0]; 
     	$profile_evaluation->field_sskill_2_rating['und'][0] = $node->field_sskill_2_rating['und'][0]; 
@@ -413,7 +439,7 @@ function update_user_latest_eval($node, $canid = '') {
           
              }  //todo last rec feedback .. 
 
-             if( $is_found_invited == false ) { //pending_  
+             if( $is_found_invited == false && $user->uid != 1) { //pending_  
                   drupal_set_message("You do not have permission to create evaluation for selected candidate"); 
                   drupal_goto('searchapi-candidate'); 
               }

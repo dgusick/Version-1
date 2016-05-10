@@ -3,15 +3,22 @@
   $user_load = user_load($user->uid); 
   //print_r($user->uid); 
   //get current uid from url
-  if(arg(1)!= '') { 
-  $uid_get = arg(1); 
-  
-  $user_get = user_load($uid_get); 
+  if(arg(1) != '') {  
+
+    $uid_get = arg(1);  
+    //$user_get = user_load($uid_get); 
+     
+    $user_get = $user_profile['field_first_name']['#object']; 
+
   } else {
+
   	$user_get = $user_load; 
   }
   
-  //print_r($user_get);
+  //print_r($user_get); 
+  //print_r($account);
+  //print_r($user_profile); 
+  
   $is_rec = false; $logged_is_rec = false; 
   $is_can = false; $logged_is_can = false; 
   

@@ -352,7 +352,9 @@ jQuery(document).ready(function () {
 	$('.page-relationships-received .sticky-enabled').find('thead tr').first().children("th:nth-child(2)").text('Relationship Requested');
 	$('.page-relationships-received .sticky-enabled').find('thead tr').first().children("th:last-child").text('Decline request');
 
-    $('.node-type-evaluation #page-title').prepend("<span>Feedback Created for Candidate</span>");
+    $('.node-type-evaluation #page-title').prepend("<span>Thanks for creating feedback for Candidate</span>");
+
+    $('.node-type-evaluation #page-title').append(". <span>Please continue on to the </span><a href='"+Drupal.settings.basePath+"'>home page</a>");
 
      $(".page-messages .form-item-operation select").removeClass("form-control");
 
