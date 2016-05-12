@@ -807,7 +807,7 @@ if($field_approved_recruiter_uid!="")
 						                        	{
 						                        ?>
                                                 <dl class="dl-horizontal">
-                                                    <dt>Function: </dt>
+                                                    <dt>State: </dt>
                                                     <dd><?php echo $user_get->field_expertise['und'][0]['taxonomy_term']->name; ?></dd>
                                                 </dl>
                                                 <?php } ?>

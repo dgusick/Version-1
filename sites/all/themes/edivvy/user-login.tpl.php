@@ -26,7 +26,7 @@
                      <div class="checkbox c-checkbox mt0">
                         <label>
                            <input type="checkbox" value="" required="" name="agreed" data-parsley-multiple="agreed" data-parsley-id="11" checked>
-                           <span class="fa fa-check"></span>Agree to terms and conditions
+                           <span class="fa fa-check"></span>Agree to <a href="<?php echo url('node/155'); ?>" target="_blank">terms and conditions</a>
                         </label>
                      </div>
             </div>

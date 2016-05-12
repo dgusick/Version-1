@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the edivvy_cck feature.
+ */
+
+include_once 'edivvy_cck.features.inc';

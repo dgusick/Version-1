@@ -199,9 +199,9 @@ $preq_fields = array('field_first_name', 'field_last_name', 'field_city', 'field
 	                    <a href="<?php echo url('node/136'); ?>"><span class="nav-label">How Does This Work ?</span></a>
 	                </li>
 	               <li>
-	                    <a href="<?php echo url('node/137'); ?>"><span class="nav-label">Recruiters </span></a>
+	                    <a href="<?php echo url('node/156'); ?>"><span class="nav-label">Recruiters </span></a>
 	                </li>
-	                <li><a href="<?php echo url('node/138'); ?>"><span class="nav-label">Candidates</span> </a></li>
+	                <li><a href="<?php echo url('node/157'); ?>"><span class="nav-label">Candidates</span> </a></li>
                 
                </ul>
                
@@ -328,11 +328,11 @@ $preq_fields = array('field_first_name', 'field_last_name', 'field_city', 'field
                <!-- END Right Navbar-->
                
                  <ul class="nav navbar-nav navbar-right">
-                 <li>
+                 <!-- <li>
 	                    <a href="<?php echo url('node/134'); ?>"><span class="nav-label">About</span></a>
-	                </li>
+	                </li> --> 
 	                <li>
-	                    <a href="<?php echo url('node/135'); ?>"><span class="nav-label">Help</span></a>
+	                    <a href="<?php echo url('node/153'); ?>"><span class="nav-label">Help</span></a>
 	                </li>
                   
                 </ul>
@@ -1020,10 +1020,15 @@ $preq_fields = array('field_first_name', 'field_last_name', 'field_city', 'field
 		    
             
             <span>
-                <small>Edivvy &copy; <?php echo date('Y'); ?></small> 
-            </span>
+                <small>Copyright <?php echo date('Y'); ?> Edivvy LLC.  All rights reserved.</small> 
+            </span> 
+
+            
+            <a href="<?php echo url('node/154'); ?>">Privacy Policy</a> | 
+            <a href="<?php echo url('node/155'); ?>">Terms of Use</a> 
+            
         </footer>
   
-  </div> <!-- /#page, /#-wrapper -->
+  </div> <!-- /#page, /#-wrapper  &copy; -->
 
 
